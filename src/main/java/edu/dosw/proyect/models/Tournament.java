@@ -14,9 +14,9 @@ public class Tournament {
     private double costPerTeam;
     private TournamentsStatus status;
     private String regulation;
-
-    public Tournament(String turnId, String name, LocalDate startDate, LocalDate endDate, int maxTeams, double costPerTeam, TournamentsStatus status, String regulation) {
-        this.tournId = turnId;
+    
+    public Tournament(String tournId, String name, LocalDate startDate, LocalDate endDate, int maxTeams, double costPerTeam, TournamentsStatus status, String regulation) {
+        this.tournId = tournId;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -58,7 +58,7 @@ public class Tournament {
         return regulation;
     }
 
-    public void setTourId(String tournId) { this.tournId = tournId;}
+    public void setTournId(String tournId) { this.tournId = tournId;}
     public void setStatus(TournamentsStatus status) { this.status = status;}
 
 }
