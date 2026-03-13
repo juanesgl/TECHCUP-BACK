@@ -88,11 +88,7 @@ Hay momentos en el sistema donde algo pasa y varias partes necesitan enterarse, 
 ![Diagrama de clases.drawio (7).png](assets/Diagrama%20de%20clases.drawio%20%287%29.png)
 
 
-### Diagrama de componentes general
-![Diagramacomponentesgenerales.drawio (2).png](assets/Diagramacomponentesgenerales.drawio%20%282%29.png)
 
-### Diagrama de componentes especifico
-![diagramacomponentesEspecifico.drawio (1).png](assets/diagramacomponentesEspecifico.drawio%20%281%29.png)
 
 ## Pruebas
 
