@@ -20,8 +20,7 @@ public class SportProfile {
     private String preferredPosition;
     private int skillLevel;
 
-    public SportProfile() {
-    }
+
 
     public SportProfile(int dorsal, List<String> positions, File photo, int age, Gender gender, boolean available) {
         this.dorsal = dorsal;
@@ -45,67 +44,5 @@ public class SportProfile {
         this.available = !this.available;
     }
 
-    public int getDorsal() {
-        return dorsal;
-    }
 
-    public void setDorsal(int dorsal) {
-        this.dorsal = dorsal;
-    }
-
-    public List<String> getPositions() {
-        return positions;
-    }
-
-    public void setPositions(List<String> positions) {
-        this.positions = positions;
-    }
-
-    public File getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(File photo) {
-        this.photo = photo;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-
-    public String getPreferredPosition() {
-        return preferredPosition;
-    }
-
-    public void setPreferredPosition(String preferredPosition) {
-        this.preferredPosition = preferredPosition;
-    }
-
-    public int getSkillLevel() {
-        return skillLevel;
-    }
-
-    public void setSkillLevel(int skillLevel) {
-        this.skillLevel = skillLevel;
-    }
 }
