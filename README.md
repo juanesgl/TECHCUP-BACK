@@ -26,7 +26,29 @@ Service → Implementa la lógica de negocio
 Models / DTOs → Representan la información del sistema
 Validators → Validan los datos de entrada
 
-## Requerimientos funcionales 
+## Deuda Tecnica
+
+#### Requerimientos 
+
+![Requerimientos arreglados](assets/RequerimientosArreglados.png)
+
+#### Manual de identidad
+
+![Manuel de identidad](assets/Manual%20de%20identidad%20TECHCUP.pdf)
+
+#### Diagrama de contexto
+
+![Diagrama de contexto actualizado](assets/img_1.png)
+
+#### Jira
+
+![Organizacion en Jira](https://id.atlassian.com/login/select-account?application=jira&continue=https%3A%2F%2Fjuanspacee.atlassian.net%2Fjira%2Fsoftware%2Fprojects%2FTEC%2Fboards%2F166%2Ftimeline%3FatlOrigin%3DeyJpIjoiMTMzNDBiZWMyNDZlNDNjMmFiZTA0ODgwMzdiOGQ3MDciLCJwIjoiaiJ9&login_hint=not%3Alaurasantym1412%40gmail.com&redirectCount=1)
+
+#### Mockups y flujos de navegacion corregidos
+
+![Mockups y flujos de navegacion](https://www.figma.com/design/vK0m1sGamwU5v0DbajWtIZ/Academic-Sports-Dashboard-UI-in-Figma--Web-Design-Tutorial--Community-?node-id=0-1&t=3WcUMKUjoTlUgwT4-0)
+
+## Requerimientos funcionales
 
 TC-01  Iniciar sesión  
 TC-02  Crear torneo  
