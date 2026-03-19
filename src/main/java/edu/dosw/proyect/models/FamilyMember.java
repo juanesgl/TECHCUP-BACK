@@ -1,5 +1,10 @@
 package edu.dosw.proyect.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class FamilyMember extends AbstractUser {
     private SportProfile sportProfile;
 
@@ -7,7 +12,4 @@ public class FamilyMember extends AbstractUser {
         super(name, email, password, "FAMILY_MEMBER");
         this.sportProfile = sportProfile;
     }
-
-    public SportProfile getSportProfile() { return sportProfile; }
-    public void setSportProfile(SportProfile sportProfile) { this.sportProfile = sportProfile; }
 }
