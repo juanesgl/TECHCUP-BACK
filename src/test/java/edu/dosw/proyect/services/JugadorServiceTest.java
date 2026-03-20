@@ -5,7 +5,6 @@ import edu.dosw.proyect.dtos.DisponibilidadResponseDTO;
 import edu.dosw.proyect.exceptions.DisponibilidadException;
 import edu.dosw.proyect.models.Jugador;
 import edu.dosw.proyect.repositories.JugadorRepository;
-import edu.dosw.proyect.services.impl.JugadorServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,13 +25,12 @@ class JugadorServiceTest {
     private JugadorRepository jugadorRepository;
 
     @InjectMocks
-    private JugadorServiceImpl jugadorService;
+    private JugadorService jugadorService;
 
     private Jugador jugadorBasico;
 
     @BeforeEach
     void setUp() {
-        // Configuramos un jugador limpio antes de cada prueba
         jugadorBasico = new Jugador(1L, "Jugador Test", true, false, false);
     }
 
@@ -51,7 +49,7 @@ class JugadorServiceTest {
 
     @Test
     void testActivarDisponibilidadRN01FallaPerfilIncompleto() {
-        jugadorBasico.setPerfilCompleto(false); // Invalida RN-01 explícitamente
+        jugadorBasico.setPerfilCompleto(false); 
         when(jugadorRepository.findById(1L)).thenReturn(Optional.of(jugadorBasico));
 
         DisponibilidadRequestDTO request = new DisponibilidadRequestDTO(true);
@@ -66,7 +64,7 @@ class JugadorServiceTest {
 
     @Test
     void testActivarDisponibilidadRN02FallaPorqueTieneEquipo() {
-        jugadorBasico.setTieneEquipo(true); // Invalida RN-02 explícitamente
+        jugadorBasico.setTieneEquipo(true); 
         when(jugadorRepository.findById(1L)).thenReturn(Optional.of(jugadorBasico));
 
         DisponibilidadRequestDTO request = new DisponibilidadRequestDTO(true);
@@ -85,11 +83,9 @@ class JugadorServiceTest {
 
         jugadorService.unirseAEquipo(1L, 99L);
         
-        // Verificamos que se actualizan los datos (RN-03 y pertenece)
         assertTrue(jugadorBasico.isTieneEquipo());
         assertFalse(jugadorBasico.isDisponible());
         
-        // Verificamos que se haya mandado a guardar
         verify(jugadorRepository, times(1)).save(jugadorBasico);
     }
 
