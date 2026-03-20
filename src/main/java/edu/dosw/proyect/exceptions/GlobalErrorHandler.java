@@ -22,5 +22,4 @@ public class GlobalErrorHandler {
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
-
 }
