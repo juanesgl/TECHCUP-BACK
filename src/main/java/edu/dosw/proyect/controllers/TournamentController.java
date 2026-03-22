@@ -7,11 +7,16 @@ import edu.dosw.proyect.models.TournamentResponse;
 import edu.dosw.proyect.services.TournamentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tournaments")
+@Tag(name = "Torneos", description = "Endpoints para la creación, inicio y finalización de los Torneos TechCup")
 public class TournamentController {
 
     private final TournamentService tournamentService;
@@ -20,16 +25,20 @@ public class TournamentController {
         this.tournamentService = tournamentService;
     }
 
+    @Operation(summary = "Crear un nuevo torneo", description = "Instancia un torneo vacío con las reglas base requeridas")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Torneo creado exitosamente")})
     @PostMapping
     public ResponseEntity<TournamentResponse> createTournament(@RequestBody TournamentRequest request) {
         return ResponseEntity.ok(tournamentService.createTournament(request));
     }
 
+    @Operation(summary = "Listar torneos", description = "Devuelve el historial completo de torneos inscritos en el sistema")
     @GetMapping
     public ResponseEntity<List<Tournament>> getAllTournaments() {
         return ResponseEntity.ok(tournamentService.getAllTournaments());
     }
 
+    @Operation(summary = "Iniciar un torneo", description = "Abre un torneo. Falla si ya estaba en curso o si las reglas se violan.")
     @PutMapping("/{id}/start")
     public ResponseEntity<?> startTournament(@PathVariable String id) {
         try {
@@ -39,6 +48,7 @@ public class TournamentController {
         }
     }
 
+    @Operation(summary = "Finalizar un torneo", description = "Cierra el torneo actual tras la final y consolida métricas")
     @PutMapping("/{id}/finish")
     public ResponseEntity<?> finishTournament(@PathVariable String id) {
         try {

@@ -9,6 +9,7 @@ import edu.dosw.proyect.models.SportProfile;
 import edu.dosw.proyect.models.Student;
 import edu.dosw.proyect.repositories.EquipoRepository;
 import edu.dosw.proyect.repositories.UserRepository;
+import edu.dosw.proyect.repositories.InvitacionRepository;
 import edu.dosw.proyect.services.impl.EquipoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,9 @@ class EquipoServiceTest {
 
     @Mock
     private EquipoMapper equipoMapper;
+
+    @Mock
+    private InvitacionRepository invitacionRepository;
 
     @InjectMocks
     private EquipoServiceImpl equipoService;

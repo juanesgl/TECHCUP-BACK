@@ -8,7 +8,10 @@ import edu.dosw.proyect.mappers.EquipoMapper;
 import edu.dosw.proyect.models.Equipo;
 import edu.dosw.proyect.models.User;
 import edu.dosw.proyect.repositories.EquipoRepository;
+import edu.dosw.proyect.repositories.InvitacionRepository;
 import edu.dosw.proyect.repositories.UserRepository;
+import edu.dosw.proyect.models.Invitacion;
+import edu.dosw.proyect.models.enums.EstadoInvitacion;
 import edu.dosw.proyect.services.EquipoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +28,7 @@ public class EquipoServiceImpl implements EquipoService {
 
     private final EquipoRepository equipoRepository;
     private final UserRepository userRepository;
+    private final InvitacionRepository invitacionRepository;
     private final EquipoMapper equipoMapper;
 
     @Override
@@ -103,10 +107,16 @@ public class EquipoServiceImpl implements EquipoService {
 
         equipoRepository.save(equipoArmado);
 
+        for (User integrante : integracionFinal) {
+            if (!integrante.getId().equals(capitan.getId())) {
+                Invitacion inv = new Invitacion(null, integrante, equipoArmado, capitan, EstadoInvitacion.PENDIENTE);
+                invitacionRepository.save(inv);
+            }
+        }
+
         if (capitan.getSportProfile() != null) {
             capitan.getSportProfile().setEquipoActual(equipoArmado);
             userRepository.save(capitan);
-                
         }
 
         log.info("Creación existosa completada en el sistema para el equipo '{}'", equipoArmado.getNombre());
