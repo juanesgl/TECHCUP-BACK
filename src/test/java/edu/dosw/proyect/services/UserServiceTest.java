@@ -35,7 +35,7 @@ class UserServiceTest {
 
         // Assert
         assertNotNull(response);
-        assertEquals("User created successfully.", response.getMessage());
+        assertEquals("Usuario registrado exitosamente", response.getMessage());
         assertNotNull(response.getUserId());
 
         Map<Long, User> repo = userService.getUserRepository();
