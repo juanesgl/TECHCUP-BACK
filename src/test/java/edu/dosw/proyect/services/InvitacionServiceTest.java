@@ -64,18 +64,15 @@ class InvitacionServiceTest {
         jugador = new TestPlayer(1L, "Test Jugador", profile);
 
         TestPlayer capitan = new TestPlayer(2L, "Capitan", new SportProfile());
-
         Equipo equipo = new Equipo(1L, "Test FC");
 
         invitacion = new Invitacion(1L, jugador, equipo, capitan, EstadoInvitacion.PENDIENTE);
-
         request = new RespuestaInvitacionRequestDTO();
     }
 
     @Test
     void debeAceptarInvitacionExitosamente() {
         request.setRespuesta(RespuestaInvitacion.ACEPTAR);
-
         when(userRepository.findById(1L)).thenReturn(Optional.of(jugador));
         when(invitacionRepository.findById(1L)).thenReturn(Optional.of(invitacion));
         when(invitacionMapper.toResponseDTO(any(), anyString()))
@@ -94,7 +91,6 @@ class InvitacionServiceTest {
     @Test
     void debeRechazarInvitacionExitosamente() {
         request.setRespuesta(RespuestaInvitacion.RECHAZAR);
-
         when(userRepository.findById(1L)).thenReturn(Optional.of(jugador));
         when(invitacionRepository.findById(1L)).thenReturn(Optional.of(invitacion));
         when(invitacionMapper.toResponseDTO(any(), anyString()))
