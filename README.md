@@ -166,3 +166,27 @@ Bloqueo: Ninguno
 
 ![Reunion 5](assets/Reunion5.png)
 
+# Sprint 2
+
+## PostMan
+
+### POST /players/filter
+
+![Happy path filter](evidencias/POST1.png)
+![Happy path filter](evidencias/POST2.png)
+
+![Error filter](evidencias/ERROR1.png)
+![Error filter](evidencias/ERROR2.png)
+
+## JaCoCo
+
+![Pruebas JaCoCo](evidencias/jacoco.png)
+
+## SonarQube
+
+![SonarQube 1](evidencias/sonar1.png)
+![SonarQube 2](evidencias/sonar2.png)
+
+## Swagger
+
+![Swagger](evidencias/swagger1.png)
