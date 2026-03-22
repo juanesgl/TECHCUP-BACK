@@ -19,6 +19,7 @@ public class SportProfile {
     private boolean available;
     private String preferredPosition;
     private int skillLevel;
+    private Equipo equipoActual;
 
 
 
