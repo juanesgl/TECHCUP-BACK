@@ -4,7 +4,7 @@ import edu.dosw.proyect.dtos.request.RespuestaInvitacionRequestDTO;
 import edu.dosw.proyect.dtos.response.InvitacionResponseDTO;
 import edu.dosw.proyect.exceptions.BusinessRuleException;
 import edu.dosw.proyect.mappers.InvitacionMapper;
-import edu.dosw.proyect.models.AbstractUser;
+import edu.dosw.proyect.models.User;
 import edu.dosw.proyect.models.Equipo;
 import edu.dosw.proyect.models.Invitacion;
 import edu.dosw.proyect.models.SportProfile;
@@ -41,7 +41,7 @@ class InvitacionServiceTest {
     @InjectMocks
     private edu.dosw.proyect.services.impl.InvitacionServiceImpl invitacionService;
 
-    static class TestPlayer extends AbstractUser {
+    static class TestPlayer extends User {
         private SportProfile sportProfile;
         public TestPlayer(Long id, String name, SportProfile sportProfile) {
             super(name, "test@test", "pass", "PLAYER");
@@ -64,7 +64,7 @@ class InvitacionServiceTest {
         jugador = new TestPlayer(1L, "Test Jugador", profile);
 
         TestPlayer capitan = new TestPlayer(2L, "Capitan", new SportProfile());
-        Equipo equipo = new Equipo(1L, "Test FC");
+        Equipo equipo = Equipo.builder().id(1L).nombre("Test FC").build();
 
         invitacion = new Invitacion(1L, jugador, equipo, capitan, EstadoInvitacion.PENDIENTE);
         request = new RespuestaInvitacionRequestDTO();
@@ -109,7 +109,7 @@ class InvitacionServiceTest {
     @Test
     void debeFallarSiJugadorYaTieneEquipo_TH01() {
         request.setRespuesta(RespuestaInvitacion.ACEPTAR);
-        jugador.getSportProfile().setEquipoActual(new Equipo(2L, "Otro FC"));
+        jugador.getSportProfile().setEquipoActual(Equipo.builder().id(2L).nombre("Otro FC").build());
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(jugador));
         when(invitacionRepository.findById(1L)).thenReturn(Optional.of(invitacion));

@@ -1,15 +1,27 @@
 package edu.dosw.proyect.models;
 
-public interface User {
-    Long getId();
-    String getName();
-    String getEmail();
-    String getPassword();
-    String getRole();
-    void setId(Long id);
-    void setName(String name);
-    void setEmail(String email);
-    void setPassword(String password);
-    void setRole(String role);
-    SportProfile getSportProfile();
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public abstract class User {
+    private Long id;
+    private String name;
+    private String email;
+    private String password;
+    private String role;
+
+    private String programaAcademico;
+
+    public User(String name, String email, String password, String role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+    public SportProfile getSportProfile() {
+        return null; // Sobreescrito por subclases relevantes
+    }
 }
