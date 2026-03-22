@@ -51,14 +51,20 @@ public class EquipoServiceImpl implements EquipoService {
             User invitado = userRepository.findById(invitadoId).orElse(null);
             if (invitado != null) {
                 if (invitado.getSportProfile() != null && invitado.getSportProfile().getEquipoActual() != null) {
-                    log.warn("Violación TH-02 interceptada - el jugador {} (ID {}) está bloqueado", invitado.getName(), invitadoId);
-                    notificaciones.add("El jugador " + invitado.getName() + " ya pertenece a otro equipo y NO recibirá la invitación.");
+                    log.warn("Violación TH-02 interceptada - el jugador {} (ID {}) está bloqueado", invitado.getName(),
+                            
+                            invitadoId);
+                            
+                    notificaciones.add("El jugador " + invitado.getName()
+                            + " ya pertenece a otro equipo y NO recibirá la invitación.");
                 } else {
                     integracionFinal.add(invitado);
                     notificaciones.add("Se enviará invitación correctamente al jugador " + invitado.getName());
                 }
+                        
             } else {
-                notificaciones.add("Advertencia: No se halló en base de datos al jugador con identificador " + invitadoId);
+                notificaciones
+                        .add("Advertencia: No se halló en base de datos al jugador con identificador " + invitadoId);
             }
         }
 
@@ -80,9 +86,11 @@ public class EquipoServiceImpl implements EquipoService {
             }
         }
 
+                    
         double indiceValido = (double) conteoCarrerasFoco / integracionFinal.size();
         if (indiceValido <= 0.5) {
-            log.error("Violación TH-03 en composición de carreras: {} validos de {} integrantes necesarios", conteoCarrerasFoco, integracionFinal.size());
+            log.error("Violación TH-03 en composición de carreras: {} validos de {} integrantes necesarios",
+                    conteoCarrerasFoco, integracionFinal.size());
             throw new BusinessRuleException("error de validación de composición del equipo");
         }
 
@@ -98,9 +106,11 @@ public class EquipoServiceImpl implements EquipoService {
         if (capitan.getSportProfile() != null) {
             capitan.getSportProfile().setEquipoActual(equipoArmado);
             userRepository.save(capitan);
+                
         }
 
         log.info("Creación existosa completada en el sistema para el equipo '{}'", equipoArmado.getNombre());
-        return equipoMapper.toCrearEquipoResponseDTO("El equipo ha sido registrado exitosamente tras superar las reglas del torneo", notificaciones);
+        return equipoMapper.toCrearEquipoResponseDTO(
+                "El equipo ha sido registrado exitosamente tras superar las reglas del torneo", notificaciones);
     }
 }

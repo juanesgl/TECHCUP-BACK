@@ -12,10 +12,16 @@ public abstract class User {
     private String password;
     private String role;
 
+    private String programaAcademico;
+
     public User(String name, String email, String password, String role) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public SportProfile getSportProfile() {
+        return null; // Sobreescrito por subclases relevantes
     }
 }
