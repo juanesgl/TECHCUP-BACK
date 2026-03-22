@@ -4,6 +4,7 @@ import edu.dosw.proyect.dtos.PaymentResponse;
 import edu.dosw.proyect.dtos.PaymentStatusRequest;
 import edu.dosw.proyect.dtos.PaymentUploadRequest;
 import edu.dosw.proyect.exceptions.BusinessException;
+import edu.dosw.proyect.models.enums.PaymentStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +31,7 @@ class PaymentServiceTest {
         assertEquals("Comprobante subido correctamente", response.getMessage());
         assertEquals("PENDING", response.getStatus());
     }
+
 
     @Test
     void uploadPayment_SinUserId_LanzaExcepcion() {
@@ -66,29 +68,33 @@ class PaymentServiceTest {
     }
 
     @Test
-    void updatePaymentStatus_Success() {
-        // Primero subimos un pago
-        PaymentUploadRequest uploadRequest = new PaymentUploadRequest();
-        uploadRequest.setUserId(1);
-        uploadRequest.setTournamentId(1);
-        uploadRequest.setFileUrl("comprobante.png");
-        paymentService.uploadPayment(uploadRequest);
+    void updatePaymentStatus_Approved_Success() {
+        PaymentStatusRequest request = new PaymentStatusRequest();
+        request.setPaymentId(1L);
+        request.setStatus(PaymentStatus.APPROVED);
 
-        // Luego actualizamos su estado
-        PaymentStatusRequest statusRequest = new PaymentStatusRequest();
-        statusRequest.setPaymentId(1L);
-        statusRequest.setStatus("APPROVED");
-
-        PaymentResponse response = paymentService.updatePaymentStatus(statusRequest);
+        PaymentResponse response = paymentService.updatePaymentStatus(request);
 
         assertEquals("Estado actualizado correctamente", response.getMessage());
         assertEquals("APPROVED", response.getStatus());
     }
 
     @Test
+    void updatePaymentStatus_Rejected_Success() {
+        PaymentStatusRequest request = new PaymentStatusRequest();
+        request.setPaymentId(2L);
+        request.setStatus(PaymentStatus.REJECTED);
+
+        PaymentResponse response = paymentService.updatePaymentStatus(request);
+
+        assertEquals("Estado actualizado correctamente", response.getMessage());
+        assertEquals("REJECTED", response.getStatus());
+    }
+
+    @Test
     void updatePaymentStatus_SinPaymentId_LanzaExcepcion() {
         PaymentStatusRequest request = new PaymentStatusRequest();
-        request.setStatus("APPROVED");
+        request.setStatus(PaymentStatus.APPROVED);
 
         BusinessException ex = assertThrows(BusinessException.class,
                 () -> paymentService.updatePaymentStatus(request));
@@ -97,10 +103,21 @@ class PaymentServiceTest {
     }
 
     @Test
-    void updatePaymentStatus_PagoNoExiste_LanzaExcepcion() {
+    void updatePaymentStatus_SinStatus_LanzaExcepcion() {
+        PaymentStatusRequest request = new PaymentStatusRequest();
+        request.setPaymentId(1L);
+
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> paymentService.updatePaymentStatus(request));
+
+        assertEquals("El estado es obligatorio", ex.getMessage());
+    }
+
+    @Test
+    void updatePaymentStatus_PagoNoEncontrado_LanzaExcepcion() {
         PaymentStatusRequest request = new PaymentStatusRequest();
         request.setPaymentId(999L);
-        request.setStatus("APPROVED");
+        request.setStatus(PaymentStatus.APPROVED);
 
         BusinessException ex = assertThrows(BusinessException.class,
                 () -> paymentService.updatePaymentStatus(request));
@@ -109,18 +126,14 @@ class PaymentServiceTest {
     }
 
     @Test
-    void updatePaymentStatus_Rejected_Success() {
-        PaymentUploadRequest uploadRequest = new PaymentUploadRequest();
-        uploadRequest.setUserId(1);
-        uploadRequest.setFileUrl("comprobante.png");
-        paymentService.uploadPayment(uploadRequest);
+    void updatePaymentStatus_StatusPending_LanzaExcepcion() {
+        PaymentStatusRequest request = new PaymentStatusRequest();
+        request.setPaymentId(1L);
+        request.setStatus(PaymentStatus.PENDING);
 
-        PaymentStatusRequest statusRequest = new PaymentStatusRequest();
-        statusRequest.setPaymentId(1L);
-        statusRequest.setStatus("REJECTED");
+        BusinessException ex = assertThrows(BusinessException.class,
+                () -> paymentService.updatePaymentStatus(request));
 
-        PaymentResponse response = paymentService.updatePaymentStatus(statusRequest);
-
-        assertEquals("REJECTED", response.getStatus());
+        assertEquals("No se puede asignar el estado PENDING manualmente", ex.getMessage());
     }
 }

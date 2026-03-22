@@ -13,6 +13,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<PaymentResponse> handleBusinessException(BusinessException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST) // 400
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new PaymentResponse(ex.getMessage(), "ERROR"));
     }
 
@@ -20,6 +21,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<PaymentResponse> handleGenericException(Exception ex) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR) // 500
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new PaymentResponse("Error interno del servidor", "ERROR"));
     }
 }
