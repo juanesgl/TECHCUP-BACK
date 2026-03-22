@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 public class Payment {
 
-    private Integer id;
+    private Long id;
     private Integer userId;
     private Integer tournamentId;
     private String fileUrl;

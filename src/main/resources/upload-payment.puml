@@ -1,0 +1,20 @@
+@startuml
+actor Cliente
+participant PaymentController
+participant PaymentService
+
+== Happy Path ==
+Cliente -> PaymentController : POST /payments/upload
+PaymentController -> PaymentService : uploadPayment(request)
+PaymentService -> PaymentService : valida userId y fileUrl
+PaymentService -> PaymentService : crea Payment PENDING
+PaymentService --> PaymentController : PaymentResponse OK
+PaymentController --> Cliente : 200 - Comprobante subido
+
+== Error - datos faltantes ==
+Cliente -> PaymentController : POST /payments/upload
+PaymentController -> PaymentService : uploadPayment(request)
+PaymentService -> PaymentService : lanza BusinessException
+PaymentService --> PaymentController : GlobalExceptionHandler
+PaymentController --> Cliente : 400 - mensaje de error
+@enduml

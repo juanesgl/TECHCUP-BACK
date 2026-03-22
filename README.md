@@ -166,3 +166,35 @@ Bloqueo: Ninguno
 
 ![Reunion 5](assets/Reunion5.png)
 
+
+# Sprint 2
+
+## Pruebas en postman
+
+### POST/payments/upload
+
+![Happy path POST](evidencias/POST1.png)
+![ERROR POST](evidencias/ERROR1.png)
+![ERROR POST](evidencias/ERROR2.png)
+
+### PUT/payments/status
+
+![Happy path PUT](evidencias/PUT_payment_upload.png)
+![Happy path PUT](evidencias/PUT_UPLOAD2.png)
+![ERROR PUT](evidencias/ERROR1_UPLOAD.png)
+![ERROR PUT](evidencias/ERROR2_UPLOAD.png)
+
+
+## Swagger
+
+![Swagger 1](evidencias/swagger1.png)
+![Swagger 2](evidencias/swagger2.png)
+
+## SonarQube
+
+![SonarQube 1](evidencias/sonar1.png)
+![SonarQube 2](evidencias/sonar2.png)
+
+## JaCoCo
+
+![Pruebas JaCocCo](evidencias/jacocopruebas.png)
