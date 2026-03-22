@@ -7,4 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class PaymentResponse {
     private String message;
+    private String status;
 }
