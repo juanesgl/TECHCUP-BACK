@@ -16,4 +16,8 @@ public class SwaggerConfig {
                         .version("1.0")
                         .description("API para la gestión del torneo de fútbol TechCup"));
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> feature/BuscarFiltroJugadores

@@ -68,6 +68,7 @@
             <version>2.8.5</version>
         </dependency>
 
+<<<<<<< HEAD
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -83,6 +84,8 @@
             <version>2.8.5</version>
         </dependency>
 
+=======
+>>>>>>> feature/BuscarFiltroJugadores
     </dependencies>
 
     <build>
@@ -138,5 +141,8 @@
     </build>
 
 </project>
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> feature/BuscarFiltroJugadores

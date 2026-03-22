@@ -1,0 +1,29 @@
+@startuml
+actor Cliente
+participant PlayerController
+participant PlayerService
+
+== Happy Path ==
+Cliente -> PlayerController : POST /players/filter
+PlayerController -> PlayerService : filterPlayers(request)
+PlayerService -> PlayerService : valida que haya al menos un filtro
+PlayerService -> PlayerService : recorre lista de jugadores
+PlayerService -> PlayerService : aplica filtros (nombre, posicion, edad)
+PlayerService --> PlayerController : List<PlayerResponse>
+PlayerController --> Cliente : 200 - lista de jugadores
+
+== Error - sin filtros ==
+Cliente -> PlayerController : POST /players/filter {}
+PlayerController -> PlayerService : filterPlayers(request)
+PlayerService -> PlayerService : lanza BusinessException
+PlayerService --> PlayerController : GlobalExceptionHandler
+PlayerController --> Cliente : 400 - debe incluir al menos un filtro
+
+== Error - sin resultados ==
+Cliente -> PlayerController : POST /players/filter
+PlayerController -> PlayerService : filterPlayers(request)
+PlayerService -> PlayerService : no encuentra coincidencias
+PlayerService -> PlayerService : lanza BusinessException
+PlayerService --> PlayerController : GlobalExceptionHandler
+PlayerController --> Cliente : 400 - no se encontraron jugadores
+@enduml
