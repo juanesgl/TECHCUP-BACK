@@ -18,4 +18,8 @@ public abstract class AbstractUser implements User {
         this.password = password;
         this.role = role;
     }
+
+    public SportProfile getSportProfile() {
+        return null;
+    }
 }
