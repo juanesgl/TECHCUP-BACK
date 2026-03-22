@@ -15,7 +15,7 @@ import java.util.List;
 public class Equipo {
     private Long id;
     private String nombre;
-    private String escudo; // Formato Base64 o URL
+    private String escudo;
     private String coloresUniforme;
     
     private User capitan;

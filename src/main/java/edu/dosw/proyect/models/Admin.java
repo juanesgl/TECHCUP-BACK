@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Admin extends AbstractUser {
+public class Admin extends User {
     private SportProfile sportProfile;
 
     public Admin(String name, String email, String password, SportProfile sportProfile) {
