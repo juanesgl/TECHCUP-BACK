@@ -11,6 +11,7 @@ public abstract class AbstractUser implements User {
     private String email;
     private String password;
     private String role;
+    private String programaAcademico;
 
     public AbstractUser(String name, String email, String password, String role) {
         this.name = name;
@@ -18,4 +19,9 @@ public abstract class AbstractUser implements User {
         this.password = password;
         this.role = role;
     }
+    @Override
+    public String getProgramaAcademico() { return null; }
+    @Override
+    public void setProgramaAcademico(String programaAcademico) {}
+
 }

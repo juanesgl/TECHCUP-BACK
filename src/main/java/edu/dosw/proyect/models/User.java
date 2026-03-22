@@ -11,4 +11,6 @@ public interface User {
     void setEmail(String email);
     void setPassword(String password);
     void setRole(String role);
+    String getProgramaAcademico();
+    void setProgramaAcademico(String programaAcademico);
 }
