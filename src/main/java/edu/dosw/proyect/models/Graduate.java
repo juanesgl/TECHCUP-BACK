@@ -12,4 +12,9 @@ public class Graduate extends User {
         super(name, email, password, "GRADUATE");
         this.sportProfile = sportProfile;
     }
+    @Override
+    public String getProgramaAcademico() { return null; }
+    @Override
+    public void setProgramaAcademico(String programaAcademico) {}
+
 }

@@ -12,4 +12,9 @@ public class FamilyMember extends User {
         super(name, email, password, "FAMILY_MEMBER");
         this.sportProfile = sportProfile;
     }
+    @Override
+    public String getProgramaAcademico() { return null; }
+    @Override
+    public void setProgramaAcademico(String programaAcademico) {}
+
 }
