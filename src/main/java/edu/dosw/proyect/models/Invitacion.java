@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Invitacion {
     private Long id;
-    private User jugadorInvitado; // Se usa User que tiene SportProfile, evitando Jugador duplicado
+    private User jugadorInvitado;
     private Equipo equipoInvita;
-    private User capitan; // El usuario que envía la invitación
+    private User capitan;
     private EstadoInvitacion estado;
 }

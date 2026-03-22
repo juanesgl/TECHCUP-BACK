@@ -39,7 +39,7 @@ class InvitacionServiceTest {
     private InvitacionMapper invitacionMapper;
 
     @InjectMocks
-    private InvitacionService invitacionService;
+    private edu.dosw.proyect.services.impl.InvitacionServiceImpl invitacionService;
 
     static class TestPlayer extends AbstractUser {
         private SportProfile sportProfile;
