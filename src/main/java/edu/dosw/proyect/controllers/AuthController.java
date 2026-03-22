@@ -6,9 +6,14 @@ import edu.dosw.proyect.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "Autenticación", description = "Endpoints de control de acceso y login")
 public class AuthController {
 
     private final AuthService authService;
@@ -17,6 +22,12 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @Operation(summary = "Iniciar Sesión", description = "Autentica con email y contraseña. Retorna la validez del intento.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login exitoso."),
+            @ApiResponse(responseCode = "401", description = "Credenciales incorrectas o inexistentes."),
+            @ApiResponse(responseCode = "400", description = "Solicitud malformada por parte del cliente.")
+    })
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequestDTO request) {
         try {

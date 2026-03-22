@@ -4,6 +4,13 @@ import edu.dosw.proyect.models.enums.TournamentsStatus;
 
 import java.time.LocalDate;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tournament {
 
     private String tournId;
@@ -14,51 +21,4 @@ public class Tournament {
     private double costPerTeam;
     private TournamentsStatus status;
     private String regulation;
-    
-    public Tournament(String tournId, String name, LocalDate startDate, LocalDate endDate, int maxTeams, double costPerTeam, TournamentsStatus status, String regulation) {
-        this.tournId = tournId;
-        this.name = name;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.maxTeams = maxTeams;
-        this.costPerTeam = costPerTeam;
-        this.status = status;
-        this.regulation = regulation;
-    }
-
-    public String getTournId() {
-        return tournId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public int getMaxTeams() {
-        return maxTeams;
-    }
-
-    public double getCostPerTeam() {
-        return costPerTeam;
-    }
-
-    public TournamentsStatus getStatus() {
-        return status;
-    }
-
-    public String getRegulation() {
-        return regulation;
-    }
-
-    public void setTournId(String tournId) { this.tournId = tournId;}
-    public void setStatus(TournamentsStatus status) { this.status = status;}
-
 }

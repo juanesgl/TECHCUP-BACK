@@ -24,7 +24,7 @@ class UserServiceTest {
         // Arrange
         RegisterRequestDTO request = new RegisterRequestDTO();
         request.setName("John Doe");
-        request.setEmail("john@mail.escuelaing.edu.co"); // Valid institutional email
+        request.setEmail("john@mail.escuelaing.edu.co");
         request.setPassword("password123");
         request.setRole("STUDENT");
         request.setPreferredPosition("Forward");
@@ -35,7 +35,7 @@ class UserServiceTest {
 
         // Assert
         assertNotNull(response);
-        assertEquals("User created successfully.", response.getMessage());
+        assertEquals("Usuario registrado exitosamente", response.getMessage());
         assertNotNull(response.getUserId());
 
         Map<Long, User> repo = userService.getUserRepository();
@@ -59,7 +59,7 @@ class UserServiceTest {
             userService.registerUser(request);
         });
 
-        assertEquals("Invalid email domain for Student. Must use institutional mail.", exception.getMessage());
+        assertEquals("Dominio de correo invalido para el rol: STUDENT", exception.getMessage());
 
         Map<Long, User> repo = userService.getUserRepository();
         assertTrue(repo.isEmpty(), "Repository should be empty after failed registration");
@@ -79,6 +79,6 @@ class UserServiceTest {
             userService.registerUser(request);
         });
 
-        assertEquals("Unsupported role: INVALID_ROLE", exception.getMessage());
+        assertEquals("Rol no soportado: INVALID_ROLE", exception.getMessage());
     }
 }
