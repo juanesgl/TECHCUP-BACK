@@ -1,17 +1,18 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.dtos.request.RespuestaInvitacionRequestDTO;
-import edu.dosw.proyect.dtos.response.InvitacionResponseDTO;
-import edu.dosw.proyect.exceptions.BusinessRuleException;
-import edu.dosw.proyect.mappers.InvitacionMapper;
-import edu.dosw.proyect.models.User;
-import edu.dosw.proyect.models.Equipo;
-import edu.dosw.proyect.models.Invitacion;
-import edu.dosw.proyect.models.SportProfile;
-import edu.dosw.proyect.models.enums.EstadoInvitacion;
-import edu.dosw.proyect.models.enums.RespuestaInvitacion;
-import edu.dosw.proyect.repositories.InvitacionRepository;
-import edu.dosw.proyect.repositories.UserRepository;
+import edu.dosw.proyect.controllers.dtos.request.RespuestaInvitacionRequestDTO;
+import edu.dosw.proyect.controllers.dtos.response.InvitacionResponseDTO;
+import edu.dosw.proyect.core.exceptions.BusinessRuleException;
+import edu.dosw.proyect.controllers.mappers.InvitacionMapper;
+import edu.dosw.proyect.core.models.User;
+import edu.dosw.proyect.core.models.Equipo;
+import edu.dosw.proyect.core.models.Invitacion;
+import edu.dosw.proyect.core.models.SportProfile;
+import edu.dosw.proyect.core.models.enums.EstadoInvitacion;
+import edu.dosw.proyect.core.models.enums.RespuestaInvitacion;
+import edu.dosw.proyect.core.services.impl.InvitacionServiceImpl;
+import edu.dosw.proyect.core.repositories.InvitacionRepository;
+import edu.dosw.proyect.core.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +40,7 @@ class InvitacionServiceTest {
     private InvitacionMapper invitacionMapper;
 
     @InjectMocks
-    private edu.dosw.proyect.services.impl.InvitacionServiceImpl invitacionService;
+    private InvitacionServiceImpl invitacionService;
 
     static class TestPlayer extends User {
         private SportProfile sportProfile;

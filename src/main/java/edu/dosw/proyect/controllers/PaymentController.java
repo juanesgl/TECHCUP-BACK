@@ -1,9 +1,9 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.dtos.PaymentResponse;
-import edu.dosw.proyect.dtos.PaymentStatusRequest;
-import edu.dosw.proyect.dtos.PaymentUploadRequest;
-import edu.dosw.proyect.services.PaymentService;
+import edu.dosw.proyect.controllers.dtos.PaymentResponse;
+import edu.dosw.proyect.controllers.dtos.PaymentStatusRequest;
+import edu.dosw.proyect.controllers.dtos.PaymentUploadRequest;
+import edu.dosw.proyect.core.services.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

@@ -1,8 +1,9 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.dtos.RegisterRequestDTO;
-import edu.dosw.proyect.dtos.RegisterResponseDTO;
-import edu.dosw.proyect.models.User;
+import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
+import edu.dosw.proyect.core.models.User;
+import edu.dosw.proyect.core.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

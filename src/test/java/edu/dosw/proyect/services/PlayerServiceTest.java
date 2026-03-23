@@ -1,8 +1,9 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.dtos.PlayerFilterRequest;
-import edu.dosw.proyect.dtos.PlayerResponse;
-import edu.dosw.proyect.exceptions.BusinessException;
+import edu.dosw.proyect.controllers.dtos.PlayerFilterRequest;
+import edu.dosw.proyect.controllers.dtos.PlayerResponse;
+import edu.dosw.proyect.core.exceptions.BusinessException;
+import edu.dosw.proyect.core.services.PlayerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,10 +1,10 @@
 package edu.dosw.proyect.config;
 
-import edu.dosw.proyect.models.Student;
-import edu.dosw.proyect.models.SportProfile;
-import edu.dosw.proyect.models.Jugador;
-import edu.dosw.proyect.repositories.UserRepository;
-import edu.dosw.proyect.repositories.JugadorRepository;
+import edu.dosw.proyect.core.models.Student;
+import edu.dosw.proyect.core.models.SportProfile;
+import edu.dosw.proyect.core.models.Jugador;
+import edu.dosw.proyect.core.repositories.UserRepository;
+import edu.dosw.proyect.core.repositories.JugadorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

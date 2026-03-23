@@ -1,10 +1,10 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.exceptions.TournamentException;
-import edu.dosw.proyect.models.Tournament;
-import edu.dosw.proyect.models.TournamentRequest;
-import edu.dosw.proyect.models.TournamentResponse;
-import edu.dosw.proyect.services.TournamentService;
+import edu.dosw.proyect.core.exceptions.TournamentException;
+import edu.dosw.proyect.core.models.Tournament;
+import edu.dosw.proyect.core.models.TournamentRequest;
+import edu.dosw.proyect.core.models.TournamentResponse;
+import edu.dosw.proyect.core.services.TournamentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;

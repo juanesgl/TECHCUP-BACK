@@ -1,11 +1,11 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.exceptions.TournamentException;
-import edu.dosw.proyect.models.Tournament;
-import edu.dosw.proyect.models.TournamentRequest;
-import edu.dosw.proyect.models.TournamentResponse;
-import edu.dosw.proyect.models.enums.TournamentsStatus;
-import edu.dosw.proyect.services.TournamentService;
+import edu.dosw.proyect.core.exceptions.TournamentException;
+import edu.dosw.proyect.core.models.Tournament;
+import edu.dosw.proyect.core.models.TournamentRequest;
+import edu.dosw.proyect.core.models.TournamentResponse;
+import edu.dosw.proyect.core.models.enums.TournamentsStatus;
+import edu.dosw.proyect.core.services.TournamentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

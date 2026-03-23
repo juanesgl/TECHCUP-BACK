@@ -1,5 +1,7 @@
 package edu.dosw.proyect.models;
 
+import edu.dosw.proyect.core.models.Gender;
+import edu.dosw.proyect.core.models.SportProfile;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Arrays;

@@ -1,10 +1,11 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.dtos.DisponibilidadRequestDTO;
-import edu.dosw.proyect.dtos.DisponibilidadResponseDTO;
-import edu.dosw.proyect.exceptions.DisponibilidadException;
-import edu.dosw.proyect.models.Jugador;
-import edu.dosw.proyect.repositories.JugadorRepository;
+import edu.dosw.proyect.controllers.dtos.DisponibilidadRequestDTO;
+import edu.dosw.proyect.controllers.dtos.DisponibilidadResponseDTO;
+import edu.dosw.proyect.core.exceptions.DisponibilidadException;
+import edu.dosw.proyect.core.models.Jugador;
+import edu.dosw.proyect.core.services.JugadorService;
+import edu.dosw.proyect.core.repositories.JugadorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

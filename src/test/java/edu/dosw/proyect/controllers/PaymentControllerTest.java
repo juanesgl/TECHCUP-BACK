@@ -1,10 +1,10 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.dtos.PaymentResponse;
-import edu.dosw.proyect.dtos.PaymentStatusRequest;
-import edu.dosw.proyect.exceptions.BusinessException;
-import edu.dosw.proyect.models.enums.PaymentStatus;
-import edu.dosw.proyect.services.PaymentService;
+import edu.dosw.proyect.controllers.dtos.PaymentResponse;
+import edu.dosw.proyect.controllers.dtos.PaymentStatusRequest;
+import edu.dosw.proyect.core.exceptions.BusinessException;
+import edu.dosw.proyect.core.models.enums.PaymentStatus;
+import edu.dosw.proyect.core.services.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;

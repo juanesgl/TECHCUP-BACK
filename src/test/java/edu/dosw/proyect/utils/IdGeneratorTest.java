@@ -1,5 +1,6 @@
 package edu.dosw.proyect.utils;
 
+import edu.dosw.proyect.core.utils.IdGenerator;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

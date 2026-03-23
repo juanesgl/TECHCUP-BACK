@@ -1,7 +1,8 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.dtos.LoginRequestDTO;
-import edu.dosw.proyect.dtos.LoginResponseDTO;
+import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
+import edu.dosw.proyect.controllers.dtos.LoginResponseDTO;
+import edu.dosw.proyect.core.services.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

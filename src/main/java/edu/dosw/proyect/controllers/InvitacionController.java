@@ -1,8 +1,8 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.dtos.request.RespuestaInvitacionRequestDTO;
-import edu.dosw.proyect.dtos.response.InvitacionResponseDTO;
-import edu.dosw.proyect.services.InvitacionService;
+import edu.dosw.proyect.controllers.dtos.request.RespuestaInvitacionRequestDTO;
+import edu.dosw.proyect.controllers.dtos.response.InvitacionResponseDTO;
+import edu.dosw.proyect.core.services.InvitacionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

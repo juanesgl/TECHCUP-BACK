@@ -1,8 +1,8 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.dtos.DisponibilidadRequestDTO;
-import edu.dosw.proyect.dtos.DisponibilidadResponseDTO;
-import edu.dosw.proyect.services.JugadorService;
+import edu.dosw.proyect.controllers.dtos.DisponibilidadRequestDTO;
+import edu.dosw.proyect.controllers.dtos.DisponibilidadResponseDTO;
+import edu.dosw.proyect.core.services.JugadorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

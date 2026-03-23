@@ -1,16 +1,16 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.dtos.request.CrearEquipoRequestDTO;
-import edu.dosw.proyect.dtos.response.CrearEquipoResponseDTO;
-import edu.dosw.proyect.exceptions.BusinessRuleException;
-import edu.dosw.proyect.mappers.EquipoMapper;
-import edu.dosw.proyect.models.Equipo;
-import edu.dosw.proyect.models.SportProfile;
-import edu.dosw.proyect.models.Student;
-import edu.dosw.proyect.repositories.EquipoRepository;
-import edu.dosw.proyect.repositories.UserRepository;
-import edu.dosw.proyect.repositories.InvitacionRepository;
-import edu.dosw.proyect.services.impl.EquipoServiceImpl;
+import edu.dosw.proyect.controllers.dtos.request.CrearEquipoRequestDTO;
+import edu.dosw.proyect.controllers.dtos.response.CrearEquipoResponseDTO;
+import edu.dosw.proyect.core.exceptions.BusinessRuleException;
+import edu.dosw.proyect.controllers.mappers.EquipoMapper;
+import edu.dosw.proyect.core.models.Equipo;
+import edu.dosw.proyect.core.models.SportProfile;
+import edu.dosw.proyect.core.models.Student;
+import edu.dosw.proyect.core.repositories.EquipoRepository;
+import edu.dosw.proyect.core.repositories.UserRepository;
+import edu.dosw.proyect.core.repositories.InvitacionRepository;
+import edu.dosw.proyect.core.services.impl.EquipoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

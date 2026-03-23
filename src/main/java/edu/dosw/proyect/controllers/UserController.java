@@ -1,8 +1,8 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.dtos.RegisterRequestDTO;
-import edu.dosw.proyect.dtos.RegisterResponseDTO;
-import edu.dosw.proyect.services.UserService;
+import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
+import edu.dosw.proyect.core.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

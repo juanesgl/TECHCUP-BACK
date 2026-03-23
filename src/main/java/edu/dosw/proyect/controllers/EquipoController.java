@@ -1,8 +1,8 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.dtos.request.CrearEquipoRequestDTO;
-import edu.dosw.proyect.dtos.response.CrearEquipoResponseDTO;
-import edu.dosw.proyect.services.EquipoService;
+import edu.dosw.proyect.controllers.dtos.request.CrearEquipoRequestDTO;
+import edu.dosw.proyect.controllers.dtos.response.CrearEquipoResponseDTO;
+import edu.dosw.proyect.core.services.EquipoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

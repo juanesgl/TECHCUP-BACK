@@ -1,8 +1,8 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.dtos.LoginRequestDTO;
-import edu.dosw.proyect.dtos.LoginResponseDTO;
-import edu.dosw.proyect.services.AuthService;
+import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
+import edu.dosw.proyect.controllers.dtos.LoginResponseDTO;
+import edu.dosw.proyect.core.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

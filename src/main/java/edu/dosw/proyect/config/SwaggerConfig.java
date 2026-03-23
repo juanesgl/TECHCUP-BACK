@@ -12,12 +12,8 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("TechCup Fútbol API")
+                        .title("TechCup Futbol API")
                         .version("1.0")
-                        .description("API para la gestión del torneo de fútbol TechCup"));
+                        .description("API para la gestion del torneo de futbol TechCup"));
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> feature/BuscarFiltroJugadores
