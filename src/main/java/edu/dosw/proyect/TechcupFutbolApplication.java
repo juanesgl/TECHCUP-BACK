@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core;
+package edu.dosw.proyect;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

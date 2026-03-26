@@ -14,9 +14,10 @@ import edu.dosw.proyect.core.repositories.UserRepository;
 import edu.dosw.proyect.core.services.InvitacionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
-// @Service
+@Service
 @RequiredArgsConstructor
 public class InvitacionServiceImpl implements InvitacionService {
 

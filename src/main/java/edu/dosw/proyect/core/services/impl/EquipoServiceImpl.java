@@ -15,13 +15,14 @@ import edu.dosw.proyect.core.models.enums.EstadoInvitacion;
 import edu.dosw.proyect.core.services.EquipoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-// @Service
+@Service
 @RequiredArgsConstructor
 public class EquipoServiceImpl implements EquipoService {
 
