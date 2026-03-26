@@ -4,7 +4,6 @@ import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.utils.*;
-import edu.dosw.proyect.utils.*;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
