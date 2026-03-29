@@ -9,27 +9,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * Mapper responsible for converting domain data into
- * standings-related DTOs.
- */
+
 @Component
 public class StandingsTableMapper {
 
-    /**
-     * Builds a TeamStandingDTO calculating GD and PTS from raw stats.
-     *
-     * @param position  row number in the table (1-based)
-     * @param teamId    team identifier
-     * @param teamName  display name
-     * @param mp        matches played
-     * @param w         wins
-     * @param d         draws
-     * @param l         losses
-     * @param gf        goals for
-     * @param ga        goals against
-     * @return fully populated DTO
-     */
+
     public TeamStandingDTO toTeamStandingDTO(int position, Long teamId, String teamName,
                                              int mp, int w, int d, int l, int gf, int ga) {
         return TeamStandingDTO.builder()
@@ -47,9 +31,7 @@ public class StandingsTableMapper {
                 .build();
     }
 
-    /**
-     * Builds the full standings table response.
-     */
+
     public StandingsTableResponseDTO toStandingsTableResponseDTO(String tournamentId,
                                                                  String tournamentName,
                                                                  int totalMatchesPlayed,
@@ -63,9 +45,7 @@ public class StandingsTableMapper {
                 .build();
     }
 
-    /**
-     * Converts an already-updated Partido into a match result response DTO.
-     */
+
     public RegisterMatchResultResponseDTO toRegisterMatchResultResponseDTO(Partido match) {
         String outcome;
         if (match.getGolesLocal() > match.getGolesVisitante()) {
@@ -90,10 +70,7 @@ public class StandingsTableMapper {
                 .build();
     }
 
-    /**
-     * Returns true if the match should be included in standings calculations.
-     * Only FINALIZADO (FINISHED) and EN_JUEGO (IN_PROGRESS) count.
-     */
+
     public boolean isMatchCountable(Partido match) {
         return match.getEstado() == MatchStatus.FINALIZADO
                 || match.getEstado() == MatchStatus.EN_JUEGO;

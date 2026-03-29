@@ -7,6 +7,7 @@ import edu.dosw.proyect.controllers.dtos.response.TeamStandingDTO;
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
 import edu.dosw.proyect.core.services.StandingsTableService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit tests for StandingsTableController.
- */
 @ExtendWith(MockitoExtension.class)
 class StandingsTableControllerTest {
 
@@ -53,9 +51,9 @@ class StandingsTableControllerTest {
 
         assertEquals(HttpStatus.OK, resp.getStatusCode());
         assertNotNull(resp.getBody());
-        assertEquals("HOME",      resp.getBody().getOutcome());
-        assertEquals("Alpha FC",  resp.getBody().getHomeTeam());
-        assertEquals(3,           resp.getBody().getHomeGoals());
+        assertEquals("HOME",     resp.getBody().getOutcome());
+        assertEquals("Alpha FC", resp.getBody().getHomeTeam());
+        assertEquals(3,          resp.getBody().getHomeGoals());
         verify(standingsTableService, times(1)).registerResult(eq(1L), any());
     }
 
@@ -144,15 +142,15 @@ class StandingsTableControllerTest {
 
         ResponseEntity<StandingsTableResponseDTO> resp = controller.getStandings("T-001");
 
-        assertEquals(HttpStatus.OK,    resp.getStatusCode());
+        assertEquals(HttpStatus.OK, resp.getStatusCode());
         assertNotNull(resp.getBody());
-        assertEquals("T-001",          resp.getBody().getTournamentId());
-        assertEquals(2,                resp.getBody().getTotalTeams());
-        assertEquals(2,                resp.getBody().getTotalMatchesPlayed());
-        assertEquals(2,                resp.getBody().getStandings().size());
-        assertEquals(1,                resp.getBody().getStandings().get(0).getPosition());
-        assertEquals(6,                resp.getBody().getStandings().get(0).getPoints());
-        assertEquals("Alpha FC",       resp.getBody().getStandings().get(0).getTeamName());
+        assertEquals("T-001",    resp.getBody().getTournamentId());
+        assertEquals(2,          resp.getBody().getTotalTeams());
+        assertEquals(2,          resp.getBody().getTotalMatchesPlayed());
+        assertEquals(2,          resp.getBody().getStandings().size());
+        assertEquals(1,          resp.getBody().getStandings().get(0).getPosition());
+        assertEquals(6,          resp.getBody().getStandings().get(0).getPoints());
+        assertEquals("Alpha FC", resp.getBody().getStandings().get(0).getTeamName());
     }
 
     @Test
