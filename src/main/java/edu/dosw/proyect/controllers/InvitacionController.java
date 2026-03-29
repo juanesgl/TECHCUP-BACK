@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/invitaciones")
+@RequestMapping("/api/invitaciones")
 @RequiredArgsConstructor
 @Tag(name = "Invitaciones", description = "Endpoints para la gestión de invitaciones a equipos")
 public class InvitacionController {

@@ -3,11 +3,8 @@ package edu.dosw.proyect.core.repositories;
 import edu.dosw.proyect.core.models.Partido;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -15,10 +12,6 @@ public class PartidoRepository {
 
     private final Map<Long, Partido> dataStore = new HashMap<>();
     private long currentId = 1;
-
-    public Optional<Partido> findById(Long id) {
-        return Optional.ofNullable(dataStore.get(id));
-    }
 
     public Partido save(Partido partido) {
         if (partido.getId() == null) {
@@ -28,13 +21,52 @@ public class PartidoRepository {
         return partido;
     }
 
+    public Optional<Partido> findById(Long id) {
+        return Optional.ofNullable(dataStore.get(id));
+    }
+
     public List<Partido> findAll() {
         return new ArrayList<>(dataStore.values());
     }
 
+    public List<Partido> findByFecha(LocalDate fecha) {
+        return dataStore.values().stream()
+                .filter(p -> fecha.equals(p.getFecha()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Partido> findByCancha(String cancha) {
+        return dataStore.values().stream()
+                .filter(p -> p.getCancha() != null &&
+                        p.getCancha().equalsIgnoreCase(cancha))
+                .collect(Collectors.toList());
+    }
+
+    public List<Partido> findByEquipo(String nombreEquipo) {
+        return dataStore.values().stream()
+                .filter(p ->
+                        (p.getNombreEquipoLocal() != null &&
+                                p.getNombreEquipoLocal().equalsIgnoreCase(nombreEquipo)) ||
+                                (p.getNombreEquipoVisitante() != null &&
+                                        p.getNombreEquipoVisitante().equalsIgnoreCase(nombreEquipo)))
+                .collect(Collectors.toList());
+    }
+
+    public List<Partido> findByTournamentId(String tournamentId) {
+        return dataStore.values().stream()
+                .filter(p -> p.getTorneo() != null &&
+                        tournamentId.equals(p.getTorneo().getTournId()))
+                .collect(Collectors.toList());
+    }
+
     public List<Partido> findByTorneo_TournId(String tournId) {
         return dataStore.values().stream()
-                .filter(p -> p.getTorneo() != null && tournId.equals(p.getTorneo().getTournId()))
+                .filter(p -> p.getTorneo() != null &&
+                        tournId.equals(p.getTorneo().getTournId()))
                 .collect(Collectors.toList());
+    }
+
+    public boolean existsById(Long id) {
+        return dataStore.containsKey(id);
     }
 }
