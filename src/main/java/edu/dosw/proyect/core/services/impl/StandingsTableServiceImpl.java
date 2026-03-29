@@ -22,17 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-/**
- * Implementation of the Automatic Standings Table service.
- *
- * Business rules enforced:
- * - Only FINISHED or IN_PROGRESS matches count towards the standings.
- * - Results cannot be registered for CANCELLED matches.
- * - Results cannot be registered for already FINISHED matches.
- * - Sorting: Points > Goal Difference > Goals Scored > Team Name
- * (alphabetical).
- * - If no matches have been played, an empty table with all zeros is returned.
- */
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -43,9 +33,6 @@ public class StandingsTableServiceImpl implements StandingsTableService {
     private final TournamentRepository tournamentRepository;
     private final StandingsTableMapper standingsMapper;
 
-    // ─────────────────────────────────────────────────────────────────
-    // REGISTER RESULT
-    // ─────────────────────────────────────────────────────────────────
 
     @Override
     public RegisterMatchResultResponseDTO registerResult(Long matchId,
@@ -63,7 +50,6 @@ public class StandingsTableServiceImpl implements StandingsTableService {
         match.setEstado(MatchStatus.FINALIZADO);
         matchRepository.save(match);
 
-        // PERSIST STATISTICS (Req-06)
         updateTeamStats(match);
 
         log.info("Result registered and stats updated: match {} → {}:{} (FINISHED)",
@@ -72,17 +58,21 @@ public class StandingsTableServiceImpl implements StandingsTableService {
         return standingsMapper.toRegisterMatchResultResponseDTO(match);
     }
 
+
     private void updateTeamStats(Partido match) {
         if (match.getTorneo() == null)
             return;
 
-        updateSingleTeamStats(match.getEquipoLocal(), match.getTorneo(), match.getGolesLocal(), match.getGolesVisitante());
-        updateSingleTeamStats(match.getEquipoVisitante(), match.getTorneo(), match.getGolesVisitante(),
-                match.getGolesLocal());
+        updateSingleTeamStats(match.getEquipoLocal(), match.getTorneo(),
+                match.getGolesLocal(), match.getGolesVisitante());
+        updateSingleTeamStats(match.getEquipoVisitante(), match.getTorneo(),
+                match.getGolesVisitante(), match.getGolesLocal());
     }
 
-    private void updateSingleTeamStats(Equipo team, Tournament tournament, int goalsFor, int goalsAgainst) {
-        EstadisticaEquipo stats = statsRepository.findByEquipoIdAndTorneoId(team.getId(), tournament.getId())
+    private void updateSingleTeamStats(Equipo team, Tournament tournament,
+            int goalsFor, int goalsAgainst) {
+        EstadisticaEquipo stats = statsRepository
+                .findByEquipoIdAndTorneoId(team.getId(), tournament.getId())
                 .orElseGet(() -> {
                     EstadisticaEquipo newStats = new EstadisticaEquipo();
                     newStats.setEquipo(team);
@@ -108,18 +98,17 @@ public class StandingsTableServiceImpl implements StandingsTableService {
         statsRepository.save(stats);
     }
 
-    // ─────────────────────────────────────────────────────────────────
-    // GET STANDINGS TABLE
-    // ─────────────────────────────────────────────────────────────────
 
     @Override
     public StandingsTableResponseDTO getStandings(String tournamentId) {
         log.info("Retrieving standings table for tournament: {}", tournamentId);
 
         Tournament tournament = tournamentRepository.findByTournId(tournamentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Tournament not found: " + tournamentId));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Tournament not found: " + tournamentId));
 
-        List<EstadisticaEquipo> allStats = statsRepository.findByTorneoIdOrderByPuntosDesc(tournament.getId());
+        List<EstadisticaEquipo> allStats =
+                statsRepository.findByTorneoIdOrderByPuntosDesc(tournament.getId());
 
         List<TeamStandingDTO> standings = new ArrayList<>();
         int position = 1;
@@ -151,11 +140,7 @@ public class StandingsTableServiceImpl implements StandingsTableService {
                 tournamentId, tournament.getName(), totalMatchesPlayed, standings);
     }
 
-    // ─────────────────────────────────────────────────────────────────
-    // PRIVATE HELPERS
-    // ─────────────────────────────────────────────────────────────────
 
-    /** Validates that a match can receive a new result. */
     private void validateMatchIsRegistrable(Partido match) {
         if (match.getEstado() == MatchStatus.CANCELADO) {
             throw new BusinessRuleException(
@@ -165,59 +150,5 @@ public class StandingsTableServiceImpl implements StandingsTableService {
             throw new BusinessRuleException(
                     "This match already has a registered result (status: FINISHED).");
         }
-    }
-
-    /** Stores the team name in the auxiliary map (without overwriting). */
-    private void storeTeamName(Map<Long, String> names, Equipo team) {
-        names.putIfAbsent(team.getId(),
-                team.getNombre() != null ? team.getNombre() : "Unnamed");
-    }
-
-    /** Gets or creates the stats array for a team: [MP, W, D, L, GF, GA]. */
-    private long[] statsFor(Map<Long, long[]> accumulator, Long teamId) {
-        return accumulator.computeIfAbsent(teamId, k -> new long[6]);
-    }
-
-    /**
-     * Converts the accumulator map into a sorted list of TeamStandingDTO.
-     * Sort order: Points DESC → GD DESC → GF DESC → Name ASC
-     */
-    private List<TeamStandingDTO> buildSortedStandings(Map<Long, long[]> accumulator,
-            Map<Long, String> names) {
-        List<TeamStandingDTO> list = new ArrayList<>();
-
-        for (Map.Entry<Long, long[]> entry : accumulator.entrySet()) {
-            Long id = entry.getKey();
-            long[] s = entry.getValue();
-            String name = names.getOrDefault(id, "Unknown");
-
-            list.add(standingsMapper.toTeamStandingDTO(
-                    0, id, name,
-                    (int) s[0], (int) s[1], (int) s[2],
-                    (int) s[3], (int) s[4], (int) s[5]));
-        }
-
-        list.sort(Comparator
-                .comparingInt(TeamStandingDTO::getPoints).reversed()
-                .thenComparingInt(TeamStandingDTO::getGoalDifference).reversed()
-                .thenComparingInt(TeamStandingDTO::getGoalsFor).reversed()
-                .thenComparing(TeamStandingDTO::getTeamName));
-
-        // Assign 1-based position numbers
-        for (int i = 0; i < list.size(); i++) {
-            list.get(i).setPosition(i + 1);
-        }
-        return list;
-    }
-
-    /** Attempts to resolve the tournament name from the available matches. */
-    private String resolveTournamentName(List<Partido> matches) {
-        return matches.stream()
-                .map(Partido::getTorneo)
-                .filter(Objects::nonNull)
-                .map(Tournament::getName)
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse("Tournament");
     }
 }
