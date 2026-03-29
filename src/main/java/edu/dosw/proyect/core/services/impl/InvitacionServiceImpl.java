@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.core.services.impl;
+package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.controllers.dtos.request.RespuestaInvitacionRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.InvitacionResponseDTO;
@@ -55,7 +55,21 @@ public class InvitacionServiceImpl implements InvitacionService {
         if (request.getRespuesta() == RespuestaInvitacion.ACEPTAR) {
             log.info("El jugador {} ha elegido ACEPTAR la invitaciÃ³n {}. Validando reglas de negocio...", jugadorId,
                     invitacionId);
+
+            if (jugador.isTieneEquipo()) {
+                invitacion.setEstado("RECHAZADA");
+                invitacionRepository.save(invitacion);
+                throw new BusinessRuleException(
+                        "Ya perteneces a un equipo de futbol, no puedes aceptar la invitaciÃ³n");
+            }
+
             invitacion.setEstado("ACEPTADA");
+            jugador.setTieneEquipo(true);
+            jugadorRepository.save(jugador);
+
+            if (jugador.getUsuario() != null) {
+                userRepository.save(jugador.getUsuario());
+            }
 
         } else {
             log.info("El jugador {} decidiÃ³ RECHAZAR la invitaciÃ³n {}.", jugadorId, invitacionId);
@@ -74,4 +88,3 @@ public class InvitacionServiceImpl implements InvitacionService {
         return invitacionMapper.toResponseDTO(invitacion, mensajeCapitan);
     }
 }
-

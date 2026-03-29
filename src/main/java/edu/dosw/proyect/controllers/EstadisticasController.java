@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.controllers;
+package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.response.EstadisticasTorneoDTO;
 import edu.dosw.proyect.core.services.EstadisticasService;

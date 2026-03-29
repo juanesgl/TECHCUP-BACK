@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.controllers;
+package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.request.RespuestaInvitacionRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.InvitacionResponseDTO;

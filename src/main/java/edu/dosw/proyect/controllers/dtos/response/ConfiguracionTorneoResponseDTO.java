@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.controllers.dtos.response;
+package edu.dosw.proyect.controllers.dtos.response;
 
 import edu.dosw.proyect.controllers.dtos.request.CanchaDTO;
 import java.time.LocalDate;

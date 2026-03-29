@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.core.models;
+package edu.dosw.proyect.core.models;
 
 import jakarta.persistence.*;
 import lombok.Data;

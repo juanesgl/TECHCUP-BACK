@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.core.models;
+package edu.dosw.proyect.core.models;
 
 import java.io.File;
 import java.util.List;
