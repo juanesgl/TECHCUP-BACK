@@ -1,4 +1,4 @@
-package edu.dosw.proyect.services;
+﻿package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.RegisterMatchResultRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterMatchResultResponseDTO;
@@ -57,7 +57,6 @@ class StandingsTableServiceImplTest {
         teamB = Equipo.builder().id(2L).nombre("Beta FC").build();
         teamC = Equipo.builder().id(3L).nombre("Cyber Sec").build();
     }
-
 
     @Test
     void registerResult_HomeWin_SetsFinishedAndReturnsHome() {
@@ -161,7 +160,6 @@ class StandingsTableServiceImplTest {
         assertEquals(16L, resp.getMatchId());
     }
 
-
     @Test
     void getStandings_NoMatches_ReturnsEmptyTable() {
         when(matchRepository.findByTorneo_TournId("T-001"))
@@ -197,7 +195,6 @@ class StandingsTableServiceImplTest {
         assertEquals(0, resp.getTotalMatchesPlayed());
         assertTrue(resp.getStandings().isEmpty());
     }
-
 
     @Test
     void getStandings_OneFinishedMatch_HomeWin_FullCalculation() {
@@ -285,7 +282,6 @@ class StandingsTableServiceImplTest {
         assertEquals(0,           standings.get(2).getPoints());
     }
 
-
     @Test
     void getStandings_SortedByPoints() {
         Partido p = matchWithGoals(1L, teamA, teamB, 0, 1, MatchStatus.FINALIZADO);
@@ -351,7 +347,6 @@ class StandingsTableServiceImplTest {
         }
     }
 
-
     @Test
     void getStandings_NullHomeTeam_MatchSkipped() {
         Partido p = new Partido();
@@ -416,7 +411,6 @@ class StandingsTableServiceImplTest {
         StandingsTableResponseDTO resp = service.getStandings("T-001");
         assertEquals("TechCup League", resp.getTournamentName());
     }
-
 
     private Partido match(Long id, Equipo home, Equipo away, MatchStatus status) {
         Partido p = new Partido();

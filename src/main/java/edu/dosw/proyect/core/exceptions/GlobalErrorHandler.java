@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.exceptions;
+﻿package edu.dosw.proyect.core.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,3 +50,4 @@ public class GlobalErrorHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
+

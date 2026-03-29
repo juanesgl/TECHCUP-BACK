@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.models;
+﻿package edu.dosw.proyect.core.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -7,10 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import java.time.LocalDateTime;
 
-/**
- * Entidad de usuario unified. Los roles se definen mediante el campo 'role'
- * mapeado al enum UserRole. Elimina la complejidad de herencia por roles.
- */
 @Entity
 @Table(name = "USUARIO", uniqueConstraints = @UniqueConstraint(columnNames = "correo"))
 @Data

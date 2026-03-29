@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.utils;
+﻿package edu.dosw.proyect.core.utils;
 
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.Graduate;
@@ -16,3 +16,4 @@ public class GraduateCreator extends UserCreator {
         return new Graduate(request.getName(), request.getEmail(), request.getPassword(), profile);
     }
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.utils;
+﻿package edu.dosw.proyect.core.utils;
 
 public class InstitutionalMailStrategy implements AuthStrategy {
     @Override
@@ -6,3 +6,4 @@ public class InstitutionalMailStrategy implements AuthStrategy {
         return email != null && email.endsWith("@mail.escuelaing.edu.co");
     }
 }
+

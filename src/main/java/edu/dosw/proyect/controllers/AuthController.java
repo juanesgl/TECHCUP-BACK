@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
 import edu.dosw.proyect.controllers.dtos.LoginResponseDTO;
@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "Autenticación", description = "Endpoints de control de acceso y login")
+@Tag(name = "AutenticaciÃ³n", description = "Endpoints de control de acceso y login")
 public class AuthController {
 
     private final AuthService authService;
@@ -22,7 +22,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @Operation(summary = "Iniciar Sesión", description = "Autentica con email y contraseña. Retorna la validez del intento.")
+    @Operation(summary = "Iniciar SesiÃ³n", description = "Autentica con email y contraseÃ±a. Retorna la validez del intento.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Login exitoso."),
             @ApiResponse(responseCode = "401", description = "Credenciales incorrectas o inexistentes."),
@@ -44,3 +44,4 @@ public class AuthController {
         }
     }
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.models;
+﻿package edu.dosw.proyect.core.models;
 
 import edu.dosw.proyect.core.models.enums.TournamentsStatus;
 import jakarta.persistence.*;
@@ -83,3 +83,4 @@ public class Tournament {
         this.regulation = regulation;
     }
 }
+

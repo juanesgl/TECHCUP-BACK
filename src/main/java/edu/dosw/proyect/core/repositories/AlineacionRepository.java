@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.repositories;
+﻿package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.Alineacion;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,3 +12,4 @@ public interface AlineacionRepository extends JpaRepository<Alineacion, Long> {
 
     List<Alineacion> findByEquipoId(Long equipoId);
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos.response;
+﻿package edu.dosw.proyect.controllers.dtos.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,3 +24,4 @@ public class PartidoResponseDTO {
     private String estado;
     private String tournamentId;
 }
+

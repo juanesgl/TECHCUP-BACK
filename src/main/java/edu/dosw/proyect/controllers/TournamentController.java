@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.core.exceptions.TournamentException;
 import edu.dosw.proyect.core.models.Tournament;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tournaments")
-@Tag(name = "Torneos", description = "Endpoints para la creación, inicio y finalización de los Torneos TechCup")
+@Tag(name = "Torneos", description = "Endpoints para la creaciÃ³n, inicio y finalizaciÃ³n de los Torneos TechCup")
 public class TournamentController {
 
     private final TournamentService tournamentService;
@@ -25,7 +25,7 @@ public class TournamentController {
         this.tournamentService = tournamentService;
     }
 
-    @Operation(summary = "Crear un nuevo torneo", description = "Instancia un torneo vacío con las reglas base requeridas")
+    @Operation(summary = "Crear un nuevo torneo", description = "Instancia un torneo vacÃ­o con las reglas base requeridas")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Torneo creado exitosamente")})
     @PostMapping
     public ResponseEntity<TournamentResponse> createTournament(@RequestBody TournamentRequest request) {
@@ -48,7 +48,7 @@ public class TournamentController {
         }
     }
 
-    @Operation(summary = "Finalizar un torneo", description = "Cierra el torneo actual tras la final y consolida métricas")
+    @Operation(summary = "Finalizar un torneo", description = "Cierra el torneo actual tras la final y consolida mÃ©tricas")
     @PutMapping("/{id}/finish")
     public ResponseEntity<?> finishTournament(@PathVariable String id) {
         try {

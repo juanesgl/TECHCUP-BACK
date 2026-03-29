@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.repositories;
+﻿package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.LlaveEliminatoria;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,3 +10,4 @@ import java.util.List;
 public interface LlaveEliminatoriaRepository extends JpaRepository<LlaveEliminatoria, Long> {
     List<LlaveEliminatoria> findByTorneoId(Long torneoId);
 }
+

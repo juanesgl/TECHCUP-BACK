@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.utils;
+﻿package edu.dosw.proyect.core.utils;
 
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.Professor;
@@ -16,3 +16,4 @@ public class ProfessorCreator extends UserCreator {
         return new Professor(request.getName(), request.getEmail(), request.getPassword(), profile);
     }
 }
+

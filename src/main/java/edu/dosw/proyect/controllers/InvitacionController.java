@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.request.RespuestaInvitacionRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.InvitacionResponseDTO;
@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/invitaciones")
 @RequiredArgsConstructor
-@Tag(name = "Invitaciones", description = "Endpoints para la gestión de invitaciones a equipos")
+@Tag(name = "Invitaciones", description = "Endpoints para la gestiÃ³n de invitaciones a equipos")
 public class InvitacionController {
 
     private final InvitacionService invitacionService;
 
-    @Operation(summary = "Responder a una invitación de equipo (Aceptar / Rechazar)")
+    @Operation(summary = "Responder a una invitaciÃ³n de equipo (Aceptar / Rechazar)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Respuesta procesada exitosamente."),
-            @ApiResponse(responseCode = "404", description = "El Jugador o la Invitación no existen en el sistema."),
-            @ApiResponse(responseCode = "409", description = "Violación de regla de negocio (Ej: Violación TH-01, ya perteneces a un equipo).")
+            @ApiResponse(responseCode = "404", description = "El Jugador o la InvitaciÃ³n no existen en el sistema."),
+            @ApiResponse(responseCode = "409", description = "ViolaciÃ³n de regla de negocio (Ej: ViolaciÃ³n TH-01, ya perteneces a un equipo).")
     })
     @PostMapping("/{invitacionId}/responder")
     public ResponseEntity<InvitacionResponseDTO> responderInvitacion(
@@ -36,3 +36,4 @@ public class InvitacionController {
         return ResponseEntity.ok(response);
     }
 }
+

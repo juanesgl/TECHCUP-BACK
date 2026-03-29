@@ -1,4 +1,4 @@
-package edu.dosw.proyect.services;
+﻿package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.core.repositories.TournamentRepository;
 import edu.dosw.proyect.core.services.impl.TournamentServiceImpl;
@@ -29,3 +29,4 @@ class TournamentServiceTest {
         assertNotNull(tournamentService);
     }
 }
+

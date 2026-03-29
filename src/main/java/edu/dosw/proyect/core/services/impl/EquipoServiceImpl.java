@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.services.impl;
+﻿package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.controllers.dtos.request.CrearEquipoRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.CrearEquipoResponseDTO;
@@ -33,15 +33,13 @@ public class EquipoServiceImpl implements EquipoService {
 
     @Override
     public CrearEquipoResponseDTO crearEquipo(Long capitanId, CrearEquipoRequestDTO request) {
-        log.info("Iniciando creación de equipo, solicitada por el jugador ID: {}", capitanId);
+        log.info("Iniciando creaciÃ³n de equipo, solicitada por el jugador ID: {}", capitanId);
 
         User capitan = userRepository.findById(capitanId)
-                .orElseThrow(() -> new ResourceNotFoundException("Capitán no encontrado en el sistema"));
-
-        // Verificar que el capitán no pertenece a otro equipo (validación simplificada)
+                .orElseThrow(() -> new ResourceNotFoundException("CapitÃ¡n no encontrado en el sistema"));
 
         if (equipoRepository.existsByNombre(request.getNombreEquipo())) {
-            log.warn("Violación TH-01: El nombre de equipo '{}' está registrado", request.getNombreEquipo());
+            log.warn("ViolaciÃ³n TH-01: El nombre de equipo '{}' estÃ¡ registrado", request.getNombreEquipo());
             throw new BusinessRuleException("Ya existe un equipo con ese nombre en el torneo");
         }
 
@@ -51,21 +49,20 @@ public class EquipoServiceImpl implements EquipoService {
         for (Long invitadoId : request.getJugadoresInvitadosIds()) {
             User invitado = userRepository.findById(invitadoId).orElse(null);
             if (invitado != null) {
-                // Simplificado: asumir que el jugador está disponible si existe en base de datos
                 integracionFinal.add(invitado);
-                notificaciones.add("Se enviará invitación correctamente al jugador " + invitado.getName());
+                notificaciones.add("Se enviarÃ¡ invitaciÃ³n correctamente al jugador " + invitado.getName());
 
             } else {
                 notificaciones
-                        .add("Advertencia: No se halló en base de datos al jugador con identificador " + invitadoId);
+                        .add("Advertencia: No se hallÃ³ en base de datos al jugador con identificador " + invitadoId);
             }
         }
 
         integracionFinal.add(capitan);
 
         if (integracionFinal.size() < 7) {
-            log.error("Violación TH-03 en validación de mínimo: total válidos es {}", integracionFinal.size());
-            throw new BusinessRuleException("error de validación de composición del equipo");
+            log.error("ViolaciÃ³n TH-03 en validaciÃ³n de mÃ­nimo: total vÃ¡lidos es {}", integracionFinal.size());
+            throw new BusinessRuleException("error de validaciÃ³n de composiciÃ³n del equipo");
         }
 
         long conteoCarrerasFoco = 0;
@@ -81,9 +78,9 @@ public class EquipoServiceImpl implements EquipoService {
 
         double indiceValido = (double) conteoCarrerasFoco / integracionFinal.size();
         if (indiceValido <= 0.5) {
-            log.error("Violación TH-03 en composición de carreras: {} validos de {} integrantes necesarios",
+            log.error("ViolaciÃ³n TH-03 en composiciÃ³n de carreras: {} validos de {} integrantes necesarios",
                     conteoCarrerasFoco, integracionFinal.size());
-            throw new BusinessRuleException("error de validación de composición del equipo");
+            throw new BusinessRuleException("error de validaciÃ³n de composiciÃ³n del equipo");
         }
 
         Equipo equipoArmado = Equipo.builder()
@@ -108,8 +105,9 @@ public class EquipoServiceImpl implements EquipoService {
         }
 
         
-        log.info("Creación existosa completada en el sistema para el equipo '{}'", equipoArmado.getNombre());
+        log.info("CreaciÃ³n existosa completada en el sistema para el equipo '{}'", equipoArmado.getNombre());
         return equipoMapper.toCrearEquipoResponseDTO(
                 "El equipo ha sido registrado exitosamente tras superar las reglas del torneo", notificaciones);
     }
 }
+

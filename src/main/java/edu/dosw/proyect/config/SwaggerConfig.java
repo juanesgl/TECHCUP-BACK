@@ -1,4 +1,4 @@
-package edu.dosw.proyect.config;
+﻿package edu.dosw.proyect.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

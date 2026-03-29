@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.services.authorization;
+﻿package edu.dosw.proyect.core.services.authorization;
 
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.models.User;
@@ -6,17 +6,11 @@ import edu.dosw.proyect.core.models.enums.UserRole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-/**
- * Validador centralizado de permisos y autorizaciones.
- * Encapsula toda la lógica de control de acceso basada en roles.
- */
 @Slf4j
 @Component
 public class AuthorizationValidator {
 
-    /**
-     * Valida que el usuario tenga un rol específico.
-     */
+    
     public void validateRole(User user, UserRole requiredRole) {
         if (user == null) {
             throw new BusinessRuleException("Usuario no encontrado");
@@ -24,16 +18,14 @@ public class AuthorizationValidator {
         
         UserRole userRole = UserRole.valueOf(user.getRole());
         if (!userRole.equals(requiredRole)) {
-            log.warn("Acceso denegado: usuario {} (rol: {}) intentó accesar recurso de {}", 
+            log.warn("Acceso denegado: usuario {} (rol: {}) intentÃ³ accesar recurso de {}", 
                     user.getId(), userRole, requiredRole);
             throw new BusinessRuleException(
-                    "Solo " + requiredRole.getDisplayName() + "s pueden realizar esta acción");
+                    "Solo " + requiredRole.getDisplayName() + "s pueden realizar esta acciÃ³n");
         }
     }
 
-    /**
-     * Valida que el usuario tenga el permiso específico.
-     */
+    
     public void validatePermission(User user, String permission) {
         if (user == null) {
             throw new BusinessRuleException("Usuario no encontrado");
@@ -48,9 +40,7 @@ public class AuthorizationValidator {
         }
     }
 
-    /**
-     * Valida que el usuario tenga uno de varios permisos.
-     */
+    
     public void validateAnyPermission(User user, String... permissions) {
         if (user == null) {
             throw new BusinessRuleException("Usuario no encontrado");
@@ -65,24 +55,20 @@ public class AuthorizationValidator {
         
         log.warn("Permisos denegados: usuario {} no tiene ninguno de los permisos requeridos", 
                 user.getId());
-        throw new BusinessRuleException("No tiene permisos suficientes para realizar esta acción");
+        throw new BusinessRuleException("No tiene permisos suficientes para realizar esta acciÃ³n");
     }
 
-    /**
-     * Valida que el usuario sea el propietario del recurso (para acciones personales).
-     */
+    
     public void validateOwnership(Long userId, Long resourceOwnerId) {
         if (!userId.equals(resourceOwnerId)) {
-            log.warn("Acceso denegado: usuario {} intentó acceder recurso de usuario {}", 
+            log.warn("Acceso denegado: usuario {} intentÃ³ acceder recurso de usuario {}", 
                     userId, resourceOwnerId);
             throw new BusinessRuleException(
                     "Solo puede acceder a sus propios recursos");
         }
     }
 
-    /**
-     * Obtiene el rol del usuario.
-     */
+    
     public UserRole getUserRole(User user) {
         if (user == null) {
             throw new BusinessRuleException("Usuario no encontrado");
@@ -90,7 +76,8 @@ public class AuthorizationValidator {
         try {
             return UserRole.valueOf(user.getRole());
         } catch (IllegalArgumentException e) {
-            throw new BusinessRuleException("Rol de usuario inválido: " + user.getRole());
+            throw new BusinessRuleException("Rol de usuario invÃ¡lido: " + user.getRole());
         }
     }
 }
+

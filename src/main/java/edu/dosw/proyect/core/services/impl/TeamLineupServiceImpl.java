@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.services.impl;
+﻿package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.controllers.dtos.request.SaveLineupRequestDTO;
 import edu.dosw.proyect.controllers.dtos.request.StarterEntryRequestDTO;
@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -43,16 +42,13 @@ public class TeamLineupServiceImpl implements TeamLineupService {
     private final TeamLineupMapper     lineupMapper;
     private final AuthorizationValidator authorizationValidator;
 
-
     @Override
     public TeamLineupResponseDTO saveLineup(Long captainId, SaveLineupRequestDTO request) {
         log.info("Captain {} saving lineup for team {} / match {}",
                 captainId, request.getTeamId(), request.getMatchId());
 
         User captain = userRepository.findById(captainId)
-                .orElseThrow(() -> new ResourceNotFoundException("Capitán no encontrado"));
-        
-        // Validar que el usuario sea capitán
+                .orElseThrow(() -> new ResourceNotFoundException("CapitÃ¡n no encontrado"));
         authorizationValidator.validatePermission(captain, "MANAGE_LINEUP");
 
         Equipo team  = resolveTeam(request.getTeamId());
@@ -75,12 +71,11 @@ public class TeamLineupServiceImpl implements TeamLineupService {
         lineup.setTeamName(team.getNombre());
         lineupRepository.save(lineup);
 
-        log.info("Lineup saved successfully — ID: {}", lineup.getId());
+        log.info("Lineup saved successfully â€” ID: {}", lineup.getId());
 
         return lineupMapper.toResponseDTO(lineup,
                 "Lineup saved successfully. Your team is ready for the match!");
     }
-
 
     @Override
     public TeamLineupResponseDTO updateLineup(Long captainId, Long lineupId,
@@ -88,7 +83,7 @@ public class TeamLineupServiceImpl implements TeamLineupService {
         log.info("Captain {} updating lineup ID: {}", captainId, lineupId);
 
         User captain = userRepository.findById(captainId)
-                .orElseThrow(() -> new ResourceNotFoundException("Capitán no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("CapitÃ¡n no encontrado"));
         
         authorizationValidator.validatePermission(captain, "MANAGE_LINEUP");
 
@@ -115,7 +110,6 @@ public class TeamLineupServiceImpl implements TeamLineupService {
                 "Lineup updated successfully. Changes saved correctly!");
     }
 
-
     @Override
     public TeamLineupResponseDTO getLineup(Long captainId, Long teamId, Long matchId) {
         log.info("Captain {} retrieving lineup for team {} / match {}", captainId, teamId, matchId);
@@ -135,7 +129,6 @@ public class TeamLineupServiceImpl implements TeamLineupService {
 
         return lineupMapper.toResponseDTO(lineup, "Lineup retrieved successfully.");
     }
-
 
     @Override
     public List<TeamLineupResponseDTO> getTeamLineups(Long captainId, Long teamId) {
@@ -162,13 +155,11 @@ public class TeamLineupServiceImpl implements TeamLineupService {
                 .collect(Collectors.toList());
     }
 
-
     private Equipo resolveTeam(Long teamId) {
         return equipoRepository.findById(teamId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Team not found with ID: " + teamId));
     }
-
 
     private Partido resolveScheduledMatch(Long matchId, Long teamId) {
         Partido match = matchRepository.findById(matchId)
@@ -200,7 +191,6 @@ public class TeamLineupServiceImpl implements TeamLineupService {
         }
     }
 
-
     private void validateStarterCount(List<StarterEntryRequestDTO> starters) {
         if (starters == null || starters.size() != REQUIRED_STARTERS) {
             throw new BusinessRuleException(
@@ -208,14 +198,12 @@ public class TeamLineupServiceImpl implements TeamLineupService {
         }
     }
 
-
     private void validateFormationSelected(SaveLineupRequestDTO request) {
         if (request.getFormation() == null) {
             throw new BusinessRuleException(
                     "A tactical formation must be selected.");
         }
     }
-
 
     private void validateFieldPositionsAssigned(List<StarterEntryRequestDTO> starters) {
         boolean anyMissingPosition = starters.stream()
@@ -225,7 +213,6 @@ public class TeamLineupServiceImpl implements TeamLineupService {
                     "Every starter player must have a field position assigned.");
         }
     }
-
 
     private void validateLineupNotLocked(TeamLineup lineup) {
         if (lineup.getStatus() == LineupStatus.LOCKED) {

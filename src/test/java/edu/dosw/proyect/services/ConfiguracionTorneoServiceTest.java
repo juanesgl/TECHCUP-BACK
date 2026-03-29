@@ -1,4 +1,4 @@
-package edu.dosw.proyect.services;
+﻿package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.request.CanchaDTO;
 import edu.dosw.proyect.controllers.dtos.request.ConfiguracionTorneoRequestDTO;
@@ -68,7 +68,7 @@ class ConfiguracionTorneoServiceTest {
         ConfiguracionTorneoResponseDTO response = service.configurarTorneo("T1", requestDto);
 
         assertNotNull(response);
-        assertEquals("Los parámetros fueron guardados de manera exitosa", response.getMessage());
+        assertEquals("Los parÃ¡metros fueron guardados de manera exitosa", response.getMessage());
         assertEquals("T1", response.getTournId());
         assertEquals(1, tournament.getCanchas().size());
         assertEquals("Reglamento Oficial", tournament.getRegulation());
@@ -82,7 +82,7 @@ class ConfiguracionTorneoServiceTest {
 
         BusinessRuleException ex = assertThrows(BusinessRuleException.class,
                 () -> service.configurarTorneo("T1", requestDto));
-        assertEquals("La configuración solo está permitida cuando el torneo está en estado Borrador o Activo.",
+        assertEquals("La configuraciÃ³n solo estÃ¡ permitida cuando el torneo estÃ¡ en estado Borrador o Activo.",
                 ex.getMessage());
     }
 
@@ -104,7 +104,8 @@ class ConfiguracionTorneoServiceTest {
 
         BusinessRuleException ex = assertThrows(BusinessRuleException.class,
                 () -> service.configurarTorneo("T1", requestDto));
-        assertEquals("La fecha de cierre de inscripciones debe ser anterior a la fecha de finalización del torneo.",
+        assertEquals("La fecha de cierre de inscripciones debe ser anterior a la fecha de finalizaciÃ³n del torneo.",
                 ex.getMessage());
     }
 }
+

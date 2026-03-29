@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.services;
+﻿package edu.dosw.proyect.core.services;
 
 import edu.dosw.proyect.controllers.dtos.response.EstadisticasEquipoDTO;
 import edu.dosw.proyect.controllers.dtos.response.EstadisticasJugadorDTO;
@@ -147,3 +147,4 @@ public class EstadisticasService {
                 .build());
     }
 }
+

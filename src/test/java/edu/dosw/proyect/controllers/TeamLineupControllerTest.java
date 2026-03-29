@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.request.SaveLineupRequestDTO;
 import edu.dosw.proyect.controllers.dtos.request.StarterEntryRequestDTO;
@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-
 @ExtendWith(MockitoExtension.class)
 class TeamLineupControllerTest {
 
@@ -49,7 +48,6 @@ class TeamLineupControllerTest {
     void setUp() {
         mockResponse = buildMockResponse("Lineup saved successfully. Your team is ready for the match!");
     }
-
 
     @Test
     void saveLineup_ValidRequest_Returns201() {
@@ -107,7 +105,6 @@ class TeamLineupControllerTest {
                 () -> controller.saveLineup(CAPTAIN_ID, validRequest()));
     }
 
-
     @Test
     void updateLineup_ValidRequest_Returns200() {
         TeamLineupResponseDTO updated =
@@ -145,7 +142,6 @@ class TeamLineupControllerTest {
         assertTrue(ex.getMessage().contains("already started"));
     }
 
-
     @Test
     void getLineup_ExistingLineup_Returns200() {
         when(teamLineupService.getLineup(CAPTAIN_ID, TEAM_ID, MATCH_ID))
@@ -171,7 +167,6 @@ class TeamLineupControllerTest {
 
         assertTrue(ex.getMessage().contains("no scheduled matches"));
     }
-
 
     @Test
     void getTeamLineups_WithLineups_Returns200() {
@@ -206,7 +201,6 @@ class TeamLineupControllerTest {
 
         verify(teamLineupService, times(1)).getTeamLineups(CAPTAIN_ID, TEAM_ID);
     }
-
 
     private TeamLineupResponseDTO buildMockResponse(String message) {
         List<StarterEntryResponseDTO> starters = new ArrayList<>();

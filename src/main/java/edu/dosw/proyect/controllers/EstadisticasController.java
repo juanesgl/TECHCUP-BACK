@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.response.EstadisticasTorneoDTO;
 import edu.dosw.proyect.core.services.EstadisticasService;
@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/estadisticas")
 @RequiredArgsConstructor
-@Tag(name = "Estadisticas", description = "Endpoints para consultar las estadísticas del torneo, equipos y jugadores")
+@Tag(name = "Estadisticas", description = "Endpoints para consultar las estadÃ­sticas del torneo, equipos y jugadores")
 public class EstadisticasController {
 
     private final EstadisticasService estadisticasService;
 
-    @Operation(summary = "Obtener todas las estadísticas de un torneo", description = "Devuelve la tabla de posiciones, goleadores y sanciones. Según el criterio de aceptación, si totalPartidosJugados es 0, el FrontEnd debe mostrar un mensaje informativo.")
+    @Operation(summary = "Obtener todas las estadÃ­sticas de un torneo", description = "Devuelve la tabla de posiciones, goleadores y sanciones. SegÃºn el criterio de aceptaciÃ³n, si totalPartidosJugados es 0, el FrontEnd debe mostrar un mensaje informativo.")
     @GetMapping("/torneo/{tournId}")
     public ResponseEntity<EstadisticasTorneoDTO> obtenerEstadisticasTorneo(@PathVariable String tournId) {
 
@@ -25,3 +25,4 @@ public class EstadisticasController {
         return ResponseEntity.ok(estadisticas);
     }
 }
+

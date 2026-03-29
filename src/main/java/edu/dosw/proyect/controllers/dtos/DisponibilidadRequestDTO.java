@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos;
+﻿package edu.dosw.proyect.controllers.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,3 +10,4 @@ import lombok.NoArgsConstructor;
 public class DisponibilidadRequestDTO {
     private Boolean estadoDisponibilidad;
 }
+

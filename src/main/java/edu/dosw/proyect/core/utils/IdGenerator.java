@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.utils;
+﻿package edu.dosw.proyect.core.utils;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class IdGenerator {
@@ -9,3 +9,4 @@ public class IdGenerator {
         return "TOURN-" + counter.getAndIncrement();
     }
 }
+

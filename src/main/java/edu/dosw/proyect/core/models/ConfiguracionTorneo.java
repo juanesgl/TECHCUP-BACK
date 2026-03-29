@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.models;
+﻿package edu.dosw.proyect.core.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,3 +33,4 @@ public class ConfiguracionTorneo {
     @Column(name = "fechas_importantes")
     private String fechasImportantes;
 }
+

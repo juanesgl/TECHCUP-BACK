@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.repositories;
+﻿package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.EstadisticaEquipo;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,3 +13,4 @@ public interface EstadisticaEquipoRepository extends JpaRepository<EstadisticaEq
 
     Optional<EstadisticaEquipo> findByEquipoIdAndTorneoId(Long equipoId, Long torneoId);
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.DisponibilidadRequestDTO;
 import edu.dosw.proyect.controllers.dtos.DisponibilidadResponseDTO;
@@ -19,11 +19,11 @@ public class JugadorController {
 
     private final JugadorService jugadorService;
 
-    @Operation(summary = "Actualizar disponibilidad de un jugador", description = "Permite a un jugador entrar o salir de la agencia libre para ser invitado a equipos, validando si su perfil está completo.")
+    @Operation(summary = "Actualizar disponibilidad de un jugador", description = "Permite a un jugador entrar o salir de la agencia libre para ser invitado a equipos, validando si su perfil estÃ¡ completo.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "El estado de disponibilidad ha sido modificado exitosamente."),
             @ApiResponse(responseCode = "404", description = "Identificador del jugador no encontrado en el sistema."),
-            @ApiResponse(responseCode = "409", description = "Violación de regla: El jugador ya tiene equipo o su perfil no cumple las condiciones.")
+            @ApiResponse(responseCode = "409", description = "ViolaciÃ³n de regla: El jugador ya tiene equipo o su perfil no cumple las condiciones.")
     })
     @PutMapping("/{id}/disponibilidad")
     public ResponseEntity<DisponibilidadResponseDTO> actualizarDisponibilidad(
@@ -34,3 +34,4 @@ public class JugadorController {
         return ResponseEntity.ok(response);
     }
 }
+

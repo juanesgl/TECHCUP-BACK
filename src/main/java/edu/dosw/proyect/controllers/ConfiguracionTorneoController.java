@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.request.ConfiguracionTorneoRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.ConfiguracionTorneoResponseDTO;
@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/torneos")
 @RequiredArgsConstructor
-@Tag(name = "Configuración de Torneo", description = "Endpoints para la gestión de las reglas, canchas y fechas del torneo")
+@Tag(name = "ConfiguraciÃ³n de Torneo", description = "Endpoints para la gestiÃ³n de las reglas, canchas y fechas del torneo")
 public class ConfiguracionTorneoController {
 
     private final ConfiguracionTorneoService configuracionService;
 
     @PutMapping("/{tournId}/configuracion")
-    @Operation(summary = "Configurar parámetros del torneo", description = "Permite al organizador definir canchas, cierre de inscripciones, reglas y fechas importantes.")
+    @Operation(summary = "Configurar parÃ¡metros del torneo", description = "Permite al organizador definir canchas, cierre de inscripciones, reglas y fechas importantes.")
     public ResponseEntity<ConfiguracionTorneoResponseDTO> configurarTorneo(
             @PathVariable String tournId,
             @Valid @RequestBody ConfiguracionTorneoRequestDTO configDto) {
@@ -28,3 +28,4 @@ public class ConfiguracionTorneoController {
         return ResponseEntity.ok(response);
     }
 }
+

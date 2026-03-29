@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos;
+﻿package edu.dosw.proyect.controllers.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,3 +12,4 @@ public class PlayerResponse {
     private String position;
     private Integer age;
 }
+

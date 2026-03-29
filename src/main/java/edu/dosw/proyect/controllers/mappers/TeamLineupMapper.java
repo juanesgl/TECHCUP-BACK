@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.mappers;
+﻿package edu.dosw.proyect.controllers.mappers;
 
 import edu.dosw.proyect.controllers.dtos.request.SaveLineupRequestDTO;
 import edu.dosw.proyect.controllers.dtos.request.StarterEntryRequestDTO;
@@ -15,10 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 @Component
 public class TeamLineupMapper {
-
 
     public TeamLineup toNewTeamLineup(SaveLineupRequestDTO request,
                                       Long captainId,
@@ -40,7 +38,6 @@ public class TeamLineupMapper {
                 .build();
     }
 
-
     public void applyUpdate(TeamLineup existing,
                             SaveLineupRequestDTO request,
                             Map<Long, User> playerMap) {
@@ -52,7 +49,6 @@ public class TeamLineupMapper {
         existing.setStatus(LineupStatus.SAVED);
         existing.setUpdatedAt(LocalDateTime.now());
     }
-
 
     public TeamLineupResponseDTO toResponseDTO(TeamLineup lineup, String message) {
         List<StarterEntryResponseDTO> starterDTOs = lineup.getStarters().stream()
@@ -78,7 +74,6 @@ public class TeamLineupMapper {
                 .message(message)
                 .build();
     }
-
 
     private List<StarterEntry> buildStarters(List<StarterEntryRequestDTO> requests,
                                              Map<Long, User> playerMap) {

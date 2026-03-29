@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos.request;
+﻿package edu.dosw.proyect.controllers.dtos.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +11,7 @@ import java.util.List;
 public class CrearEquipoRequestDTO {
     
     @NotBlank(message = "El nombre del equipo es obligatorio")
-    @Size(max = 60, message = "El nombre del equipo no puede tener más de 60 caracteres")
+    @Size(max = 60, message = "El nombre del equipo no puede tener mÃ¡s de 60 caracteres")
     private String nombreEquipo;
     
     private String escudo;
@@ -22,3 +22,4 @@ public class CrearEquipoRequestDTO {
     @Size(min = 6, max = 11, message = "Debes invitar entre 6 y 11 jugadores")
     private List<Long> jugadoresInvitadosIds;
 }
+

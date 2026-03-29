@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos.request;
+﻿package edu.dosw.proyect.controllers.dtos.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -29,5 +29,6 @@ public class ConfiguracionTorneoRequestDTO {
     private String regulation;
 
     @NotNull(message = "El organizador ID es obligatorio")
-    private Long organizerId; // Simulando autorizacion via parametro
+    private Long organizerId; 
 }
+

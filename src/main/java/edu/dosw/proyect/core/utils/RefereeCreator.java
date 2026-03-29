@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.utils;
+﻿package edu.dosw.proyect.core.utils;
 
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.Referee;
@@ -14,3 +14,4 @@ public class RefereeCreator extends UserCreator {
         return new Referee(request.getName(), request.getEmail(), request.getPassword());
     }
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.models;
+﻿package edu.dosw.proyect.core.models;
 
 import edu.dosw.proyect.core.models.enums.LineupStatus;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Data
 @Builder

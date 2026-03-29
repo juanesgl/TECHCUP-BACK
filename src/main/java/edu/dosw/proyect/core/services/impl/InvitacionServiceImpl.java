@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.services.impl;
+﻿package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.controllers.dtos.request.RespuestaInvitacionRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.InvitacionResponseDTO;
@@ -30,37 +30,35 @@ public class InvitacionServiceImpl implements InvitacionService {
     @Override
     public InvitacionResponseDTO responderInvitacion(Long jugadorId, Long invitacionId,
             RespuestaInvitacionRequestDTO request) {
-        log.info("Iniciando procesamiento de respuesta: Jugador {} responde {} a la invitación {}", jugadorId,
+        log.info("Iniciando procesamiento de respuesta: Jugador {} responde {} a la invitaciÃ³n {}", jugadorId,
                 request.getRespuesta(), invitacionId);
 
         if (request.getRespuesta() == null) {
-            log.warn("La petición recibida no contiene una respuesta válida.");
-            throw new BusinessRuleException("La respuesta a la invitación es obligatoria");
+            log.warn("La peticiÃ³n recibida no contiene una respuesta vÃ¡lida.");
+            throw new BusinessRuleException("La respuesta a la invitaciÃ³n es obligatoria");
         }
 
         Jugador jugador = jugadorRepository.findById(jugadorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Jugador no encontrado"));
 
         Invitacion invitacion = invitacionRepository.findById(invitacionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Invitación no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("InvitaciÃ³n no encontrada"));
 
         if (!invitacion.getJugadorInvitado().getId().equals(jugadorId)) {
-            throw new BusinessRuleException("La invitación no pertenece a este jugador");
+            throw new BusinessRuleException("La invitaciÃ³n no pertenece a este jugador");
         }
 
         if (!"PENDIENTE".equals(invitacion.getEstado())) {
-            throw new BusinessRuleException("La invitación ya fue " + invitacion.getEstado());
+            throw new BusinessRuleException("La invitaciÃ³n ya fue " + invitacion.getEstado());
         }
 
         if (request.getRespuesta() == RespuestaInvitacion.ACEPTAR) {
-            log.info("El jugador {} ha elegido ACEPTAR la invitación {}. Validando reglas de negocio...", jugadorId,
+            log.info("El jugador {} ha elegido ACEPTAR la invitaciÃ³n {}. Validando reglas de negocio...", jugadorId,
                     invitacionId);
-            
-            // Simplificado: validación de equipo sin SportProfile
             invitacion.setEstado("ACEPTADA");
 
         } else {
-            log.info("El jugador {} decidió RECHAZAR la invitación {}.", jugadorId, invitacionId);
+            log.info("El jugador {} decidiÃ³ RECHAZAR la invitaciÃ³n {}.", jugadorId, invitacionId);
             invitacion.setEstado("RECHAZADA");
         }
 
@@ -68,11 +66,12 @@ public class InvitacionServiceImpl implements InvitacionService {
 
         String nombreJugador = jugador.getUsuario() != null ? jugador.getUsuario().getName() : jugador.getNombre();
         String mensajeCapitan = request.getRespuesta() == RespuestaInvitacion.ACEPTAR
-                ? "El jugador " + nombreJugador + " ha aceptado tu invitación."
-                : "El jugador " + nombreJugador + " ha rechazado tu invitación.";
+                ? "El jugador " + nombreJugador + " ha aceptado tu invitaciÃ³n."
+                : "El jugador " + nombreJugador + " ha rechazado tu invitaciÃ³n.";
 
-        log.info("Invitación {} procesada exitosamente. Estado final: {}", invitacionId, invitacion.getEstado());
+        log.info("InvitaciÃ³n {} procesada exitosamente. Estado final: {}", invitacionId, invitacion.getEstado());
 
         return invitacionMapper.toResponseDTO(invitacion, mensajeCapitan);
     }
 }
+

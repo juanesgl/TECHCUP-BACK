@@ -1,4 +1,4 @@
-package edu.dosw.proyect.services;
+﻿package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
 import edu.dosw.proyect.controllers.dtos.LoginResponseDTO;
@@ -62,7 +62,7 @@ class AuthServiceTest {
 
         assertNotNull(response);
         assertTrue(response.isSuccess());
-        assertEquals("Inicio de sesión exitoso", response.getMessage());
+        assertEquals("Inicio de sesiÃ³n exitoso", response.getMessage());
         assertNotNull(response.getToken());
     }
 
@@ -90,7 +90,7 @@ class AuthServiceTest {
 
         assertNotNull(response);
         assertTrue(response.isSuccess());
-        assertEquals("Inicio de sesión exitoso", response.getMessage());
+        assertEquals("Inicio de sesiÃ³n exitoso", response.getMessage());
         assertNotNull(response.getToken());
     }
 
@@ -106,7 +106,7 @@ class AuthServiceTest {
 
         assertNotNull(response);
         assertFalse(response.isSuccess());
-        assertEquals("Credenciales inválidas", response.getMessage());
+        assertEquals("Credenciales invÃ¡lidas", response.getMessage());
         assertNull(response.getToken());
     }
 
@@ -121,3 +121,4 @@ class AuthServiceTest {
         assertTrue(exception.getMessage().contains("requeridos"));
     }
 }
+

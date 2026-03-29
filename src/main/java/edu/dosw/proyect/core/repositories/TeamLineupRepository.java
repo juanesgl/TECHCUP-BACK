@@ -1,11 +1,10 @@
-package edu.dosw.proyect.core.repositories;
+﻿package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.TeamLineup;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 @Repository
 public class TeamLineupRepository {

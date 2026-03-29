@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos.request;
+﻿package edu.dosw.proyect.controllers.dtos.request;
 
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
 import jakarta.validation.Valid;
@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
 
 @Data
 @NoArgsConstructor
@@ -29,7 +28,6 @@ public class SaveLineupRequestDTO {
     @Size(min = 7, max = 7, message = "You must select exactly 7 starter players")
     @Valid
     private List<StarterEntryRequestDTO> starters;
-
 
     private List<Long> reserveIds;
 }

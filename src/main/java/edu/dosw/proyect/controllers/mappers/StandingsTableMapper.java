@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.mappers;
+﻿package edu.dosw.proyect.controllers.mappers;
 
 import edu.dosw.proyect.controllers.dtos.response.RegisterMatchResultResponseDTO;
 import edu.dosw.proyect.controllers.dtos.response.StandingsTableResponseDTO;
@@ -9,10 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
 @Component
 public class StandingsTableMapper {
-
 
     public TeamStandingDTO toTeamStandingDTO(int position, Long teamId, String teamName,
                                              int mp, int w, int d, int l, int gf, int ga) {
@@ -31,7 +29,6 @@ public class StandingsTableMapper {
                 .build();
     }
 
-
     public StandingsTableResponseDTO toStandingsTableResponseDTO(String tournamentId,
                                                                  String tournamentName,
                                                                  int totalMatchesPlayed,
@@ -44,7 +41,6 @@ public class StandingsTableMapper {
                 .standings(standings)
                 .build();
     }
-
 
     public RegisterMatchResultResponseDTO toRegisterMatchResultResponseDTO(Partido match) {
         String outcome;
@@ -69,7 +65,6 @@ public class StandingsTableMapper {
                 .message("Result registered successfully. The standings table has been updated.")
                 .build();
     }
-
 
     public boolean isMatchCountable(Partido match) {
         return match.getEstado() == MatchStatus.FINALIZADO

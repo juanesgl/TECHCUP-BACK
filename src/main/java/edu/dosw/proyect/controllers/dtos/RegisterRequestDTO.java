@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos;
+﻿package edu.dosw.proyect.controllers.dtos;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,3 +15,4 @@ public class RegisterRequestDTO {
     private String preferredPosition;
     private int skillLevel;
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.repositories;
+﻿package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.AlineacionJugador;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,3 +10,4 @@ import java.util.List;
 public interface AlineacionJugadorRepository extends JpaRepository<AlineacionJugador, Long> {
     List<AlineacionJugador> findByAlineacionId(Long alineacionId);
 }
+

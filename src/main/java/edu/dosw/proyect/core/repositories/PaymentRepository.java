@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.repositories;
+﻿package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,3 +13,4 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByTournamentId(Long tournamentId);
     Optional<Payment> findByIdAndUserId(Long id, Long userId);
 }
+

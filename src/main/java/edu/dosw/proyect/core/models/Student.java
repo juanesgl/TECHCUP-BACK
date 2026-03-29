@@ -1,14 +1,10 @@
-package edu.dosw.proyect.core.models;
+﻿package edu.dosw.proyect.core.models;
 
 import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/**
- * @deprecated Use User entity directly with role="PLAYER"
- * Esta clase se mantiene por compatibilidad con BD pero no debe usarse en nuevas funcionalidades
- */
 @Data
 @Entity
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.models;
+﻿package edu.dosw.proyect.core.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,3 +34,4 @@ public class Cancha {
         this.direccion = ubicacion;
     }
 }
+

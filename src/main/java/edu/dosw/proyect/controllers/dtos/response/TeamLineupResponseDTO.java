@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos.response;
+﻿package edu.dosw.proyect.controllers.dtos.response;
 
 import edu.dosw.proyect.core.models.enums.LineupStatus;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 @Data
 @Builder

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos.response;
+﻿package edu.dosw.proyect.controllers.dtos.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -107,3 +107,4 @@ public class EstadisticasTorneoDTO {
         }
     }
 }
+

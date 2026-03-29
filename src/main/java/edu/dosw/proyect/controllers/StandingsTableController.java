@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.RegisterMatchResultRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterMatchResultResponseDTO;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 @Slf4j
 @RestController
@@ -44,7 +43,7 @@ public class StandingsTableController {
             @PathVariable Long matchId,
             @Valid @RequestBody RegisterMatchResultRequestDTO request) {
 
-        log.info("Register result request — match ID: {}", matchId);
+        log.info("Register result request â€” match ID: {}", matchId);
         RegisterMatchResultResponseDTO response =
                 standingsTableService.registerResult(matchId, request);
         return ResponseEntity.ok(response);
@@ -56,7 +55,7 @@ public class StandingsTableController {
             description = "Calculates and returns the current standings table for a tournament. "
                     + "Only FINISHED or IN_PROGRESS matches are counted. "
                     + "If no matches have been played yet, returns a table with all values at 0. "
-                    + "Sorting order: Points → Goal Difference → Goals Scored → Team Name."
+                    + "Sorting order: Points â†’ Goal Difference â†’ Goals Scored â†’ Team Name."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -68,7 +67,7 @@ public class StandingsTableController {
     public ResponseEntity<StandingsTableResponseDTO> getStandings(
             @PathVariable String tournamentId) {
 
-        log.info("Standings request — tournament: {}", tournamentId);
+        log.info("Standings request â€” tournament: {}", tournamentId);
         StandingsTableResponseDTO response =
                 standingsTableService.getStandings(tournamentId);
         return ResponseEntity.ok(response);
