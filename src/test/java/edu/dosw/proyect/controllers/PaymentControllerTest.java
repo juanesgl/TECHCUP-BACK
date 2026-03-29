@@ -64,7 +64,6 @@ class PaymentControllerTest {
                 () -> paymentController.updateStatus(request));
     }
 
-    // ❌ Error - pago no encontrado
     @Test
     void updateStatus_PagoNoEncontrado_LanzaExcepcion() {
         PaymentStatusRequest request = new PaymentStatusRequest();

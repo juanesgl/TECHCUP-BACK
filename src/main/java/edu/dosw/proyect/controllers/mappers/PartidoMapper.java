@@ -19,7 +19,7 @@ public class PartidoMapper {
                 .cancha(partido.getCancha())
                 .arbitro(partido.getArbitro())
                 .estado(partido.getEstado().name())
-                .tournamentId(partido.getTournamentId())
+                .tournamentId(partido.getTorneo() != null ? partido.getTorneo().getTournId() : null)
                 .build();
     }
 

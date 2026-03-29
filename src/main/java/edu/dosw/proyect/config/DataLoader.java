@@ -1,13 +1,11 @@
 package edu.dosw.proyect.config;
 
-import edu.dosw.proyect.core.models.Student;
-import edu.dosw.proyect.core.models.SportProfile;
-import edu.dosw.proyect.core.models.Jugador;
-import edu.dosw.proyect.core.models.Partido;
-import edu.dosw.proyect.core.models.enums.EstadoPartido;
-import edu.dosw.proyect.core.repositories.UserRepository;
+import edu.dosw.proyect.core.models.*;
+import edu.dosw.proyect.core.models.enums.MatchStatus;
+import edu.dosw.proyect.core.models.enums.TournamentsStatus;
 import edu.dosw.proyect.core.repositories.JugadorRepository;
 import edu.dosw.proyect.core.repositories.PartidoRepository;
+import edu.dosw.proyect.core.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -51,41 +49,96 @@ public class DataLoader implements CommandLineRunner {
             jugadorRepository.save(j);
         }
 
-        log.info("7 jugadores creados. Usa los IDs retornados por /api/users/register para pruebas.");
+        log.info("7 jugadores creados correctamente.");
+
+        log.info("Creando torneo de prueba...");
+
+        Tournament torneoBase = new Tournament(
+                "TOURN-1",
+                "TechCup 2026",
+                LocalDate.now(),
+                LocalDate.now().plusMonths(2),
+                8,
+                50000,
+                TournamentsStatus.IN_PROGRESS,
+                "Reglamento general TechCup"
+        );
+
+        log.info("Creando equipos de prueba...");
+
+        Equipo equipoAlpha = Equipo.builder()
+                .id(1L)
+                .nombre("Equipo Alpha")
+                .escudo("alpha.png")
+                .coloresUniforme("Rojo y Blanco")
+                .build();
+
+        Equipo equipoBeta = Equipo.builder()
+                .id(2L)
+                .nombre("Equipo Beta")
+                .escudo("beta.png")
+                .coloresUniforme("Azul y Negro")
+                .build();
+
+        Equipo equipoGamma = Equipo.builder()
+                .id(3L)
+                .nombre("Equipo Gamma")
+                .escudo("gamma.png")
+                .coloresUniforme("Verde y Blanco")
+                .build();
+
+        Equipo equipoDelta = Equipo.builder()
+                .id(4L)
+                .nombre("Equipo Delta")
+                .escudo("delta.png")
+                .coloresUniforme("Amarillo y Negro")
+                .build();
 
         log.info("Creando partidos de prueba...");
 
         Partido p1 = Partido.builder()
+                .torneo(torneoBase)
+                .equipoLocal(equipoAlpha)
+                .equipoVisitante(equipoBeta)
                 .nombreEquipoLocal("Equipo Alpha")
                 .nombreEquipoVisitante("Equipo Beta")
                 .fecha(LocalDate.now().plusDays(3))
                 .hora(LocalTime.of(10, 0))
                 .cancha("Cancha Principal")
                 .arbitro("Carlos Medina")
-                .estado(EstadoPartido.PROGRAMADO)
-                .tournamentId("TOURN-1")
+                .estado(MatchStatus.PROGRAMADO)
+                .golesLocal(0)
+                .golesVisitante(0)
                 .build();
 
         Partido p2 = Partido.builder()
+                .torneo(torneoBase)
+                .equipoLocal(equipoGamma)
+                .equipoVisitante(equipoDelta)
                 .nombreEquipoLocal("Equipo Gamma")
                 .nombreEquipoVisitante("Equipo Delta")
                 .fecha(LocalDate.now().plusDays(5))
                 .hora(LocalTime.of(14, 0))
                 .cancha("Cancha Norte")
                 .arbitro("Luis Torres")
-                .estado(EstadoPartido.PROGRAMADO)
-                .tournamentId("TOURN-1")
+                .estado(MatchStatus.PROGRAMADO)
+                .golesLocal(0)
+                .golesVisitante(0)
                 .build();
 
         Partido p3 = Partido.builder()
+                .torneo(torneoBase)
+                .equipoLocal(equipoAlpha)
+                .equipoVisitante(equipoGamma)
                 .nombreEquipoLocal("Equipo Alpha")
                 .nombreEquipoVisitante("Equipo Gamma")
                 .fecha(LocalDate.now().plusDays(7))
                 .hora(LocalTime.of(16, 0))
                 .cancha("Cancha Principal")
                 .arbitro("Ana Rios")
-                .estado(EstadoPartido.PROGRAMADO)
-                .tournamentId("TOURN-1")
+                .estado(MatchStatus.PROGRAMADO)
+                .golesLocal(0)
+                .golesVisitante(0)
                 .build();
 
         partidoRepository.save(p1);

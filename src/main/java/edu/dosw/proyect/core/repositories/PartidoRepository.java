@@ -10,13 +10,12 @@ import java.util.stream.Collectors;
 @Repository
 public class PartidoRepository {
 
-    private final Map<Long, Partido> dataStore = new HashMap<Long, Partido>();
-    private long contador = 1L;
-
+    private final Map<Long, Partido> dataStore = new HashMap<>();
+    private long currentId = 1;
 
     public Partido save(Partido partido) {
         if (partido.getId() == null) {
-            partido.setId(contador++);
+            partido.setId(currentId++);
         }
         dataStore.put(partido.getId(), partido);
         return partido;
@@ -27,7 +26,7 @@ public class PartidoRepository {
     }
 
     public List<Partido> findAll() {
-        return new ArrayList<Partido>(dataStore.values());
+        return new ArrayList<>(dataStore.values());
     }
 
     public List<Partido> findByFecha(LocalDate fecha) {
@@ -38,22 +37,32 @@ public class PartidoRepository {
 
     public List<Partido> findByCancha(String cancha) {
         return dataStore.values().stream()
-                .filter(p -> p.getCancha() != null && p.getCancha().equalsIgnoreCase(cancha))
+                .filter(p -> p.getCancha() != null &&
+                        p.getCancha().equalsIgnoreCase(cancha))
                 .collect(Collectors.toList());
     }
 
     public List<Partido> findByEquipo(String nombreEquipo) {
         return dataStore.values().stream()
-                .filter(p -> (p.getNombreEquipoLocal() != null &&
-                        p.getNombreEquipoLocal().equalsIgnoreCase(nombreEquipo)) ||
-                        (p.getNombreEquipoVisitante() != null &&
-                                p.getNombreEquipoVisitante().equalsIgnoreCase(nombreEquipo)))
+                .filter(p ->
+                        (p.getNombreEquipoLocal() != null &&
+                                p.getNombreEquipoLocal().equalsIgnoreCase(nombreEquipo)) ||
+                                (p.getNombreEquipoVisitante() != null &&
+                                        p.getNombreEquipoVisitante().equalsIgnoreCase(nombreEquipo)))
                 .collect(Collectors.toList());
     }
 
     public List<Partido> findByTournamentId(String tournamentId) {
         return dataStore.values().stream()
-                .filter(p -> tournamentId.equals(p.getTournamentId()))
+                .filter(p -> p.getTorneo() != null &&
+                        tournamentId.equals(p.getTorneo().getTournId()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Partido> findByTorneo_TournId(String tournId) {
+        return dataStore.values().stream()
+                .filter(p -> p.getTorneo() != null &&
+                        tournId.equals(p.getTorneo().getTournId()))
                 .collect(Collectors.toList());
     }
 

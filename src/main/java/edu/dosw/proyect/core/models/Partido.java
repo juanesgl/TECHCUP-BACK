@@ -1,6 +1,6 @@
 package edu.dosw.proyect.core.models;
 
-import edu.dosw.proyect.core.models.enums.EstadoPartido;
+import edu.dosw.proyect.core.models.enums.MatchStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,14 +16,20 @@ import java.time.LocalTime;
 public class Partido {
 
     private Long id;
-    private String equipoLocalId;
-    private String equipoVisitanteId;
+    private Tournament torneo;
+    private Equipo equipoLocal;
+    private Equipo equipoVisitante;
+
     private String nombreEquipoLocal;
     private String nombreEquipoVisitante;
     private LocalDate fecha;
     private LocalTime hora;
+
     private String cancha;
     private String arbitro;
-    private EstadoPartido estado;
-    private String tournamentId;
+
+    private MatchStatus estado;
+
+    private int golesLocal;
+    private int golesVisitante;
 }
