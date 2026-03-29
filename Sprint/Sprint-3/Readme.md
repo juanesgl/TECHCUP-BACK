@@ -10,8 +10,19 @@
 | Isaac David Burgos | Lider   |
 | Laura Valentina Santiago | Backend |
 
+### Objetivo del Sprint
+Elevar el sistema TechCup a un nivel de producción real implementando las funcionalidades core del torneo: configuración de torneos, gestión y consulta de alineaciones, consulta de partidos, tabla de posiciones automática y estadísticas. Adicionalmente, migrar la persistencia de memoria a base de datos relacional, blindar la API con seguridad 
+### Historias incluidas
 
-### Consultar partido
+- TC-14 Configurar torneo
+- TC-15 Gestión de alineaciones del equipo
+- TC-16 Consultar alineación rival
+- TC-18 Consultar partidos
+- TC-19 Tabla de posiciones automática
+- TC-21 Estadísticas del torneo
+- Implementación del Diagrama de Entidad-Relación
+-  Persistencia 
+- Seguridad 
 
 #### Swagger
 

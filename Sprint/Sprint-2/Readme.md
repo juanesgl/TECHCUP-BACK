@@ -10,6 +10,16 @@
 | Isaac David Burgos       | Backend |
 | Laura Valentina Santiago | Backend |
 
+
+### Historias incluidas
+
+- Gestion de disponibilidad
+- Recibir y responder invitaciones de equipo
+- crear y gestionar equipo
+- Subir comprobante de pago
+- Busqueda de jugadores por filtro
+- Cambiar estado de pago
+
 ## Pruebas en postman
 
 ### POST/payments/upload
