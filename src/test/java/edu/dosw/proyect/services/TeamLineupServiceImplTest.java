@@ -1,5 +1,4 @@
-package edu.dosw.proyect.services;
-
+﻿package edu.dosw.proyect.services;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +8,7 @@ class TeamLineupServiceImplTest {
 
     @Test
     void placeholderTest() {
-        // Placeholder test
         assertTrue(true);
     }
 }
+

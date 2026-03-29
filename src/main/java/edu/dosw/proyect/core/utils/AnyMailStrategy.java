@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.utils;
+﻿package edu.dosw.proyect.core.utils;
 
 public class AnyMailStrategy implements AuthStrategy {
     @Override
@@ -6,3 +6,4 @@ public class AnyMailStrategy implements AuthStrategy {
         return email != null && email.contains("@") && email.contains(".");
     }
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.services;
+﻿package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.PlayerFilterRequest;
 import edu.dosw.proyect.controllers.dtos.PlayerResponse;
@@ -22,9 +22,6 @@ class PlayerServiceTest {
     void setUp() {
         jugadorRepository = mock(JugadorRepository.class);
         playerService = new PlayerService(jugadorRepository);
-
-        // Mock default behavior for filterPlayers to avoid BusinessException mock
-        // issues
         lenient().when(jugadorRepository.filterPlayers(any(), any(), any(), any(), any()))
                 .thenReturn(java.util.Collections.emptyList());
     }

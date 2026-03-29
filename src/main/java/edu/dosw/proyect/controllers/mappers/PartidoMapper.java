@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.mappers;
+﻿package edu.dosw.proyect.controllers.mappers;
 
 import edu.dosw.proyect.controllers.dtos.response.PartidoResponseDTO;
 import edu.dosw.proyect.core.models.Partido;
@@ -30,3 +30,4 @@ public class PartidoMapper {
                 .collect(Collectors.toList());
     }
 }
+

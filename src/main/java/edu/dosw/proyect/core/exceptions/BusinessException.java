@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.exceptions;
+﻿package edu.dosw.proyect.core.exceptions;
 
 public class BusinessException extends RuntimeException {
 

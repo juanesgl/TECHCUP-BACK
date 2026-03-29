@@ -1,14 +1,10 @@
-package edu.dosw.proyect.core.models;
+﻿package edu.dosw.proyect.core.models;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.Entity;
 
-/**
- * @deprecated Use User entity directly with role="PLAYER"
- * Esta clase se mantiene por compatibilidad con BD pero no debe usarse en nuevas funcionalidades
- */
 @Getter
 @Setter
 @Entity
@@ -23,3 +19,4 @@ public class Graduate extends User {
         this.setRole("PLAYER");
     }
 }
+

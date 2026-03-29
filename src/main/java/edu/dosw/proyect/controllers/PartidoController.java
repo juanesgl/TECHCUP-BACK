@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.request.PartidoFiltroRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.PartidoResponseDTO;
@@ -44,7 +44,7 @@ public class PartidoController {
 
     @Operation(
             summary = "Consultar detalle de un partido",
-            description = "Retorna la información completa de un partido específico incluyendo árbitro asignado (TC-18)"
+            description = "Retorna la informaciÃ³n completa de un partido especÃ­fico incluyendo Ã¡rbitro asignado (TC-18)"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Detalle del partido encontrado"),

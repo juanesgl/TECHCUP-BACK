@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.repositories.UserRepository;
@@ -24,3 +24,4 @@ public class DebugController {
         return userRepository.findByEmail(email).orElse(null);
     }
 }
+

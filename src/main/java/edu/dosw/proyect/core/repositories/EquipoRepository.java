@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.repositories;
+﻿package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.Equipo;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,3 +17,4 @@ public interface EquipoRepository extends JpaRepository<Equipo, Long> {
 
     List<Equipo> findByTorneoId(Long torneoId);
 }
+

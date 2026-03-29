@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.repositories;
+﻿package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.EventoPartido;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,3 +12,4 @@ public interface EventoPartidoRepository extends JpaRepository<EventoPartido, Lo
 
     List<EventoPartido> findByPartido_Torneo_TournId(String tournId);
 }
+

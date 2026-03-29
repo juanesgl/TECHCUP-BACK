@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.repositories;
+﻿package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.ConfiguracionTorneo;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,3 +10,4 @@ import java.util.Optional;
 public interface ConfiguracionTorneoRepository extends JpaRepository<ConfiguracionTorneo, Long> {
     Optional<ConfiguracionTorneo> findByTorneoTournId(String tournId);
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.services;
+﻿package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.response.EstadisticasEquipoDTO;
 import edu.dosw.proyect.controllers.dtos.response.EstadisticasJugadorDTO;
@@ -174,3 +174,4 @@ public class EstadisticasServiceTest {
         assertEquals(0, posiciones.get(2).getPuntos());
     }
 }
+

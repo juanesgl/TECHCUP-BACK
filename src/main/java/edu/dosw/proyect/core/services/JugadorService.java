@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.services;
+﻿package edu.dosw.proyect.core.services;
 
 import edu.dosw.proyect.controllers.dtos.DisponibilidadRequestDTO;
 import edu.dosw.proyect.controllers.dtos.DisponibilidadResponseDTO;
@@ -53,3 +53,4 @@ public class JugadorService {
         });
     }
 }
+

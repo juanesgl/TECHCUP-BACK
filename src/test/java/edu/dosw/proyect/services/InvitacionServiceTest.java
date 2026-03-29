@@ -1,4 +1,4 @@
-package edu.dosw.proyect.services;
+﻿package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.request.RespuestaInvitacionRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.InvitacionResponseDTO;
@@ -120,9 +120,10 @@ class InvitacionServiceTest {
         BusinessRuleException ex = assertThrows(BusinessRuleException.class,
                 () -> invitacionService.responderInvitacion(1L, 1L, request));
 
-        assertEquals("Ya perteneces a un equipo de futbol, no puedes aceptar la invitación", ex.getMessage());
+        assertEquals("Ya perteneces a un equipo de futbol, no puedes aceptar la invitaciÃ³n", ex.getMessage());
         assertEquals("RECHAZADA", invitacion.getEstado());
 
         verify(invitacionRepository).save(invitacion);
     }
 }
+

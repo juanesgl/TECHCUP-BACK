@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.services.jwt;
+﻿package edu.dosw.proyect.core.services.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,9 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Servicio para generar, validar y extraer información de tokens JWT
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -32,16 +29,12 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    /**
-     * Genera un token JWT con información del usuario
-     */
+    
     public String generateToken(String email, String role, Long userId) {
         return generateToken(email, role, userId, jwtExpiration);
     }
 
-    /**
-     * Genera un token JWT con expiración personalizada
-     */
+    
     public String generateToken(String email, String role, Long userId, long expirationTime) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
@@ -62,9 +55,7 @@ public class JwtProvider {
         return token;
     }
 
-    /**
-     * Valida si el token es válido
-     */
+    
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
@@ -73,30 +64,24 @@ public class JwtProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            log.warn("Token JWT inválido: {}", e.getMessage());
+            log.warn("Token JWT invÃ¡lido: {}", e.getMessage());
             return false;
         }
     }
 
-    /**
-     * Extrae el email del token
-     */
+    
     public String getEmailFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
         return claims.getSubject();
     }
 
-    /**
-     * Extrae el rol del token
-     */
+    
     public String getRoleFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
         return (String) claims.get("role");
     }
 
-    /**
-     * Extrae el userId del token
-     */
+    
     public Long getUserIdFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
         Object userId = claims.get("userId");
@@ -106,17 +91,13 @@ public class JwtProvider {
         return (Long) userId;
     }
 
-    /**
-     * Extrae la fecha de expiración del token
-     */
+    
     public Date getExpirationDateFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
         return claims.getExpiration();
     }
 
-    /**
-     * Verifica si el token está expirado
-     */
+    
     public boolean isTokenExpired(String token) {
         try {
             Date expirationDate = getExpirationDateFromToken(token);
@@ -126,9 +107,7 @@ public class JwtProvider {
         }
     }
 
-    /**
-     * Extrae todos los claims (información) del token
-     */
+    
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -137,9 +116,7 @@ public class JwtProvider {
                 .getBody();
     }
 
-    /**
-     * Obtiene toda la información del token como string legible
-     */
+    
     public String getTokenInfo(String token) {
         try {
             Claims claims = getAllClaimsFromToken(token);
@@ -151,7 +128,8 @@ public class JwtProvider {
                     getExpirationDateFromToken(token)
             );
         } catch (Exception e) {
-            return "Token inválido: " + e.getMessage();
+            return "Token invÃ¡lido: " + e.getMessage();
         }
     }
 }
+

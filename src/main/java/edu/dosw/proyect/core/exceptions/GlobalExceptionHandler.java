@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.exceptions;
+﻿package edu.dosw.proyect.core.exceptions;
 
 import edu.dosw.proyect.controllers.dtos.PaymentResponse;
 import org.springframework.http.HttpStatus;

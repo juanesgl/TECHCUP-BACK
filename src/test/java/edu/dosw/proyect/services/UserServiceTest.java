@@ -1,4 +1,4 @@
-package edu.dosw.proyect.services;
+﻿package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
@@ -55,7 +55,7 @@ class UserServiceTest {
                 .email("john@mail.escuelaing.edu.co")
                 .password("password123")
                 .role("PLAYER")
-                .academicProgram("Ingeniería")
+                .academicProgram("IngenierÃ­a")
                 .build();
 
         when(userRepository.save(any(User.class))).thenReturn(studentGuardado);
@@ -84,7 +84,7 @@ class UserServiceTest {
                 .email("jane@gmail.com")
                 .password("password123")
                 .role("PLAYER")
-                .academicProgram("Ingeniería")
+                .academicProgram("IngenierÃ­a")
                 .build();
 
         when(userRepository.save(any(User.class))).thenReturn(graduateGuardado);
@@ -113,7 +113,7 @@ class UserServiceTest {
                 .email("carlos@gmail.com")
                 .password("password123")
                 .role("PLAYER")
-                .academicProgram("Ingeniería")
+                .academicProgram("IngenierÃ­a")
                 .build();
 
         when(userRepository.save(any(User.class))).thenReturn(saved);
@@ -181,7 +181,7 @@ class UserServiceTest {
                 () -> userService.registerUser(request)
         );
 
-        assertEquals("El correo ya está registrado: jane@gmail.com", ex.getMessage());
+        assertEquals("El correo ya estÃ¡ registrado: jane@gmail.com", ex.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
 

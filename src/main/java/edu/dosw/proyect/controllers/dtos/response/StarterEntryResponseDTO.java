@@ -1,11 +1,10 @@
-package edu.dosw.proyect.controllers.dtos.response;
+﻿package edu.dosw.proyect.controllers.dtos.response;
 
 import edu.dosw.proyect.core.models.enums.FieldPosition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 @Data
 @Builder

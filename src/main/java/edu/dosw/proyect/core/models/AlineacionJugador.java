@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.models;
+﻿package edu.dosw.proyect.core.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,3 +33,4 @@ public class AlineacionJugador {
     @Column(name = "numero_camiseta")
     private int numeroCamiseta;
 }
+

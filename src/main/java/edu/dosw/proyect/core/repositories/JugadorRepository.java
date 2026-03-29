@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.repositories;
+﻿package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.Jugador;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,3 +28,4 @@ public interface JugadorRepository extends JpaRepository<Jugador, Long> {
         @Query("SELECT j FROM Jugador j WHERE j.usuario.name = :nombre")
         Optional<Jugador> findByNombre(@Param("nombre") String nombre);
 }
+

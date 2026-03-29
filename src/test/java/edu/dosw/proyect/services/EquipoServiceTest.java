@@ -1,4 +1,4 @@
-package edu.dosw.proyect.services;
+﻿package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.request.CrearEquipoRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.CrearEquipoResponseDTO;
@@ -134,7 +134,8 @@ class EquipoServiceTest {
             equipoService.crearEquipo(1L, request)
         );
 
-        assertEquals("error de validación de composición del equipo", exception.getMessage());
+        assertEquals("error de validaciÃ³n de composiciÃ³n del equipo", exception.getMessage());
         verify(equipoRepository, never()).save(any(Equipo.class));
     }
 }
+

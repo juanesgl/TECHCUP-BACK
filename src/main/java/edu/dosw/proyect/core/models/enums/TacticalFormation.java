@@ -1,5 +1,4 @@
-package edu.dosw.proyect.core.models.enums;
-
+﻿package edu.dosw.proyect.core.models.enums;
 
 public enum TacticalFormation {
     F_1_2_3_1("1-2-3-1", 1, 2, 3, 1),
@@ -28,7 +27,6 @@ public enum TacticalFormation {
     public int    getDefenders()    { return defenders;    }
     public int    getMidfielders()  { return midfielders;  }
     public int    getForwards()     { return forwards;     }
-
 
     public int getTotalStarters() {
         return goalkeepers + defenders + midfielders + forwards;

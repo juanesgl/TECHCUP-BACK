@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.models;
+﻿package edu.dosw.proyect.core.models;
 
 import edu.dosw.proyect.core.models.enums.TipoEvento;
 import jakarta.persistence.*;
@@ -68,3 +68,4 @@ public class EventoPartido {
         this.tipoEvento = tipoEvento;
     }
 }
+

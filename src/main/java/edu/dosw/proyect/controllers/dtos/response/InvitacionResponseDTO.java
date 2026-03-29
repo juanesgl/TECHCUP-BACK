@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos.response;
+﻿package edu.dosw.proyect.controllers.dtos.response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -10,3 +10,4 @@ public class InvitacionResponseDTO {
     private String mensajeCapitan;
     private String estadoActualizado;
 }
+

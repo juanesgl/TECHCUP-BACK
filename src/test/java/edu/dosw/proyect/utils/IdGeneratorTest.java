@@ -1,4 +1,4 @@
-package edu.dosw.proyect.utils;
+﻿package edu.dosw.proyect.utils;
 
 import edu.dosw.proyect.core.utils.IdGenerator;
 import org.junit.jupiter.api.Test;
@@ -30,3 +30,4 @@ class IdGeneratorTest {
         assertEquals(idVal1 + 1, idVal2);
     }
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "Usuarios", description = "Gestión de registro de usuarios base de la plataforma")
+@Tag(name = "Usuarios", description = "GestiÃ³n de registro de usuarios base de la plataforma")
 public class UserController {
     
     private final UserService userService;
@@ -22,10 +22,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Operation(summary = "Registrar un usuario", description = "Permite registrar de manera abstracta administradores, organizadores, referís y jugadores según el Type")
+    @Operation(summary = "Registrar un usuario", description = "Permite registrar de manera abstracta administradores, organizadores, referÃ­s y jugadores segÃºn el Type")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuario registrado existosamente e incrustado en memoria"),
-            @ApiResponse(responseCode = "400", description = "Error de validación o tipo de usuario inválido"),
+            @ApiResponse(responseCode = "400", description = "Error de validaciÃ³n o tipo de usuario invÃ¡lido"),
             @ApiResponse(responseCode = "409", description = "Correo ya registrado"),
             @ApiResponse(responseCode = "500", description = "Fallo en motor de persistencia interno")
     })
@@ -43,3 +43,4 @@ public class UserController {
         }
     }
 }
+

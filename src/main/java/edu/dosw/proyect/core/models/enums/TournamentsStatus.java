@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.models.enums;
+﻿package edu.dosw.proyect.core.models.enums;
 
 public enum TournamentsStatus {
     DRAFT,
@@ -6,3 +6,4 @@ public enum TournamentsStatus {
     IN_PROGRESS,
     FINISHED
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers;
+﻿package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.request.SaveLineupRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.TeamLineupResponseDTO;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @Slf4j
 @RestController
 @RequestMapping("/api/lineups")
@@ -27,7 +26,6 @@ public class TeamLineupController {
 
     private final TeamLineupService teamLineupService;
 
-
     @Operation(
             summary = "Save a team lineup",
             description = "Allows the team captain to save the tactical lineup for a scheduled match. "
@@ -36,16 +34,16 @@ public class TeamLineupController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Lineup saved successfully."),
-            @ApiResponse(responseCode = "400", description = "Invalid request body — wrong number of starters or missing positions."),
+            @ApiResponse(responseCode = "400", description = "Invalid request body â€” wrong number of starters or missing positions."),
             @ApiResponse(responseCode = "404", description = "Team or match not found."),
-            @ApiResponse(responseCode = "409", description = "Business rule violation — not captain, match not scheduled, or lineup already exists.")
+            @ApiResponse(responseCode = "409", description = "Business rule violation â€” not captain, match not scheduled, or lineup already exists.")
     })
     @PostMapping
     public ResponseEntity<TeamLineupResponseDTO> saveLineup(
             @RequestHeader("X-Captain-ID") Long captainId,
             @Valid @RequestBody SaveLineupRequestDTO request) {
 
-        log.info("Save lineup request — captain: {}, team: {}, match: {}",
+        log.info("Save lineup request â€” captain: {}, team: {}, match: {}",
                 captainId, request.getTeamId(), request.getMatchId());
 
         TeamLineupResponseDTO response = teamLineupService.saveLineup(captainId, request);
@@ -62,7 +60,7 @@ public class TeamLineupController {
             @ApiResponse(responseCode = "200", description = "Lineup updated successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid request body."),
             @ApiResponse(responseCode = "404", description = "Lineup not found."),
-            @ApiResponse(responseCode = "409", description = "Lineup is locked — match has already started.")
+            @ApiResponse(responseCode = "409", description = "Lineup is locked â€” match has already started.")
     })
     @PutMapping("/{lineupId}")
     public ResponseEntity<TeamLineupResponseDTO> updateLineup(
@@ -70,12 +68,11 @@ public class TeamLineupController {
             @PathVariable Long lineupId,
             @Valid @RequestBody SaveLineupRequestDTO request) {
 
-        log.info("Update lineup request — captain: {}, lineupId: {}", captainId, lineupId);
+        log.info("Update lineup request â€” captain: {}, lineupId: {}", captainId, lineupId);
 
         TeamLineupResponseDTO response = teamLineupService.updateLineup(captainId, lineupId, request);
         return ResponseEntity.ok(response);
     }
-
 
     @Operation(
             summary = "Get lineup for a specific match",
@@ -85,7 +82,7 @@ public class TeamLineupController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lineup retrieved successfully."),
-            @ApiResponse(responseCode = "404", description = "Lineup not found — no scheduled matches at the moment.")
+            @ApiResponse(responseCode = "404", description = "Lineup not found â€” no scheduled matches at the moment.")
     })
     @GetMapping("/team/{teamId}/match/{matchId}")
     public ResponseEntity<TeamLineupResponseDTO> getLineup(
@@ -93,7 +90,7 @@ public class TeamLineupController {
             @PathVariable Long teamId,
             @PathVariable Long matchId) {
 
-        log.info("Get lineup request — captain: {}, team: {}, match: {}", captainId, teamId, matchId);
+        log.info("Get lineup request â€” captain: {}, team: {}, match: {}", captainId, teamId, matchId);
 
         TeamLineupResponseDTO response = teamLineupService.getLineup(captainId, teamId, matchId);
         return ResponseEntity.ok(response);
@@ -113,7 +110,7 @@ public class TeamLineupController {
             @RequestHeader("X-Captain-ID") Long captainId,
             @PathVariable Long teamId) {
 
-        log.info("Get all lineups request — captain: {}, team: {}", captainId, teamId);
+        log.info("Get all lineups request â€” captain: {}, team: {}", captainId, teamId);
 
         List<TeamLineupResponseDTO> response = teamLineupService.getTeamLineups(captainId, teamId);
         return ResponseEntity.ok(response);

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.services.impl;
+﻿package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalStateException("El correo ya está registrado: " + request.getEmail());
+            throw new IllegalStateException("El correo ya estÃ¡ registrado: " + request.getEmail());
         }
 
         RegisterRequestDTO hashedRequest = new RegisterRequestDTO(
@@ -47,8 +47,7 @@ public class UserServiceImpl implements UserService {
         try {
             saved = userRepository.save(newUser);
         } catch (DataIntegrityViolationException e) {
-            // Handles race conditions where the same email is inserted concurrently.
-            throw new IllegalStateException("El correo ya está registrado: " + request.getEmail());
+            throw new IllegalStateException("El correo ya estÃ¡ registrado: " + request.getEmail());
         }
 
         return new RegisterResponseDTO("Usuario registrado exitosamente", saved.getId());

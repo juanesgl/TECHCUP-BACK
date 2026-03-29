@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.models;
+﻿package edu.dosw.proyect.core.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -48,3 +48,4 @@ public class EstadisticaEquipo {
     @Column(name = "puntos")
     private int puntos;
 }
+

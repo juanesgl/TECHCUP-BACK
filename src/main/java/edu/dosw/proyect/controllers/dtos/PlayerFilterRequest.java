@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos;
+﻿package edu.dosw.proyect.controllers.dtos;
 
 import lombok.Data;
 
@@ -11,3 +11,4 @@ public class PlayerFilterRequest {
     private String semester;
     private Boolean available;
 }
+

@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos;
+﻿package edu.dosw.proyect.controllers.dtos;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,3 +11,4 @@ public class RegisterResponseDTO {
     private String message;
     private Long userId;
 }
+

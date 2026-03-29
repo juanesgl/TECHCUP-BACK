@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.services.impl;
+﻿package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.controllers.dtos.RegisterMatchResultRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterMatchResultResponseDTO;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,6 @@ public class StandingsTableServiceImpl implements StandingsTableService {
     private final EstadisticaEquipoRepository statsRepository;
     private final TournamentRepository tournamentRepository;
     private final StandingsTableMapper standingsMapper;
-
 
     @Override
     public RegisterMatchResultResponseDTO registerResult(Long matchId,
@@ -52,12 +50,11 @@ public class StandingsTableServiceImpl implements StandingsTableService {
 
         updateTeamStats(match);
 
-        log.info("Result registered and stats updated: match {} → {}:{} (FINISHED)",
+        log.info("Result registered and stats updated: match {} â†’ {}:{} (FINISHED)",
                 matchId, request.getHomeGoals(), request.getAwayGoals());
 
         return standingsMapper.toRegisterMatchResultResponseDTO(match);
     }
-
 
     private void updateTeamStats(Partido match) {
         if (match.getTorneo() == null)
@@ -97,7 +94,6 @@ public class StandingsTableServiceImpl implements StandingsTableService {
 
         statsRepository.save(stats);
     }
-
 
     @Override
     public StandingsTableResponseDTO getStandings(String tournamentId) {
@@ -139,7 +135,6 @@ public class StandingsTableServiceImpl implements StandingsTableService {
         return standingsMapper.toStandingsTableResponseDTO(
                 tournamentId, tournament.getName(), totalMatchesPlayed, standings);
     }
-
 
     private void validateMatchIsRegistrable(Partido match) {
         if (match.getEstado() == MatchStatus.CANCELADO) {

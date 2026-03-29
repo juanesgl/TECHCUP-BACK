@@ -1,4 +1,4 @@
-package edu.dosw.proyect.models;
+﻿package edu.dosw.proyect.models;
 
 import edu.dosw.proyect.core.models.SportProfile;
 import edu.dosw.proyect.core.models.enums.Gender;
@@ -76,3 +76,4 @@ class SportProfileTest {
         assertEquals(Gender.MASCULINO, Gender.valueOf("MASCULINO"));
     }
 }
+

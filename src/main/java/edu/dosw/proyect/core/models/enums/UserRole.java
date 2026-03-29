@@ -1,12 +1,8 @@
-package edu.dosw.proyect.core.models.enums;
+﻿package edu.dosw.proyect.core.models.enums;
 
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Define los roles de usuario y sus permisos asociados.
- * Cada rol tiene un conjunto de acciones permitidas según las reglas de negocio.
- */
 public enum UserRole {
     
     ORGANIZER("Organizador", new String[]{
@@ -20,7 +16,7 @@ public enum UserRole {
         "FINALIZE_TOURNAMENT"
     }),
     
-    CAPTAIN("Capitán", new String[]{
+    CAPTAIN("CapitÃ¡n", new String[]{
         "CREATE_TEAM",
         "MANAGE_TEAM",
         "SEARCH_PLAYERS",
@@ -40,7 +36,7 @@ public enum UserRole {
         "VIEW_MATCH_INFO"
     }),
     
-    REFEREE("Árbitro", new String[]{
+    REFEREE("Ãrbitro", new String[]{
         "VIEW_TOURNAMENT_INFO",
         "VIEW_ASSIGNED_MATCHES",
         "VIEW_STANDINGS",
@@ -76,3 +72,4 @@ public enum UserRole {
         return new HashSet<>(permissions);
     }
 }
+
