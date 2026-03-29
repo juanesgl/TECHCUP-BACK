@@ -97,11 +97,12 @@ public class StandingsTableServiceImpl implements StandingsTableService {
 
     @Override
     public StandingsTableResponseDTO getStandings(String tournamentId) {
-        log.info("Retrieving standings table for tournament: {}", tournamentId);
+        String normalizedId = tournamentId == null ? null : tournamentId.trim().toUpperCase();
+        log.info("Retrieving standings table for tournament: {} (normalizado: {})", tournamentId, normalizedId);
 
-        Tournament tournament = tournamentRepository.findByTournId(tournamentId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Tournament not found: " + tournamentId));
+        Tournament tournament = tournamentRepository.findByTournId(normalizedId)
+            .orElseThrow(() -> new ResourceNotFoundException(
+                "Tournament not found: " + normalizedId));
 
         List<EstadisticaEquipo> allStats =
                 statsRepository.findByTorneoIdOrderByPuntosDesc(tournament.getId());

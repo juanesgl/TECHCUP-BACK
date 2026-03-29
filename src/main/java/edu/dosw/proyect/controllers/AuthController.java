@@ -22,7 +22,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @Operation(summary = "Iniciar SesiÃ³n", description = "Autentica con email y contraseÃ±a. Retorna la validez del intento.")
+    @Operation(summary = "Iniciar Sesion", description = "Autentica con email y contraseÃ±a. Retorna la validez del intento.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Login exitoso."),
             @ApiResponse(responseCode = "401", description = "Credenciales incorrectas o inexistentes."),

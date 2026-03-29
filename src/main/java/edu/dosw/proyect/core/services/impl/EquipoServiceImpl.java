@@ -33,13 +33,13 @@ public class EquipoServiceImpl implements EquipoService {
 
     @Override
     public CrearEquipoResponseDTO crearEquipo(Long capitanId, CrearEquipoRequestDTO request) {
-        log.info("Iniciando creaciÃ³n de equipo, solicitada por el jugador ID: {}", capitanId);
+        log.info("Iniciando creacion de equipo, solicitada por el jugador ID: {}", capitanId);
 
         User capitan = userRepository.findById(capitanId)
-                .orElseThrow(() -> new ResourceNotFoundException("CapitÃ¡n no encontrado en el sistema"));
+            .orElseThrow(() -> new ResourceNotFoundException("Capitan no encontrado en el sistema"));
 
         if (equipoRepository.existsByNombre(request.getNombreEquipo())) {
-            log.warn("ViolaciÃ³n TH-01: El nombre de equipo '{}' estÃ¡ registrado", request.getNombreEquipo());
+            log.warn("Violacion TH-01: El nombre de equipo '{}' esta registrado", request.getNombreEquipo());
             throw new BusinessRuleException("Ya existe un equipo con ese nombre en el torneo");
         }
 
@@ -50,37 +50,43 @@ public class EquipoServiceImpl implements EquipoService {
             User invitado = userRepository.findById(invitadoId).orElse(null);
             if (invitado != null) {
                 integracionFinal.add(invitado);
-                notificaciones.add("Se enviarÃ¡ invitaciÃ³n correctamente al jugador " + invitado.getName());
+                notificaciones.add("Se enviara invitacion correctamente al jugador " + invitado.getName());
 
             } else {
                 notificaciones
-                        .add("Advertencia: No se hallÃ³ en base de datos al jugador con identificador " + invitadoId);
+                        .add("Advertencia: No se hallo en base de datos al jugador con identificador " + invitadoId);
             }
         }
 
         integracionFinal.add(capitan);
 
         if (integracionFinal.size() < 7) {
-            log.error("ViolaciÃ³n TH-03 en validaciÃ³n de mÃ­nimo: total vÃ¡lidos es {}", integracionFinal.size());
-            throw new BusinessRuleException("error de validaciÃ³n de composiciÃ³n del equipo");
+            log.error("Violacion TH-03 en validacion de minimo: total validos es {}", integracionFinal.size());
+            throw new BusinessRuleException("error de validacion de composicion del equipo: se requieren al menos 7 integrantes validos");
         }
 
         long conteoCarrerasFoco = 0;
+        long integrantesConPrograma = 0;
         List<String> carrerasAdmitidas = Arrays.asList("sistemas", "ia", "ciberseguridad", "estadistica");
 
         for (User integrante : integracionFinal) {
             if (integrante.getAcademicProgram() != null) {
+                integrantesConPrograma++;
                 if (carrerasAdmitidas.contains(integrante.getAcademicProgram().toLowerCase())) {
                     conteoCarrerasFoco++;
                 }
             }
         }
 
-        double indiceValido = (double) conteoCarrerasFoco / integracionFinal.size();
-        if (indiceValido <= 0.5) {
-            log.error("ViolaciÃ³n TH-03 en composiciÃ³n de carreras: {} validos de {} integrantes necesarios",
-                    conteoCarrerasFoco, integracionFinal.size());
-            throw new BusinessRuleException("error de validaciÃ³n de composiciÃ³n del equipo");
+        if (integrantesConPrograma > 0) {
+            double indiceValido = (double) conteoCarrerasFoco / integrantesConPrograma;
+            if (indiceValido <= 0.5) {
+                log.error("Violacion TH-03 en composicion de carreras: {} validos de {} con programa academico",
+                        conteoCarrerasFoco, integrantesConPrograma);
+                throw new BusinessRuleException("error de validacion de composicion del equipo: menos del 50% cumple la composicion academica requerida");
+            }
+        } else {
+            log.warn("Validacion academica omitida: no hay programa academico registrado en los integrantes del equipo");
         }
 
         Equipo equipoArmado = Equipo.builder()
@@ -105,9 +111,9 @@ public class EquipoServiceImpl implements EquipoService {
         }
 
         
-        log.info("CreaciÃ³n existosa completada en el sistema para el equipo '{}'", equipoArmado.getNombre());
+        log.info("Creacion exitosa completada en el sistema para el equipo '{}'", equipoArmado.getNombre());
         return equipoMapper.toCrearEquipoResponseDTO(
-                "El equipo ha sido registrado exitosamente tras superar las reglas del torneo", notificaciones);
+            "El equipo ha sido registrado exitosamente tras superar las reglas del torneo", notificaciones);
     }
 }
 

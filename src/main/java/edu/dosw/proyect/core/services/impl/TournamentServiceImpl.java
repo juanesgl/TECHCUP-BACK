@@ -43,8 +43,10 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     public Tournament getTournamentById(String turnId) {
-        return tournamentRepository.findByTournId(turnId)
-                .orElseThrow(() -> new TournamentException("Tournament not found"));
+        String normalizedId = turnId == null ? null : turnId.trim().toUpperCase();
+        System.out.println("[DEBUG] getTournamentById recibido: '" + turnId + "', normalizado: '" + normalizedId + "'");
+        return tournamentRepository.findByTournId(normalizedId)
+            .orElseThrow(() -> new TournamentException("Tournament not found"));
     }
 
     @Transactional

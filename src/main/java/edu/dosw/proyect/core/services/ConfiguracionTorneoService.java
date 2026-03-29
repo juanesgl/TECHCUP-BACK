@@ -21,7 +21,11 @@ public class ConfiguracionTorneoService {
     private final CanchaRepository canchaRepository;
 
     public ConfiguracionTorneoResponseDTO configurarTorneo(String tournId, ConfiguracionTorneoRequestDTO configDto) {
+        System.out.println("[DEBUG] tournId recibido: '" + tournId + "'");
         Tournament tournament = tournamentService.getTournamentById(tournId);
+        if (tournament != null) {
+            System.out.println("[DEBUG] tournId en base de datos: '" + tournament.getTournId() + "'");
+        }
         if (tournament.getStatus() != TournamentsStatus.DRAFT && tournament.getStatus() != TournamentsStatus.ACTIVE) {
             throw new BusinessRuleException(
                     "La configuraciÃ³n solo estÃ¡ permitida cuando el torneo estÃ¡ en estado Borrador o Activo.");
