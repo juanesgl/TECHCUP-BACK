@@ -22,7 +22,6 @@ class UserServiceTest {
 
     @Test
     void registerUser_HappyPath_Student() {
-        // Arrange
         RegisterRequestDTO request = new RegisterRequestDTO();
         request.setName("John Doe");
         request.setEmail("john@mail.escuelaing.edu.co");
@@ -31,10 +30,8 @@ class UserServiceTest {
         request.setPreferredPosition("Forward");
         request.setSkillLevel(8);
 
-        // Act
         RegisterResponseDTO response = userService.registerUser(request);
 
-        // Assert
         assertNotNull(response);
         assertEquals("Usuario registrado exitosamente", response.getMessage());
         assertNotNull(response.getUserId());
@@ -48,14 +45,12 @@ class UserServiceTest {
 
     @Test
     void registerUser_ErrorHandling_InvalidEmailForRole() {
-        // Arrange
         RegisterRequestDTO request = new RegisterRequestDTO();
         request.setName("Jane Doe");
         request.setEmail("jane@gmail.com");
         request.setPassword("password123");
         request.setRole("STUDENT");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             userService.registerUser(request);
         });
@@ -68,14 +63,12 @@ class UserServiceTest {
 
     @Test
     void registerUser_ErrorHandling_UnsupportedRole() {
-        // Arrange
         RegisterRequestDTO request = new RegisterRequestDTO();
         request.setName("Bob");
         request.setEmail("bob@gmail.com");
         request.setPassword("pass");
         request.setRole("INVALID_ROLE");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             userService.registerUser(request);
         });
