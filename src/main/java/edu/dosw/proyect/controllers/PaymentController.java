@@ -8,22 +8,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/payments")
+@RequestMapping("/api/payments")
+@RequiredArgsConstructor
 @Tag(name = "Pagos", description = "Endpoints para gestion de pagos")
 public class PaymentController {
 
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
 
-    public PaymentController(PaymentService paymentService) {
-        this.paymentService = paymentService;
-    }
-
-    @Operation(summary = "Subir comprobante de pago",
-            description = "Permite a un usuario subir su comprobante de pago para un torneo")
+    @Operation(summary = "Subir comprobante de pago")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Comprobante subido correctamente"),
             @ApiResponse(responseCode = "400", description = "Datos invalidos o faltantes")
@@ -33,8 +30,7 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.uploadPayment(request));
     }
 
-    @Operation(summary = "Cambiar estado de pago",
-            description = "Permite cambiar el estado de un pago a APPROVED o REJECTED")
+    @Operation(summary = "Cambiar estado de pago")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Estado actualizado correctamente"),
             @ApiResponse(responseCode = "400", description = "Datos invalidos o pago no encontrado")
