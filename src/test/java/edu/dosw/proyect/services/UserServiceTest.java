@@ -4,12 +4,15 @@ import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.repositories.UserRepository;
-import edu.dosw.proyect.core.services.UserService;
+import edu.dosw.proyect.core.services.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,8 +24,11 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+        @Mock
+        private PasswordEncoder passwordEncoder;
+
     @InjectMocks
-    private UserService userService;
+        private UserServiceImpl userService;
 
     private RegisterRequestDTO buildRequest(String name, String email, String role) {
         RegisterRequestDTO req = new RegisterRequestDTO();
@@ -53,6 +59,8 @@ class UserServiceTest {
                 .build();
 
         when(userRepository.save(any(User.class))).thenReturn(studentGuardado);
+        when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(any(String.class))).thenReturn("hashed-password");
 
         RegisterResponseDTO response = userService.registerUser(request);
 
@@ -80,6 +88,8 @@ class UserServiceTest {
                 .build();
 
         when(userRepository.save(any(User.class))).thenReturn(graduateGuardado);
+        when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(any(String.class))).thenReturn("hashed-password");
 
         RegisterResponseDTO response = userService.registerUser(request);
 
@@ -107,6 +117,8 @@ class UserServiceTest {
                 .build();
 
         when(userRepository.save(any(User.class))).thenReturn(saved);
+        when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(any(String.class))).thenReturn("hashed-password");
 
         RegisterResponseDTO response = userService.registerUser(request);
 
@@ -154,6 +166,22 @@ class UserServiceTest {
         );
 
         assertEquals("Rol no soportado: INVALID_ROLE", ex.getMessage());
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void registerUser_Error_DuplicateEmail() {
+        RegisterRequestDTO request = buildRequest(
+                "Jane Duplicate", "jane@gmail.com", "PLAYER");
+
+        when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(User.builder().id(9L).build()));
+
+        IllegalStateException ex = assertThrows(
+                IllegalStateException.class,
+                () -> userService.registerUser(request)
+        );
+
+        assertEquals("El correo ya está registrado: jane@gmail.com", ex.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
 

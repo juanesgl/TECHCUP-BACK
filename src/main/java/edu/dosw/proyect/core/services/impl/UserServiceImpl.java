@@ -7,6 +7,7 @@ import edu.dosw.proyect.core.repositories.UserRepository;
 import edu.dosw.proyect.core.services.UserService;
 import edu.dosw.proyect.core.utils.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,10 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Dominio de correo invalido para el rol: " + request.getRole());
         }
 
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalStateException("El correo ya está registrado: " + request.getEmail());
+        }
+
         RegisterRequestDTO hashedRequest = new RegisterRequestDTO(
                 request.getName(),
                 request.getEmail(),
@@ -38,7 +43,13 @@ public class UserServiceImpl implements UserService {
         );
 
         User newUser = creator.createUser(hashedRequest);
-        User saved = userRepository.save(newUser);
+        User saved;
+        try {
+            saved = userRepository.save(newUser);
+        } catch (DataIntegrityViolationException e) {
+            // Handles race conditions where the same email is inserted concurrently.
+            throw new IllegalStateException("El correo ya está registrado: " + request.getEmail());
+        }
 
         return new RegisterResponseDTO("Usuario registrado exitosamente", saved.getId());
     }
@@ -54,6 +65,9 @@ public class UserServiceImpl implements UserService {
             case "FAMILY_MEMBER"-> new FamilyCreator();
             case "ORGANIZER"    -> new OrganizerCreator();
             case "REFEREE"      -> new RefereeCreator();
+            case "CAPTAIN"      -> new CaptainCreator();
+            case "PLAYER"       -> new PlayerCreator();
+            case "ADMINISTRATOR"-> new AdminCreator();
             default             -> null;
         };
     }

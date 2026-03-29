@@ -26,6 +26,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuario registrado existosamente e incrustado en memoria"),
             @ApiResponse(responseCode = "400", description = "Error de validación o tipo de usuario inválido"),
+            @ApiResponse(responseCode = "409", description = "Correo ya registrado"),
             @ApiResponse(responseCode = "500", description = "Fallo en motor de persistencia interno")
     })
     @PostMapping("/register")
@@ -35,6 +36,8 @@ public class UserController {
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {
             return new ResponseEntity<>("Error interno en el servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
