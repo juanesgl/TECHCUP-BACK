@@ -96,3 +96,13 @@ Un equipo con ID 99 intenta consultar la alineacion del partido 1,
 pero no es ni el equipo local ni el visitante de ese partido.
 
 ![Prueba 4](evidencias/postman4_alineacion.png)
+
+#### Diagrama de secuencia
+
+###### Conultar partidos
+
+![Diagrama de secuencia](evidencias/diagramaConsultaPartidos.png)
+
+###### Conultar alineacion de equipo rival
+
+![Diagrama de secuencia](evidencias/diagramaConsultarRival.png)
