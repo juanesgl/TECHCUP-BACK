@@ -64,7 +64,7 @@ Se aplica un fitro con una cancha que no existe
 
 ### Diagrama entidad-relacion
 
-![Diagrama de entidad-relacion](docs/uml/diagrama_entidad_relacion.png)
+![Diagrama de entidad-relacion](../../docs/uml/diagrama_entidad_relacion.png)
 
 - El diagrama de entidad-relación muestra el modelo de datos del sistema TechCup, es decir, cómo están estructuradas las tablas, qué atributos tiene cada una y cómo se relacionan entre ellas a través de llaves foráneas.
 Comenzando por el centro del diagrama, la entidad más importante es PARTIDO, que actúa como el núcleo del sistema porque casi todas las demás entidades se conectan a ella. Un partido tiene su propio id como llave primaria, referencias al torneo al que pertenece (torneo_id), al equipo local (equipo_local_id), al equipo visitante (equipo_visitante_id), y también guarda la cancha, la fecha, el estado y los goles de cada equipo.
