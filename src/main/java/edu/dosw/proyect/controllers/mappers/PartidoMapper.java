@@ -12,13 +12,14 @@ public class PartidoMapper {
     public PartidoResponseDTO toResponseDTO(Partido partido) {
         return PartidoResponseDTO.builder()
                 .id(partido.getId())
-                .equipoLocal(partido.getNombreEquipoLocal())
-                .equipoVisitante(partido.getNombreEquipoVisitante())
-                .fecha(partido.getFecha())
-                .hora(partido.getHora())
-                .cancha(partido.getCancha())
-                .arbitro(partido.getArbitro())
-                .estado(partido.getEstado().name())
+                .equipoLocal(partido.getEquipoLocal() != null ? partido.getEquipoLocal().getNombre() : "TBD")
+                .equipoVisitante(
+                        partido.getEquipoVisitante() != null ? partido.getEquipoVisitante().getNombre() : "TBD")
+                .fecha(partido.getFechaHora() != null ? partido.getFechaHora().toLocalDate() : null)
+                .hora(partido.getFechaHora() != null ? partido.getFechaHora().toLocalTime() : null)
+                .cancha(partido.getCancha() != null ? partido.getCancha().getNombre() : "TBD")
+                .arbitro(partido.getArbitro() != null ? partido.getArbitro().getName() : "TBD")
+                .estado(partido.getEstado() != null ? partido.getEstado().name() : null)
                 .tournamentId(partido.getTorneo() != null ? partido.getTorneo().getTournId() : null)
                 .build();
     }

@@ -2,18 +2,17 @@ package edu.dosw.proyect.core.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "INVITACION")
+@Table(name = "PAGO")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Invitacion {
+public class Pago {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,23 +23,22 @@ public class Invitacion {
     private Equipo equipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "jugador_id", nullable = false)
-    private Jugador jugador;
+    @JoinColumn(name = "torneo_id", nullable = false)
+    private Tournament torneo;
+
+    @Column(name = "comprobante_url")
+    private String comprobanteUrl;
 
     @Column(name = "estado")
     private String estado;
 
-    @Column(name = "fecha_envio")
-    private LocalDateTime fechaEnvio;
+    @Column(name = "fecha_subida")
+    private LocalDateTime fechaSubida;
 
-    @Column(name = "fecha_respuesta")
-    private LocalDateTime fechaRespuesta;
+    @Column(name = "fecha_revision")
+    private LocalDateTime fechaRevision;
 
-    public Jugador getJugadorInvitado() {
-        return jugador;
-    }
-
-    public Equipo getEquipoInvita() {
-        return equipo;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "revisado_por")
+    private User revisadoPor;
 }

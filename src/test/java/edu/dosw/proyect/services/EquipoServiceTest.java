@@ -10,6 +10,7 @@ import edu.dosw.proyect.core.models.Student;
 import edu.dosw.proyect.core.repositories.EquipoRepository;
 import edu.dosw.proyect.core.repositories.UserRepository;
 import edu.dosw.proyect.core.repositories.InvitacionRepository;
+import edu.dosw.proyect.core.repositories.JugadorRepository;
 import edu.dosw.proyect.core.services.impl.EquipoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,9 @@ class EquipoServiceTest {
     @Mock
     private InvitacionRepository invitacionRepository;
 
+    @Mock
+    private JugadorRepository jugadorRepository;
+
     @InjectMocks
     private EquipoServiceImpl equipoService;
 
@@ -65,6 +69,7 @@ class EquipoServiceTest {
     void debeCrearEquipoExitosamente() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(capitan));
         when(equipoRepository.existsByNombre("Test FC")).thenReturn(false);
+        when(jugadorRepository.findById(any(Long.class))).thenReturn(Optional.of(new edu.dosw.proyect.core.models.Jugador()));
 
         for (long i = 2; i <= 7; i++) {
             Student jugador = new Student("Compi " + i, "mail"+i+"@test.com", "pass", new SportProfile());

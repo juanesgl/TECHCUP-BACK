@@ -1,10 +1,12 @@
 package edu.dosw.proyect.core.models;
 
+import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@Entity
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Student extends User {

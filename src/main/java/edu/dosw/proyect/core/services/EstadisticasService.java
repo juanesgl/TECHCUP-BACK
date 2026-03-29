@@ -5,6 +5,7 @@ import edu.dosw.proyect.controllers.dtos.response.EstadisticasJugadorDTO;
 import edu.dosw.proyect.controllers.dtos.response.EstadisticasTorneoDTO;
 import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.EventoPartido;
+import edu.dosw.proyect.core.models.Jugador;
 import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
@@ -80,7 +81,8 @@ public class EstadisticasService {
         Map<Long, EstadisticasJugadorDTO> mapJugadores = new HashMap<>();
 
         for (EventoPartido ep : eventos) {
-            User jugador = ep.getJugador();
+            Jugador jModel = ep.getJugador();
+            User jugador = jModel != null ? jModel.getUsuario() : null;
             Equipo equipo = ep.getEquipo();
 
             if (jugador != null && jugador.getId() != null) {

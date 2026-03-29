@@ -9,9 +9,12 @@ import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
 import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.Partido;
+import edu.dosw.proyect.core.models.EstadisticaEquipo;
 import edu.dosw.proyect.core.models.Tournament;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
+import edu.dosw.proyect.core.repositories.EstadisticaEquipoRepository;
 import edu.dosw.proyect.core.repositories.PartidoRepository;
+import edu.dosw.proyect.core.repositories.TournamentRepository;
 import edu.dosw.proyect.core.services.StandingsTableService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,18 +26,21 @@ import java.util.*;
  * Implementation of the Automatic Standings Table service.
  *
  * Business rules enforced:
- *  - Only FINISHED or IN_PROGRESS matches count towards the standings.
- *  - Results cannot be registered for CANCELLED matches.
- *  - Results cannot be registered for already FINISHED matches.
- *  - Sorting: Points > Goal Difference > Goals Scored > Team Name (alphabetical).
- *  - If no matches have been played, an empty table with all zeros is returned.
+ * - Only FINISHED or IN_PROGRESS matches count towards the standings.
+ * - Results cannot be registered for CANCELLED matches.
+ * - Results cannot be registered for already FINISHED matches.
+ * - Sorting: Points > Goal Difference > Goals Scored > Team Name
+ * (alphabetical).
+ * - If no matches have been played, an empty table with all zeros is returned.
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class StandingsTableServiceImpl implements StandingsTableService {
 
-    private final PartidoRepository   matchRepository;
+    private final PartidoRepository matchRepository;
+    private final EstadisticaEquipoRepository statsRepository;
+    private final TournamentRepository tournamentRepository;
     private final StandingsTableMapper standingsMapper;
 
     // ─────────────────────────────────────────────────────────────────
@@ -43,7 +49,7 @@ public class StandingsTableServiceImpl implements StandingsTableService {
 
     @Override
     public RegisterMatchResultResponseDTO registerResult(Long matchId,
-                                                         RegisterMatchResultRequestDTO request) {
+            RegisterMatchResultRequestDTO request) {
         log.info("Registering result for match ID: {}", matchId);
 
         Partido match = matchRepository.findById(matchId)
@@ -57,10 +63,49 @@ public class StandingsTableServiceImpl implements StandingsTableService {
         match.setEstado(MatchStatus.FINALIZADO);
         matchRepository.save(match);
 
-        log.info("Result registered: match {} → {}:{} (FINISHED)",
+        // PERSIST STATISTICS (Req-06)
+        updateTeamStats(match);
+
+        log.info("Result registered and stats updated: match {} → {}:{} (FINISHED)",
                 matchId, request.getHomeGoals(), request.getAwayGoals());
 
         return standingsMapper.toRegisterMatchResultResponseDTO(match);
+    }
+
+    private void updateTeamStats(Partido match) {
+        if (match.getTorneo() == null)
+            return;
+
+        updateSingleTeamStats(match.getEquipoLocal(), match.getTorneo(), match.getGolesLocal(), match.getGolesVisitante());
+        updateSingleTeamStats(match.getEquipoVisitante(), match.getTorneo(), match.getGolesVisitante(),
+                match.getGolesLocal());
+    }
+
+    private void updateSingleTeamStats(Equipo team, Tournament tournament, int goalsFor, int goalsAgainst) {
+        EstadisticaEquipo stats = statsRepository.findByEquipoIdAndTorneoId(team.getId(), tournament.getId())
+                .orElseGet(() -> {
+                    EstadisticaEquipo newStats = new EstadisticaEquipo();
+                    newStats.setEquipo(team);
+                    newStats.setTorneo(tournament);
+                    return newStats;
+                });
+
+        stats.setPartidosJugados(stats.getPartidosJugados() + 1);
+        stats.setGolesFavor(stats.getGolesFavor() + goalsFor);
+        stats.setGolesContra(stats.getGolesContra() + goalsAgainst);
+        stats.setDiferenciaGol(stats.getGolesFavor() - stats.getGolesContra());
+
+        if (goalsFor > goalsAgainst) {
+            stats.setPartidosGanados(stats.getPartidosGanados() + 1);
+            stats.setPuntos(stats.getPuntos() + 3);
+        } else if (goalsFor < goalsAgainst) {
+            stats.setPartidosPerdidos(stats.getPartidosPerdidos() + 1);
+        } else {
+            stats.setPartidosEmpatados(stats.getPartidosEmpatados() + 1);
+            stats.setPuntos(stats.getPuntos() + 1);
+        }
+
+        statsRepository.save(stats);
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -69,60 +114,41 @@ public class StandingsTableServiceImpl implements StandingsTableService {
 
     @Override
     public StandingsTableResponseDTO getStandings(String tournamentId) {
-        log.info("Calculating standings table for tournament: {}", tournamentId);
+        log.info("Retrieving standings table for tournament: {}", tournamentId);
 
-        List<Partido> matches = matchRepository.findByTorneo_TournId(tournamentId);
+        Tournament tournament = tournamentRepository.findByTournId(tournamentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tournament not found: " + tournamentId));
 
-        // Stats accumulator per team: teamId → [MP, W, D, L, GF, GA]
-        Map<Long, long[]> accumulator = new LinkedHashMap<>();
-        Map<Long, String> teamNames   = new HashMap<>();
-        int totalMatchesPlayed        = 0;
+        List<EstadisticaEquipo> allStats = statsRepository.findByTorneoIdOrderByPuntosDesc(tournament.getId());
 
-        for (Partido match : matches) {
-            if (!standingsMapper.isMatchCountable(match)) {
-                continue;
-            }
+        List<TeamStandingDTO> standings = new ArrayList<>();
+        int position = 1;
+        int totalMatchesPlayed = 0;
 
-            Equipo home = match.getEquipoLocal();
-            Equipo away = match.getEquipoVisitante();
-
-            if (home == null || home.getId() == null
-                    || away == null || away.getId() == null) {
-                log.warn("Match {} skipped: team(s) with null ID.", match.getId());
-                continue;
-            }
-
-            totalMatchesPlayed++;
-
-            storeTeamName(teamNames, home);
-            storeTeamName(teamNames, away);
-
-            long[] sHome = statsFor(accumulator, home.getId());
-            long[] sAway = statsFor(accumulator, away.getId());
-
-            // MP
-            sHome[0]++; sAway[0]++;
-            // GF / GA
-            sHome[4] += match.getGolesLocal();      sHome[5] += match.getGolesVisitante();
-            sAway[4] += match.getGolesVisitante();  sAway[5] += match.getGolesLocal();
-
-            if (match.getGolesLocal() > match.getGolesVisitante()) {
-                sHome[1]++; sAway[3]++;   // W home / L away
-            } else if (match.getGolesLocal() < match.getGolesVisitante()) {
-                sAway[1]++; sHome[3]++;   // W away / L home
-            } else {
-                sHome[2]++; sAway[2]++;   // D both
-            }
+        for (EstadisticaEquipo stat : allStats) {
+            standings.add(TeamStandingDTO.builder()
+                    .position(position++)
+                    .teamId(stat.getEquipo().getId())
+                    .teamName(stat.getEquipo().getNombre())
+                    .matchesPlayed(stat.getPartidosJugados())
+                    .wins(stat.getPartidosGanados())
+                    .draws(stat.getPartidosEmpatados())
+                    .losses(stat.getPartidosPerdidos())
+                    .goalsFor(stat.getGolesFavor())
+                    .goalsAgainst(stat.getGolesContra())
+                    .goalDifference(stat.getDiferenciaGol())
+                    .points(stat.getPuntos())
+                    .build());
+            totalMatchesPlayed += stat.getPartidosJugados();
         }
 
-        List<TeamStandingDTO> standings = buildSortedStandings(accumulator, teamNames);
-        String tournamentName = resolveTournamentName(matches);
+        // Divide by 2 because each match is counted for both teams
+        totalMatchesPlayed = totalMatchesPlayed / 2;
 
-        log.info("Standings calculated: {} teams, {} matches played.",
-                standings.size(), totalMatchesPlayed);
+        log.info("Standings retrieved: {} teams from persistent storage.", standings.size());
 
         return standingsMapper.toStandingsTableResponseDTO(
-                tournamentId, tournamentName, totalMatchesPlayed, standings);
+                tournamentId, tournament.getName(), totalMatchesPlayed, standings);
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -157,12 +183,12 @@ public class StandingsTableServiceImpl implements StandingsTableService {
      * Sort order: Points DESC → GD DESC → GF DESC → Name ASC
      */
     private List<TeamStandingDTO> buildSortedStandings(Map<Long, long[]> accumulator,
-                                                       Map<Long, String> names) {
+            Map<Long, String> names) {
         List<TeamStandingDTO> list = new ArrayList<>();
 
         for (Map.Entry<Long, long[]> entry : accumulator.entrySet()) {
-            Long   id   = entry.getKey();
-            long[] s    = entry.getValue();
+            Long id = entry.getKey();
+            long[] s = entry.getValue();
             String name = names.getOrDefault(id, "Unknown");
 
             list.add(standingsMapper.toTeamStandingDTO(

@@ -1,72 +1,27 @@
 package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.Partido;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Repository
-public class PartidoRepository {
+public interface PartidoRepository extends JpaRepository<Partido, Long> {
 
-    private final Map<Long, Partido> dataStore = new HashMap<>();
-    private long currentId = 1;
+        @Query("SELECT p FROM Partido p WHERE " +
+                        "(:canchaId IS NULL OR p.cancha.id = :canchaId) AND " +
+                        "(:fecha IS NULL OR CAST(p.fechaHora AS date) = :fecha)")
+        List<Partido> findByFiltros(@Param("fecha") LocalDate fecha,
+                        @Param("canchaId") Long canchaId);
 
-    public Partido save(Partido partido) {
-        if (partido.getId() == null) {
-            partido.setId(currentId++);
-        }
-        dataStore.put(partido.getId(), partido);
-        return partido;
-    }
+        List<Partido> findByTorneoId(Long torneoId);
 
-    public Optional<Partido> findById(Long id) {
-        return Optional.ofNullable(dataStore.get(id));
-    }
+        List<Partido> findByTorneo_TournId(String tournId);
 
-    public List<Partido> findAll() {
-        return new ArrayList<>(dataStore.values());
-    }
-
-    public List<Partido> findByFecha(LocalDate fecha) {
-        return dataStore.values().stream()
-                .filter(p -> fecha.equals(p.getFecha()))
-                .collect(Collectors.toList());
-    }
-
-    public List<Partido> findByCancha(String cancha) {
-        return dataStore.values().stream()
-                .filter(p -> p.getCancha() != null &&
-                        p.getCancha().equalsIgnoreCase(cancha))
-                .collect(Collectors.toList());
-    }
-
-    public List<Partido> findByEquipo(String nombreEquipo) {
-        return dataStore.values().stream()
-                .filter(p ->
-                        (p.getNombreEquipoLocal() != null &&
-                                p.getNombreEquipoLocal().equalsIgnoreCase(nombreEquipo)) ||
-                                (p.getNombreEquipoVisitante() != null &&
-                                        p.getNombreEquipoVisitante().equalsIgnoreCase(nombreEquipo)))
-                .collect(Collectors.toList());
-    }
-
-    public List<Partido> findByTournamentId(String tournamentId) {
-        return dataStore.values().stream()
-                .filter(p -> p.getTorneo() != null &&
-                        tournamentId.equals(p.getTorneo().getTournId()))
-                .collect(Collectors.toList());
-    }
-
-    public List<Partido> findByTorneo_TournId(String tournId) {
-        return dataStore.values().stream()
-                .filter(p -> p.getTorneo() != null &&
-                        tournId.equals(p.getTorneo().getTournId()))
-                .collect(Collectors.toList());
-    }
-
-    public boolean existsById(Long id) {
-        return dataStore.containsKey(id);
-    }
+        @Query("SELECT p FROM Partido p WHERE p.equipoLocal.nombre = :nombre OR p.equipoVisitante.nombre = :nombre")
+        List<Partido> findByNombreEquipo(@Param("nombre") String nombre);
 }

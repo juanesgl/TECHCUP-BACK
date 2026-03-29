@@ -5,6 +5,7 @@ import edu.dosw.proyect.controllers.dtos.response.EstadisticasJugadorDTO;
 import edu.dosw.proyect.controllers.dtos.response.EstadisticasTorneoDTO;
 import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.EventoPartido;
+import edu.dosw.proyect.core.models.Jugador;
 import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.Tournament;
 import edu.dosw.proyect.core.models.User;
@@ -44,8 +45,8 @@ public class EstadisticasServiceTest {
     private Equipo equipoLocal;
     private Equipo equipoVisitante;
     private Partido partido;
-    private User mockJugador1;
-    private User mockJugador2;
+    private Jugador mockJugador1;
+    private Jugador mockJugador2;
 
     @BeforeEach
     void setUp() {
@@ -66,13 +67,19 @@ public class EstadisticasServiceTest {
                 .fechaHora(LocalDateTime.now())
                 .build();
 
-        mockJugador1 = mock(User.class);
+        mockJugador1 = mock(Jugador.class);
         lenient().when(mockJugador1.getId()).thenReturn(10L);
-        lenient().when(mockJugador1.getName()).thenReturn("Carlos");
+        User u1 = mock(User.class);
+        lenient().when(u1.getName()).thenReturn("Carlos");
+        lenient().when(u1.getId()).thenReturn(10L);
+        lenient().when(mockJugador1.getUsuario()).thenReturn(u1);
 
-        mockJugador2 = mock(User.class);
+        mockJugador2 = mock(Jugador.class);
         lenient().when(mockJugador2.getId()).thenReturn(20L);
-        lenient().when(mockJugador2.getName()).thenReturn("Andres");
+        User u2 = mock(User.class);
+        lenient().when(u2.getName()).thenReturn("Andres");
+        lenient().when(u2.getId()).thenReturn(20L);
+        lenient().when(mockJugador2.getUsuario()).thenReturn(u2);
     }
 
     @Test

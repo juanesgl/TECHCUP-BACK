@@ -2,18 +2,17 @@ package edu.dosw.proyect.core.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "INVITACION")
+@Table(name = "EQUIPO_JUGADOR")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Invitacion {
+public class EquipoJugador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,20 +26,17 @@ public class Invitacion {
     @JoinColumn(name = "jugador_id", nullable = false)
     private Jugador jugador;
 
-    @Column(name = "estado")
-    private String estado;
+    @Column(name = "fecha_union")
+    private LocalDateTime fechaUnion;
 
-    @Column(name = "fecha_envio")
-    private LocalDateTime fechaEnvio;
+    @Column(name = "activo")
+    private boolean activo = true;
 
-    @Column(name = "fecha_respuesta")
-    private LocalDateTime fechaRespuesta;
-
-    public Jugador getJugadorInvitado() {
-        return jugador;
-    }
-
-    public Equipo getEquipoInvita() {
-        return equipo;
+    // Constructor de ayuda
+    public EquipoJugador(Equipo equipo, Jugador jugador) {
+        this.equipo = equipo;
+        this.jugador = jugador;
+        this.fechaUnion = LocalDateTime.now();
+        this.activo = true;
     }
 }
