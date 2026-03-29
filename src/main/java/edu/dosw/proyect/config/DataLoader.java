@@ -1,8 +1,10 @@
 package edu.dosw.proyect.config;
 
 import edu.dosw.proyect.core.models.*;
+import edu.dosw.proyect.core.models.enums.FormacionTecnica;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import edu.dosw.proyect.core.models.enums.TournamentsStatus;
+import edu.dosw.proyect.core.repositories.AlineacionRepository;
 import edu.dosw.proyect.core.repositories.JugadorRepository;
 import edu.dosw.proyect.core.repositories.PartidoRepository;
 import edu.dosw.proyect.core.repositories.UserRepository;
@@ -24,6 +26,7 @@ public class DataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final JugadorRepository jugadorRepository;
     private final PartidoRepository partidoRepository;
+    private final AlineacionRepository alineacionRepository;
 
     @Override
     public void run(String... args) {
@@ -146,5 +149,55 @@ public class DataLoader implements CommandLineRunner {
         partidoRepository.save(p3);
 
         log.info("3 partidos creados: IDs 1, 2 y 3 disponibles para pruebas en Postman.");
+
+        log.info("Creando alineaciones de prueba...");
+
+        Alineacion alineacionAlpha = Alineacion.builder()
+                .partidoId(1L)
+                .equipoId(1L)
+                .nombreEquipo("Equipo Alpha")
+                .formacion(FormacionTecnica.F_2_3_2)
+                .titulares(List.of(
+                        "Jugador 1 - Portero",
+                        "Jugador 2 - Defensa",
+                        "Jugador 3 - Defensa",
+                        "Jugador 4 - Mediocampista",
+                        "Jugador 5 - Mediocampista",
+                        "Jugador 6 - Mediocampista",
+                        "Jugador 7 - Delantero"
+                ))
+                .reservas(List.of(
+                        "Jugador 8 - Defensa",
+                        "Jugador 9 - Mediocampista"
+                ))
+                .build();
+
+// Alineación de Equipo Beta para el partido 1 (Alpha vs Beta)
+        Alineacion alineacionBeta = Alineacion.builder()
+                .partidoId(1L)
+                .equipoId(2L)
+                .nombreEquipo("Equipo Beta")
+                .formacion(FormacionTecnica.F_3_2_2)
+                .titulares(List.of(
+                        "Jugador 10 - Portero",
+                        "Jugador 11 - Defensa",
+                        "Jugador 12 - Defensa",
+                        "Jugador 13 - Defensa",
+                        "Jugador 14 - Mediocampista",
+                        "Jugador 15 - Mediocampista",
+                        "Jugador 16 - Delantero"
+                ))
+                .reservas(List.of(
+                        "Jugador 17 - Delantero",
+                        "Jugador 18 - Defensa"
+                ))
+                .build();
+
+        alineacionRepository.save(alineacionAlpha);
+        alineacionRepository.save(alineacionBeta);
+
+        log.info("Alineaciones de prueba creadas para el partido 1.");
     }
+
+
 }
