@@ -33,7 +33,7 @@ public class EstadisticasService {
         int partidosJugados = 0;
 
         for (Partido p : partidos) {
-            // Solo procesamos lo que está FINALIZADO o EN_JUEGO
+            
             if (p.getEstado() == MatchStatus.FINALIZADO || p.getEstado() == MatchStatus.EN_JUEGO) {
                 partidosJugados++;
                 totalGolesAnotados += (p.getGolesLocal() + p.getGolesVisitante());

@@ -32,7 +32,7 @@ public class EquipoJugador {
     @Column(name = "activo")
     private boolean activo = true;
 
-    // Constructor de ayuda
+    
     public EquipoJugador(Equipo equipo, Jugador jugador) {
         this.equipo = equipo;
         this.jugador = jugador;

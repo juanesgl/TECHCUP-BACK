@@ -24,7 +24,7 @@ public interface JugadorRepository extends JpaRepository<Jugador, Long> {
                         @Param("disponible") Boolean disponible,
                         @Param("edad") Integer edad);
 
-        // Support for legacy mapping / in-memory compat
+        
         @Query("SELECT j FROM Jugador j WHERE j.usuario.name = :nombre")
         Optional<Jugador> findByNombre(@Param("nombre") String nombre);
 }

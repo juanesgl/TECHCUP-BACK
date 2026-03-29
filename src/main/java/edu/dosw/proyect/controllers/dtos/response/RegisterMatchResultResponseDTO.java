@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Response DTO returned after registering or updating a match result.
- */
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,6 +16,6 @@ public class RegisterMatchResultResponseDTO {
     private String awayTeam;
     private int    homeGoals;
     private int    awayGoals;
-    private String outcome;   // "HOME" | "AWAY" | "DRAW"
+    private String outcome;   
     private String message;
 }

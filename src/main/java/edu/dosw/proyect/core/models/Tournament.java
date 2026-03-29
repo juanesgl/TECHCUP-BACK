@@ -23,7 +23,7 @@ public class Tournament {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Keep for legacy compat, maybe mark it @Transient or map it
+    
     @Column(name = "codigo_legacy", unique = true)
     private String tournId;
 
@@ -53,7 +53,7 @@ public class Tournament {
     @OneToOne(mappedBy = "torneo", cascade = CascadeType.ALL)
     private ConfiguracionTorneo configuracion;
 
-    // Legacy support fields, now transient to not clash with CONFIGURACION_TORNEO
+    
     @Transient
     private String regulation;
     @Transient

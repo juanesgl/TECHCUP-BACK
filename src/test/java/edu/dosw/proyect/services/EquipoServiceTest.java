@@ -5,8 +5,6 @@ import edu.dosw.proyect.controllers.dtos.response.CrearEquipoResponseDTO;
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.controllers.mappers.EquipoMapper;
 import edu.dosw.proyect.core.models.Equipo;
-import edu.dosw.proyect.core.models.SportProfile;
-import edu.dosw.proyect.core.models.Student;
 import edu.dosw.proyect.core.repositories.EquipoRepository;
 import edu.dosw.proyect.core.repositories.UserRepository;
 import edu.dosw.proyect.core.repositories.InvitacionRepository;
@@ -51,14 +49,19 @@ class EquipoServiceTest {
     @InjectMocks
     private EquipoServiceImpl equipoService;
 
-    private Student capitan;
+    private edu.dosw.proyect.core.models.User capitan;
     private CrearEquipoRequestDTO request;
 
     @BeforeEach
     void setUp() {
-        capitan = new Student("El Capitan", "capitan@test.com", "pass", new SportProfile());
-        capitan.setId(1L);
-        capitan.setProgramaAcademico("sistemas");
+        capitan = edu.dosw.proyect.core.models.User.builder()
+                .id(1L)
+                .name("El Capitan")
+                .email("capitan@test.com")
+                .password("pass")
+                .role("CAPTAIN")
+                .academicProgram("sistemas")
+                .build();
 
         request = new CrearEquipoRequestDTO();
         request.setNombreEquipo("Test FC");
@@ -72,9 +75,14 @@ class EquipoServiceTest {
         when(jugadorRepository.findById(any(Long.class))).thenReturn(Optional.of(new edu.dosw.proyect.core.models.Jugador()));
 
         for (long i = 2; i <= 7; i++) {
-            Student jugador = new Student("Compi " + i, "mail"+i+"@test.com", "pass", new SportProfile());
-            jugador.setId(i);
-            jugador.setProgramaAcademico("ia");
+            edu.dosw.proyect.core.models.User jugador = edu.dosw.proyect.core.models.User.builder()
+                    .id(i)
+                    .name("Compi " + i)
+                    .email("mail"+i+"@test.com")
+                    .password("pass")
+                    .role("PLAYER")
+                    .academicProgram("ia")
+                    .build();
             when(userRepository.findById(i)).thenReturn(Optional.of(jugador));
         }
 
@@ -111,9 +119,14 @@ class EquipoServiceTest {
         when(equipoRepository.existsByNombre("Test FC")).thenReturn(false);
 
         for (long i = 2; i <= 7; i++) {
-            Student jugador = new Student("Compi " + i, "mail"+i+"@test.com", "pass", new SportProfile());
-            jugador.setId(i);
-            jugador.setProgramaAcademico("medicina");
+            edu.dosw.proyect.core.models.User jugador = edu.dosw.proyect.core.models.User.builder()
+                    .id(i)
+                    .name("Compi " + i)
+                    .email("mail"+i+"@test.com")
+                    .password("pass")
+                    .role("PLAYER")
+                    .academicProgram("medicina")
+                    .build();
             when(userRepository.findById(i)).thenReturn(Optional.of(jugador));
         }
 

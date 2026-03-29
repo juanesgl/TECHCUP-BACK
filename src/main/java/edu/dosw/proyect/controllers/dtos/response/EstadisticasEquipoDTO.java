@@ -19,7 +19,7 @@ public class EstadisticasEquipoDTO {
     private int golesFavor;
     private int golesContra;
     private int diferenciaGol;
-    private int puntos; // PG * 3 + PE * 1
+    private int puntos; 
 
     public int getPartidosJugados() {
         return partidosJugados;

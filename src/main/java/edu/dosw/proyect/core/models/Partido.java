@@ -41,7 +41,7 @@ public class Partido {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "arbitro_id")
-    private User arbitro; // Reference to USUARIO table because referees are Users but not Jugadores
+    private User arbitro; 
 
     @Column(name = "fecha_hora")
     private LocalDateTime fechaHora;
@@ -59,7 +59,7 @@ public class Partido {
     @Enumerated(EnumType.STRING)
     private MatchStatus estado;
 
-    // --- Legacy / Transitory fields ---
+    
     @Transient
     private String nombreEquipoLocal;
 

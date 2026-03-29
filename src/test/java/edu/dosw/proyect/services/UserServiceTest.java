@@ -2,7 +2,6 @@ package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
-import edu.dosw.proyect.core.models.Student;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.repositories.UserRepository;
 import edu.dosw.proyect.core.services.UserService;
@@ -44,13 +43,15 @@ class UserServiceTest {
                 "STUDENT"
         );
 
-        Student studentGuardado = new Student(
-                "John Doe",
-                "john@mail.escuelaing.edu.co",
-                "password123",
-                null
-        );
-        studentGuardado.setId(1L);
+        User studentGuardado = User.builder()
+                .id(1L)
+                .name("John Doe")
+                .email("john@mail.escuelaing.edu.co")
+                .password("password123")
+                .role("PLAYER")
+                .academicProgram("Ingeniería")
+                .build();
+
         when(userRepository.save(any(User.class))).thenReturn(studentGuardado);
 
         RegisterResponseDTO response = userService.registerUser(request);
@@ -69,9 +70,15 @@ class UserServiceTest {
                 "GRADUATE"
         );
 
-        User graduateGuardado = new Student(
-                "Jane Graduate", "jane@gmail.com", "password123", null);
-        graduateGuardado.setId(2L);
+        User graduateGuardado = User.builder()
+                .id(2L)
+                .name("Jane Graduate")
+                .email("jane@gmail.com")
+                .password("password123")
+                .role("PLAYER")
+                .academicProgram("Ingeniería")
+                .build();
+
         when(userRepository.save(any(User.class))).thenReturn(graduateGuardado);
 
         RegisterResponseDTO response = userService.registerUser(request);
@@ -90,9 +97,15 @@ class UserServiceTest {
                 "FAMILY_MEMBER"
         );
 
-        User saved = new Student(
-                "Carlos Familiar", "carlos@gmail.com", "password123", null);
-        saved.setId(3L);
+        User saved = User.builder()
+                .id(3L)
+                .name("Carlos Familiar")
+                .email("carlos@gmail.com")
+                .password("password123")
+                .role("PLAYER")
+                .academicProgram("Ingeniería")
+                .build();
+
         when(userRepository.save(any(User.class))).thenReturn(saved);
 
         RegisterResponseDTO response = userService.registerUser(request);

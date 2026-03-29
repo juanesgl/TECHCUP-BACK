@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO for registering or updating the result of a match.
- * Used in: POST /api/matches/{id}/result
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

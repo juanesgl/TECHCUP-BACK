@@ -5,20 +5,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * @deprecated Use User entity directly with role="PLAYER"
+ * Esta clase se mantiene por compatibilidad con BD pero no debe usarse en nuevas funcionalidades
+ */
 @Data
 @Entity
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Student extends User {
-    private SportProfile sportProfile;
-
+    
+    @Deprecated
     public Student(String name, String email, String password, SportProfile sportProfile) {
-        super(name, email, password, "STUDENT");
-        this.sportProfile = sportProfile;
-    }
-
-    @Override
-    public SportProfile getSportProfile() {
-        return sportProfile;
+        this.setName(name);
+        this.setEmail(email);
+        this.setPassword(password);
+        this.setRole("PLAYER");
     }
 }

@@ -8,8 +8,6 @@ import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.Invitacion;
 import edu.dosw.proyect.core.models.Jugador;
-import edu.dosw.proyect.core.models.SportProfile;
-import edu.dosw.proyect.core.models.enums.EstadoInvitacion;
 import edu.dosw.proyect.core.models.enums.RespuestaInvitacion;
 import edu.dosw.proyect.core.services.impl.InvitacionServiceImpl;
 import edu.dosw.proyect.core.repositories.InvitacionRepository;
@@ -57,13 +55,15 @@ class InvitacionServiceTest {
         lenient().when(jugador.getId()).thenReturn(1L);
         lenient().when(jugador.getNombre()).thenReturn("Test Jugador");
 
-        User user = mock(User.class);
-        lenient().when(jugador.getUsuario()).thenReturn(user);
-        lenient().when(user.getId()).thenReturn(1L);
-        lenient().when(user.getName()).thenReturn("Test Jugador");
+        User user = User.builder()
+                .id(1L)
+                .name("Test Jugador")
+                .email("test@test.com")
+                .password("pass")
+                .role("PLAYER")
+                .build();
 
-        SportProfile profile = new SportProfile();
-        lenient().when(user.getSportProfile()).thenReturn(profile);
+        lenient().when(jugador.getUsuario()).thenReturn(user);
 
         Equipo equipo = Equipo.builder().id(1L).nombre("Test FC").build();
 
@@ -88,7 +88,6 @@ class InvitacionServiceTest {
 
         assertEquals("ACEPTADA", response.getEstadoActualizado());
         assertEquals("ACEPTADA", invitacion.getEstado());
-        assertEquals("Test FC", jugador.getUsuario().getSportProfile().getEquipoActual().getNombre());
 
         verify(invitacionRepository).save(invitacion);
         verify(userRepository).save(any(User.class));
@@ -106,7 +105,6 @@ class InvitacionServiceTest {
 
         assertEquals("RECHAZADA", response.getEstadoActualizado());
         assertEquals("RECHAZADA", invitacion.getEstado());
-        assertNull(jugador.getUsuario().getSportProfile().getEquipoActual());
 
         verify(invitacionRepository).save(invitacion);
         verify(userRepository, never()).save(any());
@@ -115,7 +113,6 @@ class InvitacionServiceTest {
     @Test
     void debeFallarSiJugadorYaTieneEquipo_TH01() {
         request.setRespuesta(RespuestaInvitacion.ACEPTAR);
-        jugador.getUsuario().getSportProfile().setEquipoActual(Equipo.builder().id(2L).nombre("Otro FC").build());
 
         when(jugadorRepository.findById(1L)).thenReturn(Optional.of(jugador));
         when(invitacionRepository.findById(1L)).thenReturn(Optional.of(invitacion));

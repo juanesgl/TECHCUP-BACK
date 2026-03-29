@@ -14,13 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * REST Controller for the Automatic Standings Table feature.
- *
- * Endpoints:
- *   POST /api/matches/{matchId}/result           → register / update a match result
- *   GET  /api/tournaments/{tournamentId}/standings → retrieve the current standings table
- */
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -30,9 +24,7 @@ public class StandingsTableController {
 
     private final StandingsTableService standingsTableService;
 
-    // ─────────────────────────────────────────────────────────────────
-    // POST /api/matches/{matchId}/result
-    // ─────────────────────────────────────────────────────────────────
+  
 
     @Operation(
             summary = "Register a match result",
@@ -58,10 +50,7 @@ public class StandingsTableController {
         return ResponseEntity.ok(response);
     }
 
-    // ─────────────────────────────────────────────────────────────────
-    // GET /api/tournaments/{tournamentId}/standings
-    // ─────────────────────────────────────────────────────────────────
-
+ 
     @Operation(
             summary = "Get automatic standings table",
             description = "Calculates and returns the current standings table for a tournament. "

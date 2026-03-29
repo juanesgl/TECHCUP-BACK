@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class TeamLineupResponseDTO {
     private String                      teamName;
     private Long                        matchId;
     private TacticalFormation           formation;
-    private String                      formationDisplay;   // e.g. "1-2-3-1"
+    private String                      formationDisplay;   
     private LineupStatus                status;
     private List<StarterEntryResponseDTO> starters;
     private List<Long>                  reserveIds;

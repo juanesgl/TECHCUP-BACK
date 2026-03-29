@@ -44,7 +44,7 @@ public class Jugador {
     @Column(name = "edad")
     private Integer edad;
 
-    // Legacy support
+    
     @Transient
     private String nombre;
     @Column(name = "perfil_completo")
@@ -53,7 +53,7 @@ public class Jugador {
     @Column(name = "tiene_equipo")
     private boolean tieneEquipo;
 
-    // Constructor to minimally maintain compatibility if needed elsewhere
+    
     public Jugador(Long id, String nombre, boolean perfilCompleto, boolean tieneEquipo, boolean disponible) {
         this.id = id;
         this.nombre = nombre;

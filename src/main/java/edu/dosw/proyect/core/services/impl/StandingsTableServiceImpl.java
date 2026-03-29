@@ -131,7 +131,7 @@ public class StandingsTableServiceImpl implements StandingsTableService {
             totalMatchesPlayed += stat.getPartidosJugados();
         }
 
-        // Divide by 2 because each match is counted for both teams
+        
         totalMatchesPlayed = totalMatchesPlayed / 2;
 
         log.info("Standings retrieved: {} teams from persistent storage.", standings.size());

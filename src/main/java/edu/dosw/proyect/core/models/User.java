@@ -3,21 +3,27 @@ package edu.dosw.proyect.core.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import java.time.LocalDateTime;
 
+/**
+ * Entidad de usuario unified. Los roles se definen mediante el campo 'role'
+ * mapeado al enum UserRole. Elimina la complejidad de herencia por roles.
+ */
 @Entity
 @Table(name = "USUARIO", uniqueConstraints = @UniqueConstraint(columnNames = "correo"))
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_usuario", discriminatorType = DiscriminatorType.STRING)
 @Data
 @NoArgsConstructor
-public abstract class User {
+@AllArgsConstructor
+@Builder
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nombre")
+    @Column(name = "nombre", nullable = false)
     private String name;
 
     @Column(name = "apellido")
@@ -29,60 +35,26 @@ public abstract class User {
     @Column(name = "contrasena_hash", nullable = false)
     private String password;
 
-    @Column(name = "tipo_usuario", insertable = false, updatable = false)
+    @Column(name = "tipo_usuario", nullable = false)
     private String role;
 
-    @Column(name = "fecha_registro")
+    @Column(name = "fecha_registro", nullable = false)
     private LocalDateTime registrationDate;
 
     @Column(name = "activo")
+    @Builder.Default
     private boolean active = true;
 
-    // Legacy support field
-    @Transient
-    private String programaAcademico;
+    @Column(name = "programa_academico")
+    private String academicProgram;
 
-    public SportProfile getSportProfile() {
-        return null;
-    }
-
-    public User(String name, String email, String password, String role) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.registrationDate = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    @PrePersist
+    protected void onCreate() {
+        if (registrationDate == null) {
+            registrationDate = LocalDateTime.now();
+        }
+        if (!active) {
+            active = true;
+        }
     }
 }

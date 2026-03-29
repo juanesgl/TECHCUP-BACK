@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,12 +43,12 @@ public class Equipo {
     @Column(name = "estado_inscripcion")
     private String estadoInscripcion;
 
-    // Relación ManyToMany con Jugador a través de tabla intermedia
+    
     @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<EquipoJugador> equipoJugadores = new ArrayList<>();
 
-    // --- Soporte Legacy (No se mapean a BD nueva) ---
+    
     @Transient
     private String escudo;
 

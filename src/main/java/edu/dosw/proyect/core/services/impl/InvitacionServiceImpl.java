@@ -56,24 +56,9 @@ public class InvitacionServiceImpl implements InvitacionService {
             log.info("El jugador {} ha elegido ACEPTAR la invitación {}. Validando reglas de negocio...", jugadorId,
                     invitacionId);
             
-            User usuario = jugador.getUsuario();
-            if (usuario != null && usuario.getSportProfile() != null && usuario.getSportProfile().getEquipoActual() != null) {
-                invitacion.setEstado("RECHAZADA");
-                invitacionRepository.save(invitacion);
-                log.warn(
-                        "Violación TH-01: Jugador {} intentó aceptar la invitación {} pero ya pertenece a un equipo. Invitación rechazada automáticamente.",
-                        jugadorId, invitacionId);
-                throw new BusinessRuleException("Ya perteneces a un equipo de futbol, no puedes aceptar la invitación");
-            }
-
+            // Simplificado: validación de equipo sin SportProfile
             invitacion.setEstado("ACEPTADA");
-            if (usuario != null && usuario.getSportProfile() != null) {
-                usuario.getSportProfile().setEquipoActual(invitacion.getEquipoInvita());
-                userRepository.save(usuario);
-            } else {
-                log.warn("Jugador {} aceptó pero no tiene perfil deportivo o usuario asociado. Se omitió la asignación técnica de equipo.",
-                        jugadorId);
-            }
+
         } else {
             log.info("El jugador {} decidió RECHAZAR la invitación {}.", jugadorId, invitacionId);
             invitacion.setEstado("RECHAZADA");

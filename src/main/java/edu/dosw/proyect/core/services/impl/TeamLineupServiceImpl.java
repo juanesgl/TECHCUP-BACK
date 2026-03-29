@@ -12,11 +12,13 @@ import edu.dosw.proyect.core.models.TeamLineup;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.enums.LineupStatus;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
+import edu.dosw.proyect.core.models.enums.UserRole;
 import edu.dosw.proyect.core.repositories.EquipoRepository;
 import edu.dosw.proyect.core.repositories.PartidoRepository;
 import edu.dosw.proyect.core.repositories.TeamLineupRepository;
 import edu.dosw.proyect.core.repositories.UserRepository;
 import edu.dosw.proyect.core.services.TeamLineupService;
+import edu.dosw.proyect.core.services.authorization.AuthorizationValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,12 +41,19 @@ public class TeamLineupServiceImpl implements TeamLineupService {
     private final PartidoRepository    matchRepository;
     private final UserRepository       userRepository;
     private final TeamLineupMapper     lineupMapper;
+    private final AuthorizationValidator authorizationValidator;
 
 
     @Override
     public TeamLineupResponseDTO saveLineup(Long captainId, SaveLineupRequestDTO request) {
         log.info("Captain {} saving lineup for team {} / match {}",
                 captainId, request.getTeamId(), request.getMatchId());
+
+        User captain = userRepository.findById(captainId)
+                .orElseThrow(() -> new ResourceNotFoundException("Capitán no encontrado"));
+        
+        // Validar que el usuario sea capitán
+        authorizationValidator.validatePermission(captain, "MANAGE_LINEUP");
 
         Equipo team  = resolveTeam(request.getTeamId());
         Partido match = resolveScheduledMatch(request.getMatchId(), request.getTeamId());
@@ -54,7 +63,6 @@ public class TeamLineupServiceImpl implements TeamLineupService {
         validateFormationSelected(request);
         validateFieldPositionsAssigned(request.getStarters());
 
-        // Check no lineup exists yet for this team+match
         lineupRepository.findByTeamIdAndMatchId(request.getTeamId(), request.getMatchId())
                 .ifPresent(existing -> {
                     throw new BusinessRuleException(
@@ -79,6 +87,11 @@ public class TeamLineupServiceImpl implements TeamLineupService {
                                               SaveLineupRequestDTO request) {
         log.info("Captain {} updating lineup ID: {}", captainId, lineupId);
 
+        User captain = userRepository.findById(captainId)
+                .orElseThrow(() -> new ResourceNotFoundException("Capitán no encontrado"));
+        
+        authorizationValidator.validatePermission(captain, "MANAGE_LINEUP");
+
         TeamLineup existing = lineupRepository.findById(lineupId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Lineup not found with ID: " + lineupId));
@@ -89,7 +102,6 @@ public class TeamLineupServiceImpl implements TeamLineupService {
         validateFormationSelected(request);
         validateFieldPositionsAssigned(request.getStarters());
 
-        // Confirm the match is still scheduled
         resolveScheduledMatch(existing.getMatchId(), existing.getTeamId());
 
         Map<Long, User> playerMap = buildPlayerMap(request.getStarters());
@@ -108,6 +120,11 @@ public class TeamLineupServiceImpl implements TeamLineupService {
     public TeamLineupResponseDTO getLineup(Long captainId, Long teamId, Long matchId) {
         log.info("Captain {} retrieving lineup for team {} / match {}", captainId, teamId, matchId);
 
+        User captain = userRepository.findById(captainId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        
+        authorizationValidator.validatePermission(captain, "VIEW_OPPONENT_LINEUP");
+
         validateCaptainOwnership(captainId, resolveTeam(teamId));
 
         TeamLineup lineup = lineupRepository
@@ -123,6 +140,11 @@ public class TeamLineupServiceImpl implements TeamLineupService {
     @Override
     public List<TeamLineupResponseDTO> getTeamLineups(Long captainId, Long teamId) {
         log.info("Captain {} retrieving all lineups for team {}", captainId, teamId);
+
+        User captain = userRepository.findById(captainId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        
+        authorizationValidator.validateOwnership(captainId, captainId);
 
         validateCaptainOwnership(captainId, resolveTeam(teamId));
 

@@ -37,7 +37,7 @@ public class EventoPartido {
     @Column(name = "descripcion")
     private String descripcion;
 
-    // --- Legacy field ---
+    
     @Transient
     private User jugadorLegacy;
 

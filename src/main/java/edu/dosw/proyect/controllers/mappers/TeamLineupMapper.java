@@ -9,7 +9,6 @@ import edu.dosw.proyect.core.models.TeamLineup;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.enums.LineupStatus;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

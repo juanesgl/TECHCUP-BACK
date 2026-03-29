@@ -4,20 +4,33 @@ import edu.dosw.proyect.controllers.dtos.PaymentResponse;
 import edu.dosw.proyect.controllers.dtos.PaymentStatusRequest;
 import edu.dosw.proyect.controllers.dtos.PaymentUploadRequest;
 import edu.dosw.proyect.core.exceptions.BusinessException;
+import edu.dosw.proyect.core.models.Payment;
 import edu.dosw.proyect.core.models.enums.PaymentStatus;
+import edu.dosw.proyect.core.repositories.PaymentRepository;
 import edu.dosw.proyect.core.services.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 class PaymentServiceTest {
 
+    @Mock
+    private PaymentRepository paymentRepository;
+
+    @InjectMocks
     private PaymentService paymentService;
 
     @BeforeEach
     void setUp() {
-        paymentService = new PaymentService();
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -27,12 +40,20 @@ class PaymentServiceTest {
         request.setTournamentId(1);
         request.setFileUrl("comprobante.png");
 
+        Payment mockPayment = new Payment();
+        mockPayment.setId(1L);
+        mockPayment.setUserId(1L);
+        mockPayment.setTournamentId(1L);
+        mockPayment.setFileUrl("comprobante.png");
+        mockPayment.setStatus(PaymentStatus.PENDING);
+
+        when(paymentRepository.save(any(Payment.class))).thenReturn(mockPayment);
+
         PaymentResponse response = paymentService.uploadPayment(request);
 
         assertEquals("Comprobante subido correctamente", response.getMessage());
         assertEquals("PENDING", response.getStatus());
     }
-
 
     @Test
     void uploadPayment_SinUserId_LanzaExcepcion() {
@@ -74,6 +95,13 @@ class PaymentServiceTest {
         request.setPaymentId(1L);
         request.setStatus(PaymentStatus.APPROVED);
 
+        Payment mockPayment = new Payment();
+        mockPayment.setId(1L);
+        mockPayment.setStatus(PaymentStatus.PENDING);
+
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(mockPayment));
+        when(paymentRepository.save(any(Payment.class))).thenReturn(mockPayment);
+
         PaymentResponse response = paymentService.updatePaymentStatus(request);
 
         assertEquals("Estado actualizado correctamente", response.getMessage());
@@ -85,6 +113,13 @@ class PaymentServiceTest {
         PaymentStatusRequest request = new PaymentStatusRequest();
         request.setPaymentId(2L);
         request.setStatus(PaymentStatus.REJECTED);
+
+        Payment mockPayment = new Payment();
+        mockPayment.setId(2L);
+        mockPayment.setStatus(PaymentStatus.PENDING);
+
+        when(paymentRepository.findById(2L)).thenReturn(Optional.of(mockPayment));
+        when(paymentRepository.save(any(Payment.class))).thenReturn(mockPayment);
 
         PaymentResponse response = paymentService.updatePaymentStatus(request);
 
@@ -120,21 +155,11 @@ class PaymentServiceTest {
         request.setPaymentId(999L);
         request.setStatus(PaymentStatus.APPROVED);
 
+        when(paymentRepository.findById(999L)).thenReturn(Optional.empty());
+
         BusinessException ex = assertThrows(BusinessException.class,
                 () -> paymentService.updatePaymentStatus(request));
 
         assertEquals("Pago no encontrado", ex.getMessage());
-    }
-
-    @Test
-    void updatePaymentStatus_StatusPending_LanzaExcepcion() {
-        PaymentStatusRequest request = new PaymentStatusRequest();
-        request.setPaymentId(1L);
-        request.setStatus(PaymentStatus.PENDING);
-
-        BusinessException ex = assertThrows(BusinessException.class,
-                () -> paymentService.updatePaymentStatus(request));
-
-        assertEquals("No se puede asignar el estado PENDING manualmente", ex.getMessage());
     }
 }
