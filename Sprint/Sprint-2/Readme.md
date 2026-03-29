@@ -46,14 +46,12 @@
 ## JaCoCo
 
 ![Pruebas JaCoCo](Sprint/Sprint-2/evidencias/pruebas/jacoco.png)
->>>>>>> feature/BuscarFiltroJugadores
 
 ## SonarQube
 
 ![SonarQube 1](Sprint/Sprint-2/evidencias/pruebas/sonar1.png)
 ![SonarQube 2](Sprint/Sprint-2/evidencias/pruebas/sonar2.png)
 
-<<<<<<< HEAD
 ## JaCoCo
 
 ![Pruebas JaCocCo](Sprint/Sprint-2/evidencias/pruebas/jacocopruebas.png)
@@ -61,4 +59,4 @@
 ## Swagger
 
 ![Swagger](Sprint/Sprint-2/evidencias/pruebas/swagger1.png)
->>>>>>> feature/BuscarFiltroJugadores
+
