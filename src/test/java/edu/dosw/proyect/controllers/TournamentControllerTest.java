@@ -31,7 +31,6 @@ class TournamentControllerTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void createTournament_ShouldReturnOk() {
         TournamentRequest request = new TournamentRequest("Test", LocalDate.now(), LocalDate.now(), 10, 50, "Rules");
         TournamentResponse response = new TournamentResponse("ID-1", "Test", TournamentsStatus.DRAFT, "Created");
@@ -45,7 +44,6 @@ class TournamentControllerTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void getAllTournaments_ShouldReturnList() {
         Tournament t = new Tournament();
         t.setTournId("ID-1");

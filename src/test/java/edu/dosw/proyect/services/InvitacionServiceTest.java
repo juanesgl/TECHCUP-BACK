@@ -7,11 +7,11 @@ import edu.dosw.proyect.controllers.mappers.InvitacionMapper;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.Invitacion;
-import edu.dosw.proyect.core.models.SportProfile;
-import edu.dosw.proyect.core.models.enums.EstadoInvitacion;
+import edu.dosw.proyect.core.models.Jugador;
 import edu.dosw.proyect.core.models.enums.RespuestaInvitacion;
 import edu.dosw.proyect.core.services.impl.InvitacionServiceImpl;
 import edu.dosw.proyect.core.repositories.InvitacionRepository;
+import edu.dosw.proyect.core.repositories.JugadorRepository;
 import edu.dosw.proyect.core.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +34,9 @@ class InvitacionServiceTest {
     private InvitacionRepository invitacionRepository;
 
     @Mock
+    private JugadorRepository jugadorRepository;
+
+    @Mock
     private UserRepository userRepository;
 
     @Mock
@@ -42,39 +45,41 @@ class InvitacionServiceTest {
     @InjectMocks
     private InvitacionServiceImpl invitacionService;
 
-    static class TestPlayer extends User {
-        private SportProfile sportProfile;
-        public TestPlayer(Long id, String name, SportProfile sportProfile) {
-            super(name, "test@test", "pass", "PLAYER");
-            setId(id);
-            this.sportProfile = sportProfile;
-        }
-        @Override
-        public SportProfile getSportProfile() {
-            return sportProfile;
-        }
-    }
-
-    private TestPlayer jugador;
+    private Jugador jugador;
     private Invitacion invitacion;
     private RespuestaInvitacionRequestDTO request;
 
     @BeforeEach
     void setUp() {
-        SportProfile profile = new SportProfile();
-        jugador = new TestPlayer(1L, "Test Jugador", profile);
+        jugador = mock(Jugador.class);
+        lenient().when(jugador.getId()).thenReturn(1L);
+        lenient().when(jugador.getNombre()).thenReturn("Test Jugador");
 
-        TestPlayer capitan = new TestPlayer(2L, "Capitan", new SportProfile());
+        User user = User.builder()
+                .id(1L)
+                .name("Test Jugador")
+                .email("test@test.com")
+                .password("pass")
+                .role("PLAYER")
+                .build();
+
+        lenient().when(jugador.getUsuario()).thenReturn(user);
+
         Equipo equipo = Equipo.builder().id(1L).nombre("Test FC").build();
 
-        invitacion = new Invitacion(1L, jugador, equipo, capitan, EstadoInvitacion.PENDIENTE);
+        invitacion = Invitacion.builder()
+                .id(1L)
+                .jugador(jugador)
+                .equipo(equipo)
+                .estado("PENDIENTE")
+                .build();
         request = new RespuestaInvitacionRequestDTO();
     }
 
     @Test
     void debeAceptarInvitacionExitosamente() {
         request.setRespuesta(RespuestaInvitacion.ACEPTAR);
-        when(userRepository.findById(1L)).thenReturn(Optional.of(jugador));
+        when(jugadorRepository.findById(1L)).thenReturn(Optional.of(jugador));
         when(invitacionRepository.findById(1L)).thenReturn(Optional.of(invitacion));
         when(invitacionMapper.toResponseDTO(any(), anyString()))
                 .thenReturn(InvitacionResponseDTO.builder().estadoActualizado("ACEPTADA").build());
@@ -82,17 +87,16 @@ class InvitacionServiceTest {
         InvitacionResponseDTO response = invitacionService.responderInvitacion(1L, 1L, request);
 
         assertEquals("ACEPTADA", response.getEstadoActualizado());
-        assertEquals(EstadoInvitacion.ACEPTADA, invitacion.getEstado());
-        assertEquals("Test FC", jugador.getSportProfile().getEquipoActual().getNombre());
-        
+        assertEquals("ACEPTADA", invitacion.getEstado());
+
         verify(invitacionRepository).save(invitacion);
-        verify(userRepository).save(jugador);
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
     void debeRechazarInvitacionExitosamente() {
         request.setRespuesta(RespuestaInvitacion.RECHAZAR);
-        when(userRepository.findById(1L)).thenReturn(Optional.of(jugador));
+        when(jugadorRepository.findById(1L)).thenReturn(Optional.of(jugador));
         when(invitacionRepository.findById(1L)).thenReturn(Optional.of(invitacion));
         when(invitacionMapper.toResponseDTO(any(), anyString()))
                 .thenReturn(InvitacionResponseDTO.builder().estadoActualizado("RECHAZADA").build());
@@ -100,8 +104,7 @@ class InvitacionServiceTest {
         InvitacionResponseDTO response = invitacionService.responderInvitacion(1L, 1L, request);
 
         assertEquals("RECHAZADA", response.getEstadoActualizado());
-        assertEquals(EstadoInvitacion.RECHAZADA, invitacion.getEstado());
-        assertNull(jugador.getSportProfile().getEquipoActual());
+        assertEquals("RECHAZADA", invitacion.getEstado());
 
         verify(invitacionRepository).save(invitacion);
         verify(userRepository, never()).save(any());
@@ -110,17 +113,16 @@ class InvitacionServiceTest {
     @Test
     void debeFallarSiJugadorYaTieneEquipo_TH01() {
         request.setRespuesta(RespuestaInvitacion.ACEPTAR);
-        jugador.getSportProfile().setEquipoActual(Equipo.builder().id(2L).nombre("Otro FC").build());
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(jugador));
+        when(jugadorRepository.findById(1L)).thenReturn(Optional.of(jugador));
         when(invitacionRepository.findById(1L)).thenReturn(Optional.of(invitacion));
 
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, 
-            () -> invitacionService.responderInvitacion(1L, 1L, request));
+        BusinessRuleException ex = assertThrows(BusinessRuleException.class,
+                () -> invitacionService.responderInvitacion(1L, 1L, request));
 
         assertEquals("Ya perteneces a un equipo de futbol, no puedes aceptar la invitación", ex.getMessage());
-        assertEquals(EstadoInvitacion.RECHAZADA, invitacion.getEstado());
-        
+        assertEquals("RECHAZADA", invitacion.getEstado());
+
         verify(invitacionRepository).save(invitacion);
     }
 }

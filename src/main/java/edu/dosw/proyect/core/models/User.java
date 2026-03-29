@@ -1,26 +1,60 @@
 package edu.dosw.proyect.core.models;
 
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import java.time.LocalDateTime;
 
+/**
+ * Entidad de usuario unified. Los roles se definen mediante el campo 'role'
+ * mapeado al enum UserRole. Elimina la complejidad de herencia por roles.
+ */
+@Entity
+@Table(name = "USUARIO", uniqueConstraints = @UniqueConstraint(columnNames = "correo"))
 @Data
 @NoArgsConstructor
-public abstract class User {
+@AllArgsConstructor
+@Builder
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "nombre", nullable = false)
     private String name;
+
+    @Column(name = "apellido")
+    private String lastName;
+
+    @Column(name = "correo", unique = true, nullable = false)
     private String email;
+
+    @Column(name = "contrasena_hash", nullable = false)
     private String password;
+
+    @Column(name = "tipo_usuario", nullable = false)
     private String role;
-    private String programaAcademico;
 
-    public User(String name, String email, String password, String role) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
+    @Column(name = "fecha_registro", nullable = false)
+    private LocalDateTime registrationDate;
 
-    public SportProfile getSportProfile() {
-        return null;
+    @Column(name = "activo")
+    @Builder.Default
+    private boolean active = true;
+
+    @Column(name = "programa_academico")
+    private String academicProgram;
+
+    @PrePersist
+    protected void onCreate() {
+        if (registrationDate == null) {
+            registrationDate = LocalDateTime.now();
+        }
+        if (!active) {
+            active = true;
+        }
     }
 }

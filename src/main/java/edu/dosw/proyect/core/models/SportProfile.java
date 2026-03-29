@@ -3,6 +3,7 @@ package edu.dosw.proyect.core.models;
 import java.io.File;
 import java.util.List;
 
+import edu.dosw.proyect.core.models.enums.Gender;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;

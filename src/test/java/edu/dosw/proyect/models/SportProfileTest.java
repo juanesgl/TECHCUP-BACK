@@ -1,7 +1,8 @@
 package edu.dosw.proyect.models;
 
-import edu.dosw.proyect.core.models.Gender;
 import edu.dosw.proyect.core.models.SportProfile;
+import edu.dosw.proyect.core.models.enums.Gender;
+
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Arrays;

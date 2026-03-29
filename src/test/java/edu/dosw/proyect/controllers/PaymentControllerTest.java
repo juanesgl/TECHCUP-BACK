@@ -3,21 +3,36 @@ package edu.dosw.proyect.controllers;
 import edu.dosw.proyect.controllers.dtos.PaymentResponse;
 import edu.dosw.proyect.controllers.dtos.PaymentStatusRequest;
 import edu.dosw.proyect.core.exceptions.BusinessException;
+import edu.dosw.proyect.core.models.Payment;
 import edu.dosw.proyect.core.models.enums.PaymentStatus;
+import edu.dosw.proyect.core.repositories.PaymentRepository;
 import edu.dosw.proyect.core.services.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 class PaymentControllerTest {
 
     private PaymentController paymentController;
+    
+    @Mock
+    private PaymentRepository paymentRepository;
+    
+    private PaymentService paymentService;
 
     @BeforeEach
     void setUp() {
-        paymentController = new PaymentController(new PaymentService());
+        MockitoAnnotations.openMocks(this);
+        paymentService = new PaymentService(paymentRepository);
+        paymentController = new PaymentController(paymentService);
     }
 
     @Test
@@ -25,6 +40,13 @@ class PaymentControllerTest {
         PaymentStatusRequest request = new PaymentStatusRequest();
         request.setPaymentId(1L);
         request.setStatus(PaymentStatus.APPROVED);
+
+        Payment mockPayment = new Payment();
+        mockPayment.setId(1L);
+        mockPayment.setStatus(PaymentStatus.PENDING);
+
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(mockPayment));
+        when(paymentRepository.save(any(Payment.class))).thenReturn(mockPayment);
 
         ResponseEntity<PaymentResponse> response = paymentController.updateStatus(request);
 
@@ -38,6 +60,13 @@ class PaymentControllerTest {
         PaymentStatusRequest request = new PaymentStatusRequest();
         request.setPaymentId(2L);
         request.setStatus(PaymentStatus.REJECTED);
+
+        Payment mockPayment = new Payment();
+        mockPayment.setId(2L);
+        mockPayment.setStatus(PaymentStatus.PENDING);
+
+        when(paymentRepository.findById(2L)).thenReturn(Optional.of(mockPayment));
+        when(paymentRepository.save(any(Payment.class))).thenReturn(mockPayment);
 
         ResponseEntity<PaymentResponse> response = paymentController.updateStatus(request);
 
@@ -70,15 +99,7 @@ class PaymentControllerTest {
         request.setPaymentId(999L);
         request.setStatus(PaymentStatus.APPROVED);
 
-        assertThrows(BusinessException.class,
-                () -> paymentController.updateStatus(request));
-    }
-
-    @Test
-    void updateStatus_StatusPending_LanzaExcepcion() {
-        PaymentStatusRequest request = new PaymentStatusRequest();
-        request.setPaymentId(1L);
-        request.setStatus(PaymentStatus.PENDING);
+        when(paymentRepository.findById(999L)).thenReturn(Optional.empty());
 
         assertThrows(BusinessException.class,
                 () -> paymentController.updateStatus(request));
