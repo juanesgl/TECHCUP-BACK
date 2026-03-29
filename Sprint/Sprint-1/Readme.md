@@ -111,9 +111,20 @@ historias de usuario, tareas y funcionalidades implementadas en el sistema.
 ### Diagrama de componentes general
 
 ![Diagrama de componentes general](docs/uml/diagrama_componentes_general.png)
+- En nuestro diagrama se pueden identificar cuatro elementos principales. El primero es el User, que representa cualquier persona que interactúa con el sistema, ya sea un capitán, un jugador, un organizador o un administrador. Este usuario se conecta al componente de Frontend a través de una interfaz, lo que significa que toda interacción comienza desde la interfaz visual.
+El Frontend a su vez se comunica con el Backend mediante una interfaz de tipo puerto, que en nuestro caso corresponde a los endpoints REST documentados con Swagger. Esta comunicación es bidireccional: el frontend envía peticiones y el backend responde con los datos procesados.
+El Backend tiene dos dependencias externas. La primera es la Base de Datos, hacia donde apunta con una flecha de dependencia, indicando que el backend persiste y consulta la información del torneo, equipos, partidos, pagos y alineaciones. La segunda dependencia externa es el servicio de Autenticación Gmail, que se conecta a través de una interfaz, representando la integración con OAuth2 de Google que está planificada implementar para los usuarios externos del sistema.
 ### Diagrama de componentes especifico
 ![Diagrama de componentes especifico](docs/uml/diagrama_componentes_especifico.png)
 
+- El diagrama de componentes específico muestra cómo está organizado internamente el Backend, identificando los módulos principales y cómo se relacionan entre sí.  este diagrama define el propósito de cada componente interno: controladores, servicios, repositorios, mappers y utilidades.
+En nuestro diagrama se pueden ver seis flujos principales, uno por cada módulo funcional del sistema, y todos siguen exactamente la misma estructura en capas de izquierda a derecha.
+- El primer flujo es el de Autenticación, donde el AuthController recibe la petición del usuario, la pasa al AuthService a través de una interfaz, este la valida con el AuthValidator, luego el AuthMapper transforma los datos y finalmente el AuthRepository persiste o consulta la información. Al final del flujo hay un componente de Util que es compartido por todos los módulos.
+- El segundo flujo es el de Torneos, siguiendo la misma lógica: TorneoController → TorneoService → TorneoValidator → TorneoMapper → TorneoRepository → Util. Este módulo gestiona la creación, inicio y finalización de torneos.
+- El tercer flujo corresponde a Jugadores, donde JugadoresController coordina con JugadoresService para gestionar la disponibilidad de los jugadores en la agencia libre, validando con JugadoresValidator antes de persistir en JugadoresRepository.
+- El cuarto flujo es el de Equipos, que es uno de los más importantes porque gestiona la creación de equipos, las invitaciones y las alineaciones. El EquipoController delega en EquipoService, que aplica las reglas de negocio TH-01, TH-02 y TH-03 antes de guardar en EquipoRepository.
+- El quinto flujo es el de Partidos, donde PartidoController coordina con PartidoService para registrar resultados y actualizar automáticamente la tabla de posiciones, usando PartidoMapper para transformar los datos entre capas.
+- El sexto y último flujo es el de Pagos, donde PagoController gestiona la subida de comprobantes y el cambio de estado de los pagos a través de PagoService y PagoRepository.
 
 
 ## Pruebas
