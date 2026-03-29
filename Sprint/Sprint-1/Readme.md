@@ -41,6 +41,16 @@ Validators → Validan los datos de entrada
 
 ![Diagrama de contexto](docs/uml/diagrama_de_contexto.png)
 
+- En el centro está TechCup, definida como una plataforma digital para la gestión del torneo semestral de fútbol. Todo lo que ocurre dentro de esa elipse es el sistema que estamos construyendo, y todo lo que está afuera son actores externos con los que el sistema se comunica.
+- Alrededor del sistema identificamos seis actores externos:
+- El Jugador es el actor principal. Se inscribe en el torneo, gestiona su perfil deportivo y recibe información del torneo como partidos y resultados. También se conecta con Nequi para realizar el pago de inscripción y generar el comprobante.
+- Nequi es el único sistema externo del diagrama, por eso aparece en rojo diferenciándose de los actores humanos. Funciona como la pasarela de pago: el jugador le envía el dinero y Nequi genera el comprobante que luego se sube a TechCup para ser aprobado.
+- El Capitán gestiona todo lo relacionado con su equipo: armar el equipo, gestionar pagos y configurar las alineaciones para cada partido. También recibe del sistema la programación de los partidos en los que participa.
+- El Organizador administra el torneo en general, aprueba los pagos de inscripción de los equipos y gestiona las llaves eliminatorias junto con el sistema.
+- El Administrador es el actor con mayor nivel de acceso y gestiona el sistema de forma completa, incluyendo configuraciones globales, usuarios y torneos.
+- El Árbitro tiene la interacción más limitada, únicamente consulta la información de los partidos que tiene asignados, como fecha, cancha y equipos participantes.
+- Este diagrama nos permite entender de un solo vistazo quiénes usan TechCup y para qué, sin necesidad de conocer nada técnico del sistema. Define claramente los límites de lo que el equipo de desarrollo debe construir y las integraciones externas que debe contemplar, en este caso únicamente Nequi como sistema de pago
+
 #### Jira
 
 [Ver tablero en Jira](https://juanspacee.atlassian.net/jira/software/projects/TEC/boards/166/timeline)
@@ -107,6 +117,15 @@ historias de usuario, tareas y funcionalidades implementadas en el sistema.
 
 ### Diagrama de clases
 ![Diagrama de clases](docs/uml/diagrama_de_clases.png)
+- El núcleo del sistema es la clase User, que es una clase abstracta de la cual heredan todos los tipos de usuario del sistema: Student, Graduate, Professor, Referee, Admin, Organizer y FamilyMember. Esta herencia se representa con las flechas que apuntan hacia User desde cada subclase.
+- La clase TournamentModel representa el torneo y se relaciona con Match que representa cada partido, y con TournamentManagement que gestiona las operaciones sobre el torneo como crearlo, iniciarlo y finalizarlo.
+- La clase Invitation gestiona las invitaciones que el capitán envía a los jugadores para unirse a su equipo, y Notification se encarga de avisar a los usuarios cuando ocurre algo relevante en el sistema.
+- En la parte inferior del diagrama se pueden ver las clases relacionadas con los patrones de diseño que implementamos:
+- Con Factory Method se crean los diferentes tipos de usuario. Cada tipo tiene su propia fábrica: StudentCreator, GraduateCreator, ProfessorCreator, AdminCreator, RefereeCreator y GraduateCreator, todas heredando de una interfaz común UserCreator. Esto permite agregar nuevos tipos de usuario sin modificar el código existente.
+- Con Strategy se maneja la autenticación. Hay dos estrategias concretas: InstitutionalEmailStrategy para usuarios internos con correo institucional, y GmailOAuthStrategy para usuarios externos con Google, ambas implementando la interfaz AuthStrategy.
+- Con Builder se construye el torneo paso a paso a través de TournamentBuilder, permitiendo configurar fechas, canchas, costos y reglamento de forma ordenada.
+- Con Chain of Responsibility se validan los comprobantes de pago. Hay una cadena de validadores donde cada uno revisa su parte y pasa al siguiente: FileValidator, PaymentValidator, FormatValidator y BusinessValidator, todos heredando de BaseValidator.
+- Con Observer se gestionan las notificaciones. La interfaz Observer tiene un método update() que implementan NotificationService y AuditService, y cuando ocurre un evento en el sistema como un pago aprobado o un partido programado, el Subject notifica automáticamente a todos los observadores registrados.
 
 ### Diagrama de componentes general
 
