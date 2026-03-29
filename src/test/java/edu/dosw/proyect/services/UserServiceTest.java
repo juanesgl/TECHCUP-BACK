@@ -2,84 +2,171 @@ package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
+import edu.dosw.proyect.core.models.Student;
 import edu.dosw.proyect.core.models.User;
+import edu.dosw.proyect.core.repositories.UserRepository;
 import edu.dosw.proyect.core.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
     private UserService userService;
 
-    @BeforeEach
-    void setUp() {
-        userService = new UserService();
+    private RegisterRequestDTO buildRequest(String name, String email, String role) {
+        RegisterRequestDTO req = new RegisterRequestDTO();
+        req.setName(name);
+        req.setEmail(email);
+        req.setPassword("password123");
+        req.setRole(role);
+        req.setPreferredPosition("Delantero");
+        req.setSkillLevel(8);
+        return req;
     }
+
 
     @Test
     void registerUser_HappyPath_Student() {
-        // Arrange
-        RegisterRequestDTO request = new RegisterRequestDTO();
-        request.setName("John Doe");
-        request.setEmail("john@mail.escuelaing.edu.co");
-        request.setPassword("password123");
-        request.setRole("STUDENT");
-        request.setPreferredPosition("Forward");
-        request.setSkillLevel(8);
+        RegisterRequestDTO request = buildRequest(
+                "John Doe",
+                "john@mail.escuelaing.edu.co",
+                "STUDENT"
+        );
 
-        // Act
+        Student studentGuardado = new Student(
+                "John Doe",
+                "john@mail.escuelaing.edu.co",
+                "password123",
+                null
+        );
+        studentGuardado.setId(1L);
+        when(userRepository.save(any(User.class))).thenReturn(studentGuardado);
+
         RegisterResponseDTO response = userService.registerUser(request);
 
-        // Assert
         assertNotNull(response);
         assertEquals("Usuario registrado exitosamente", response.getMessage());
-        assertNotNull(response.getUserId());
+        assertEquals(1L, response.getUserId());
 
-        Map<Long, User> repo = userService.getUserRepository();
-        assertEquals(1, repo.size());
-        User savedUser = repo.get(response.getUserId());
-        assertEquals("John Doe", savedUser.getName());
-        assertEquals("STUDENT", savedUser.getRole());
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    void registerUser_ErrorHandling_InvalidEmailForRole() {
-        // Arrange
-        RegisterRequestDTO request = new RegisterRequestDTO();
-        request.setName("Jane Doe");
-        request.setEmail("jane@gmail.com");
-        request.setPassword("password123");
-        request.setRole("STUDENT");
+    void registerUser_HappyPath_Graduate() {
+        RegisterRequestDTO request = buildRequest(
+                "Jane Graduate",
+                "jane@gmail.com",
+                "GRADUATE"
+        );
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.registerUser(request);
-        });
+        User graduateGuardado = new Student("Jane Graduate", "jane@gmail.com", "password123", null);
+        graduateGuardado.setId(2L);
+        when(userRepository.save(any(User.class))).thenReturn(graduateGuardado);
 
-        assertEquals("Dominio de correo invalido para el rol: STUDENT", exception.getMessage());
+        RegisterResponseDTO response = userService.registerUser(request);
 
-        Map<Long, User> repo = userService.getUserRepository();
-        assertTrue(repo.isEmpty(), "Repository should be empty after failed registration");
+        assertNotNull(response);
+        assertEquals("Usuario registrado exitosamente", response.getMessage());
+        assertEquals(2L, response.getUserId());
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    void registerUser_ErrorHandling_UnsupportedRole() {
-        // Arrange
-        RegisterRequestDTO request = new RegisterRequestDTO();
-        request.setName("Bob");
-        request.setEmail("bob@gmail.com");
-        request.setPassword("pass");
-        request.setRole("INVALID_ROLE");
+    void registerUser_HappyPath_FamilyMember() {
+        RegisterRequestDTO request = buildRequest(
+                "Carlos Familiar",
+                "carlos@gmail.com",
+                "FAMILY_MEMBER"
+        );
 
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.registerUser(request);
-        });
+        User saved = new Student("Carlos Familiar", "carlos@gmail.com", "password123", null);
+        saved.setId(3L);
+        when(userRepository.save(any(User.class))).thenReturn(saved);
 
-        assertEquals("Rol no soportado: INVALID_ROLE", exception.getMessage());
+        RegisterResponseDTO response = userService.registerUser(request);
+
+        assertNotNull(response);
+        assertEquals("Usuario registrado exitosamente", response.getMessage());
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+
+    @Test
+    void registerUser_Error_InvalidEmailForStudentRole() {
+        RegisterRequestDTO request = buildRequest(
+                "Jane Doe",
+                "jane@gmail.com",
+                "STUDENT"
+        );
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.registerUser(request)
+        );
+
+        assertEquals("Dominio de correo invalido para el rol: STUDENT", ex.getMessage());
+
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void registerUser_Error_InvalidEmailForProfessorRole() {
+        RegisterRequestDTO request = buildRequest(
+                "Prof Torres",
+                "torres@gmail.com",
+                "PROFESSOR"
+        );
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.registerUser(request)
+        );
+
+        assertEquals("Dominio de correo invalido para el rol: PROFESSOR", ex.getMessage());
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void registerUser_Error_UnsupportedRole() {
+        RegisterRequestDTO request = buildRequest(
+                "Bob",
+                "bob@gmail.com",
+                "INVALID_ROLE"
+        );
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.registerUser(request)
+        );
+
+        assertEquals("Rol no soportado: INVALID_ROLE", ex.getMessage());
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void registerUser_Error_NullRole() {
+        RegisterRequestDTO request = buildRequest("Bob", "bob@gmail.com", null);
+        request.setRole(null);
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.registerUser(request)
+        );
+
+        assertEquals("Rol no soportado: null", ex.getMessage());
+        verify(userRepository, never()).save(any(User.class));
     }
 }

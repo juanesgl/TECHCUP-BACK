@@ -3,21 +3,20 @@ package edu.dosw.proyect.core.services;
 import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
 import edu.dosw.proyect.core.models.User;
+import edu.dosw.proyect.core.repositories.UserRepository;
 import edu.dosw.proyect.core.utils.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    private final Map<Long, User> userRepository = new HashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+
+    private final UserRepository userRepository;
 
     public RegisterResponseDTO registerUser(RegisterRequestDTO request) {
         UserCreator creator = getCreatorByRole(request.getRole());
-        
+
         if (creator == null) {
             throw new IllegalArgumentException("Rol no soportado: " + request.getRole());
         }
@@ -27,29 +26,23 @@ public class UserService {
         }
 
         User newUser = creator.createUser(request);
-        newUser.setId(idGenerator.getAndIncrement());
-        
-        userRepository.put(newUser.getId(), newUser);
+        User saved = userRepository.save(newUser);
 
-        return new RegisterResponseDTO("Usuario registrado exitosamente", newUser.getId());
+        return new RegisterResponseDTO("Usuario registrado exitosamente", saved.getId());
     }
 
     private UserCreator getCreatorByRole(String role) {
         if (role == null) return null;
-        
-        switch (role.toUpperCase()) {
-            case "STUDENT": return new StudentCreator();
-            case "GRADUATE": return new GraduateCreator();
-            case "PROFESSOR": return new ProfessorCreator();
-            case "ADMIN": return new AdminCreator();
-            case "FAMILY_MEMBER": return new FamilyCreator();
-            case "ORGANIZER": return new OrganizerCreator();
-            case "REFEREE": return new RefereeCreator();
-            default: return null;
-        }
-    }
 
-    public Map<Long, User> getUserRepository() {
-        return userRepository;
+        return switch (role.toUpperCase()) {
+            case "STUDENT"      -> new StudentCreator();
+            case "GRADUATE"     -> new GraduateCreator();
+            case "PROFESSOR"    -> new ProfessorCreator();
+            case "ADMIN"        -> new AdminCreator();
+            case "FAMILY_MEMBER"-> new FamilyCreator();
+            case "ORGANIZER"    -> new OrganizerCreator();
+            case "REFEREE"      -> new RefereeCreator();
+            default             -> null;
+        };
     }
 }
