@@ -3,6 +3,8 @@ package edu.dosw.proyect.core.models;
 import edu.dosw.proyect.core.models.enums.TournamentsStatus;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +23,10 @@ public class Tournament {
     private double costPerTeam;
     private TournamentsStatus status;
     private String regulation;
+    private Long organizerId;
+    private LocalDate registrationCloseDate;
+    private String importantDates;
+    private String matchSchedules;
+    private String sanctions;
+    private List<Cancha> canchas = new ArrayList<>();
 }
