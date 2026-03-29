@@ -1,29 +1,30 @@
 package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.Jugador;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class JugadorRepository {
+public interface JugadorRepository extends JpaRepository<Jugador, Long> {
 
-    private final Map<Long, Jugador> memoria = new HashMap<>();
+        @Query("SELECT j FROM Jugador j JOIN j.usuario u WHERE " +
+                        "(:name IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
+                        "(:posicion IS NULL OR j.posiciones LIKE %:posicion%) AND " +
+                        "(:semestre IS NULL OR j.semestre = :semestre) AND " +
+                        "(:disponible IS NULL OR j.disponible = :disponible) AND " +
+                        "(:edad IS NULL OR j.edad = :edad)")
+        List<Jugador> filterPlayers(@Param("name") String name,
+                        @Param("posicion") String posicion,
+                        @Param("semestre") String semestre,
+                        @Param("disponible") Boolean disponible,
+                        @Param("edad") Integer edad);
 
-    public JugadorRepository() {
-        memoria.put(1L, new Jugador(1L, "Lionel Messi", true, false, false));   
-        memoria.put(2L, new Jugador(2L, "Cristiano Ronaldo", false, false, false)); 
-        memoria.put(3L, new Jugador(3L, "Neymar Jr", true, true, false));       
-    }
-
-    public Optional<Jugador> findById(Long id) {
-        return Optional.ofNullable(memoria.get(id));
-    }
-
-    public Jugador save(Jugador jugador) {
-        memoria.put(jugador.getId(), jugador);
-        return jugador;
-    }
+        // Support for legacy mapping / in-memory compat
+        @Query("SELECT j FROM Jugador j WHERE j.usuario.name = :nombre")
+        Optional<Jugador> findByNombre(@Param("nombre") String nombre);
 }

@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class InvitacionMapper {
-    
+
     public InvitacionResponseDTO toResponseDTO(Invitacion invitacion, String mensaje) {
         return InvitacionResponseDTO.builder()
                 .invitacionId(invitacion.getId())
                 .mensajeCapitan(mensaje)
-                .estadoActualizado(invitacion.getEstado().name())
+                .estadoActualizado(invitacion.getEstado())
                 .build();
     }
 }

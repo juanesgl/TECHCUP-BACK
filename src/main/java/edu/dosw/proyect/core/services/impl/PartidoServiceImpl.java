@@ -30,13 +30,11 @@ public class PartidoServiceImpl implements PartidoService {
         List<Partido> resultado;
 
         if (filtro.getFecha() != null) {
-            resultado = partidoRepository.findByFecha(filtro.getFecha());
-        } else if (filtro.getCancha() != null && !filtro.getCancha().isBlank()) {
-            resultado = partidoRepository.findByCancha(filtro.getCancha());
+            resultado = partidoRepository.findByFiltros(filtro.getFecha(), null);
         } else if (filtro.getNombreEquipo() != null && !filtro.getNombreEquipo().isBlank()) {
-            resultado = partidoRepository.findByEquipo(filtro.getNombreEquipo());
+            resultado = partidoRepository.findByNombreEquipo(filtro.getNombreEquipo());
         } else if (filtro.getTournamentId() != null && !filtro.getTournamentId().isBlank()) {
-            resultado = partidoRepository.findByTournamentId(filtro.getTournamentId());
+            resultado = partidoRepository.findByTorneo_TournId(filtro.getTournamentId());
         } else {
             resultado = partidoRepository.findAll();
         }
@@ -47,9 +45,11 @@ public class PartidoServiceImpl implements PartidoService {
         }
 
         resultado.sort((a, b) -> {
-            if (a.getFecha() == null) return 1;
-            if (b.getFecha() == null) return -1;
-            return a.getFecha().compareTo(b.getFecha());
+            if (a.getFechaHora() == null)
+                return 1;
+            if (b.getFechaHora() == null)
+                return -1;
+            return a.getFechaHora().compareTo(b.getFechaHora());
         });
 
         log.info("Se encontraron {} partidos", resultado.size());
@@ -65,7 +65,7 @@ public class PartidoServiceImpl implements PartidoService {
                         "Partido con ID " + partidoId + " no encontrado en el sistema"));
 
         log.info("Partido encontrado: {} vs {}",
-                partido.getNombreEquipoLocal(), partido.getNombreEquipoVisitante());
+                partido.getEquipoLocal().getNombre(), partido.getEquipoVisitante().getNombre());
 
         return partidoMapper.toResponseDTO(partido);
     }
