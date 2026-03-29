@@ -37,7 +37,8 @@ class TournamentControllerTest {
         TournamentResponse response = new TournamentResponse("ID-1", "Test", TournamentsStatus.DRAFT, "Created");
         when(tournamentService.createTournament(any(TournamentRequest.class))).thenReturn(response);
 
-        ResponseEntity<TournamentResponse> result = (ResponseEntity<TournamentResponse>) tournamentController.createTournament(request);
+        ResponseEntity<TournamentResponse> result = (ResponseEntity<TournamentResponse>) tournamentController
+                .createTournament(request);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("ID-1", result.getBody().turnId());
@@ -46,10 +47,19 @@ class TournamentControllerTest {
     @Test
     @SuppressWarnings("unchecked")
     void getAllTournaments_ShouldReturnList() {
-        Tournament t = new Tournament("ID-1", "Test", LocalDate.now(), LocalDate.now(), 10, 50, TournamentsStatus.DRAFT, "Rules");
+        Tournament t = new Tournament();
+        t.setTournId("ID-1");
+        t.setName("Test");
+        t.setStartDate(LocalDate.now());
+        t.setEndDate(LocalDate.now());
+        t.setMaxTeams(10);
+        t.setCostPerTeam(50);
+        t.setStatus(TournamentsStatus.DRAFT);
+        t.setRegulation("Rules");
         when(tournamentService.getAllTournaments()).thenReturn(List.of(t));
 
-        ResponseEntity<List<Tournament>> result = (ResponseEntity<List<Tournament>>) tournamentController.getAllTournaments();
+        ResponseEntity<List<Tournament>> result = (ResponseEntity<List<Tournament>>) tournamentController
+                .getAllTournaments();
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(1, result.getBody().size());
