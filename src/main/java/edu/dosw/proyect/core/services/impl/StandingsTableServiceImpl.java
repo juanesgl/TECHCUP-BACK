@@ -19,16 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-/**
- * Implementation of the Automatic Standings Table service.
- *
- * Business rules enforced:
- *  - Only FINISHED or IN_PROGRESS matches count towards the standings.
- *  - Results cannot be registered for CANCELLED matches.
- *  - Results cannot be registered for already FINISHED matches.
- *  - Sorting: Points > Goal Difference > Goals Scored > Team Name (alphabetical).
- *  - If no matches have been played, an empty table with all zeros is returned.
- */
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,9 +28,6 @@ public class StandingsTableServiceImpl implements StandingsTableService {
     private final PartidoRepository   matchRepository;
     private final StandingsTableMapper standingsMapper;
 
-    // ─────────────────────────────────────────────────────────────────
-    // REGISTER RESULT
-    // ─────────────────────────────────────────────────────────────────
 
     @Override
     public RegisterMatchResultResponseDTO registerResult(Long matchId,
@@ -63,9 +51,6 @@ public class StandingsTableServiceImpl implements StandingsTableService {
         return standingsMapper.toRegisterMatchResultResponseDTO(match);
     }
 
-    // ─────────────────────────────────────────────────────────────────
-    // GET STANDINGS TABLE
-    // ─────────────────────────────────────────────────────────────────
 
     @Override
     public StandingsTableResponseDTO getStandings(String tournamentId) {
@@ -125,11 +110,8 @@ public class StandingsTableServiceImpl implements StandingsTableService {
                 tournamentId, tournamentName, totalMatchesPlayed, standings);
     }
 
-    // ─────────────────────────────────────────────────────────────────
-    // PRIVATE HELPERS
-    // ─────────────────────────────────────────────────────────────────
 
-    /** Validates that a match can receive a new result. */
+
     private void validateMatchIsRegistrable(Partido match) {
         if (match.getEstado() == MatchStatus.CANCELADO) {
             throw new BusinessRuleException(
@@ -141,21 +123,18 @@ public class StandingsTableServiceImpl implements StandingsTableService {
         }
     }
 
-    /** Stores the team name in the auxiliary map (without overwriting). */
+
     private void storeTeamName(Map<Long, String> names, Equipo team) {
         names.putIfAbsent(team.getId(),
                 team.getNombre() != null ? team.getNombre() : "Unnamed");
     }
 
-    /** Gets or creates the stats array for a team: [MP, W, D, L, GF, GA]. */
+
     private long[] statsFor(Map<Long, long[]> accumulator, Long teamId) {
         return accumulator.computeIfAbsent(teamId, k -> new long[6]);
     }
 
-    /**
-     * Converts the accumulator map into a sorted list of TeamStandingDTO.
-     * Sort order: Points DESC → GD DESC → GF DESC → Name ASC
-     */
+
     private List<TeamStandingDTO> buildSortedStandings(Map<Long, long[]> accumulator,
                                                        Map<Long, String> names) {
         List<TeamStandingDTO> list = new ArrayList<>();
@@ -171,20 +150,22 @@ public class StandingsTableServiceImpl implements StandingsTableService {
                     (int) s[3], (int) s[4], (int) s[5]));
         }
 
-        list.sort(Comparator
-                .comparingInt(TeamStandingDTO::getPoints).reversed()
-                .thenComparingInt(TeamStandingDTO::getGoalDifference).reversed()
-                .thenComparingInt(TeamStandingDTO::getGoalsFor).reversed()
-                .thenComparing(TeamStandingDTO::getTeamName));
+        list.sort(
+                Comparator.comparingInt(TeamStandingDTO::getPoints).reversed()
+                        .thenComparing(
+                                Comparator.comparingInt(TeamStandingDTO::getGoalDifference).reversed())
+                        .thenComparing(
+                                Comparator.comparingInt(TeamStandingDTO::getGoalsFor).reversed())
+                        .thenComparing(TeamStandingDTO::getTeamName)
+        );
 
-        // Assign 1-based position numbers
+
         for (int i = 0; i < list.size(); i++) {
             list.get(i).setPosition(i + 1);
         }
         return list;
     }
 
-    /** Attempts to resolve the tournament name from the available matches. */
     private String resolveTournamentName(List<Partido> matches) {
         return matches.stream()
                 .map(Partido::getTorneo)
