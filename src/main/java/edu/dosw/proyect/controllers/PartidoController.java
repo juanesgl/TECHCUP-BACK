@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.controllers;
+package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.request.PartidoFiltroRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.PartidoResponseDTO;

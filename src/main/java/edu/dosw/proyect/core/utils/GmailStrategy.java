@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.core.utils;
+package edu.dosw.proyect.core.utils;
 
 public class GmailStrategy implements AuthStrategy {
     @Override

@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.core.services.impl;
+package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.controllers.dtos.request.SaveLineupRequestDTO;
 import edu.dosw.proyect.controllers.dtos.request.StarterEntryRequestDTO;

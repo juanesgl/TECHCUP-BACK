@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.core.services.impl;
+package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.core.exceptions.TournamentException;
 import edu.dosw.proyect.core.models.Tournament;

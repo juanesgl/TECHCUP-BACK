@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.core.models;
+package edu.dosw.proyect.core.models;
 
 import lombok.NoArgsConstructor;
 import jakarta.persistence.Entity;

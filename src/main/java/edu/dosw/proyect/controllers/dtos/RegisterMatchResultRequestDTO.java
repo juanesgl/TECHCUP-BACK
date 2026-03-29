@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.controllers.dtos;
+package edu.dosw.proyect.controllers.dtos;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

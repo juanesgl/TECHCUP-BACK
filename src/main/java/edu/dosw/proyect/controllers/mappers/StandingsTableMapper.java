@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.controllers.mappers;
+package edu.dosw.proyect.controllers.mappers;
 
 import edu.dosw.proyect.controllers.dtos.response.RegisterMatchResultResponseDTO;
 import edu.dosw.proyect.controllers.dtos.response.StandingsTableResponseDTO;

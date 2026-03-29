@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.services;
+package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.request.RespuestaInvitacionRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.InvitacionResponseDTO;
@@ -116,6 +116,7 @@ class InvitacionServiceTest {
 
         when(jugadorRepository.findById(1L)).thenReturn(Optional.of(jugador));
         when(invitacionRepository.findById(1L)).thenReturn(Optional.of(invitacion));
+        when(jugador.isTieneEquipo()).thenReturn(true);
 
         BusinessRuleException ex = assertThrows(BusinessRuleException.class,
                 () -> invitacionService.responderInvitacion(1L, 1L, request));
@@ -126,4 +127,3 @@ class InvitacionServiceTest {
         verify(invitacionRepository).save(invitacion);
     }
 }
-

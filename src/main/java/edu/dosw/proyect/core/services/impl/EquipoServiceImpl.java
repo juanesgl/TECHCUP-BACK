@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.core.services.impl;
+package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.controllers.dtos.request.CrearEquipoRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.CrearEquipoResponseDTO;
@@ -91,6 +91,7 @@ public class EquipoServiceImpl implements EquipoService {
                 .build();
 
         equipoRepository.save(equipoArmado);
+        userRepository.save(capitan);
 
         for (User integrante : integracionFinal) {
             if (!integrante.getId().equals(capitan.getId())) {
@@ -104,10 +105,8 @@ public class EquipoServiceImpl implements EquipoService {
             }
         }
 
-        
         log.info("CreaciÃ³n existosa completada en el sistema para el equipo '{}'", equipoArmado.getNombre());
         return equipoMapper.toCrearEquipoResponseDTO(
                 "El equipo ha sido registrado exitosamente tras superar las reglas del torneo", notificaciones);
     }
 }
-

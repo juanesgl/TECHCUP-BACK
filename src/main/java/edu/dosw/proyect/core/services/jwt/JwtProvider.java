@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.core.services.jwt;
+package edu.dosw.proyect.core.services.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

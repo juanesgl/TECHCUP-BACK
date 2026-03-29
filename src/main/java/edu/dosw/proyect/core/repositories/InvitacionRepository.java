@@ -1,4 +1,4 @@
-﻿package edu.dosw.proyect.core.repositories;
+package edu.dosw.proyect.core.repositories;
 
 import edu.dosw.proyect.core.models.Invitacion;
 import org.springframework.data.jpa.repository.JpaRepository;
