@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -24,6 +25,7 @@ public class Partido {
     private String nombreEquipoVisitante;
     private LocalDate fecha;
     private LocalTime hora;
+    private LocalDateTime fechaHora;
 
     private String cancha;
     private String arbitro;
