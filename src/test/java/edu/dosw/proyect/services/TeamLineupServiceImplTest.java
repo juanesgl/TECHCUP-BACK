@@ -1,4 +1,4 @@
-package edu.dosw.proyect.services;
+﻿package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.request.SaveLineupRequestDTO;
 import edu.dosw.proyect.controllers.dtos.request.StarterEntryRequestDTO;
@@ -15,10 +15,10 @@ import edu.dosw.proyect.core.models.enums.FieldPosition;
 import edu.dosw.proyect.core.models.enums.LineupStatus;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
-import edu.dosw.proyect.core.repositories.EquipoRepository;
-import edu.dosw.proyect.core.repositories.PartidoRepository;
-import edu.dosw.proyect.core.repositories.TeamLineupRepository;
-import edu.dosw.proyect.core.repositories.UserRepository;
+import edu.dosw.proyect.persistence.repository.EquipoRepository;
+import edu.dosw.proyect.persistence.repository.PartidoRepository;
+import edu.dosw.proyect.persistence.repository.TeamLineupRepository;
+import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.impl.TeamLineupServiceImpl;
 import edu.dosw.proyect.core.services.authorization.AuthorizationValidator;
 import org.junit.jupiter.api.BeforeEach;

@@ -6,7 +6,7 @@ import edu.dosw.proyect.controllers.dtos.PaymentUploadRequest;
 import edu.dosw.proyect.core.exceptions.BusinessException;
 import edu.dosw.proyect.core.models.Payment;
 import edu.dosw.proyect.core.models.enums.PaymentStatus;
-import edu.dosw.proyect.core.repositories.PaymentRepository;
+import edu.dosw.proyect.persistence.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

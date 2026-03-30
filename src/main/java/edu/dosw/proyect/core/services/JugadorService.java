@@ -4,7 +4,7 @@ import edu.dosw.proyect.controllers.dtos.DisponibilidadRequestDTO;
 import edu.dosw.proyect.controllers.dtos.DisponibilidadResponseDTO;
 import edu.dosw.proyect.core.exceptions.DisponibilidadException;
 import edu.dosw.proyect.core.models.Jugador;
-import edu.dosw.proyect.core.repositories.JugadorRepository;
+import edu.dosw.proyect.persistence.repository.JugadorRepository;
 import edu.dosw.proyect.core.utils.DisponibilidadMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.core.models.User;
-import edu.dosw.proyect.core.repositories.UserRepository;
+import edu.dosw.proyect.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
