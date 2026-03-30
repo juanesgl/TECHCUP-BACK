@@ -4,7 +4,7 @@ import edu.dosw.proyect.controllers.dtos.PlayerFilterRequest;
 import edu.dosw.proyect.controllers.dtos.PlayerResponse;
 import edu.dosw.proyect.core.exceptions.BusinessException;
 import edu.dosw.proyect.core.models.Jugador;
-import edu.dosw.proyect.core.repositories.JugadorRepository;
+import edu.dosw.proyect.persistence.repository.JugadorRepository;
 import edu.dosw.proyect.core.services.PlayerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

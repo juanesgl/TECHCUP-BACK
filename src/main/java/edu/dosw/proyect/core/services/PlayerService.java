@@ -4,7 +4,7 @@ import edu.dosw.proyect.controllers.dtos.PlayerFilterRequest;
 import edu.dosw.proyect.controllers.dtos.PlayerResponse;
 import edu.dosw.proyect.core.exceptions.BusinessException;
 import edu.dosw.proyect.core.models.Jugador;
-import edu.dosw.proyect.core.repositories.JugadorRepository;
+import edu.dosw.proyect.persistence.repository.JugadorRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

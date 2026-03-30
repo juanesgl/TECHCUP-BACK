@@ -3,7 +3,7 @@ package edu.dosw.proyect.core.services.impl;
 import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
 import edu.dosw.proyect.controllers.dtos.LoginResponseDTO;
 import edu.dosw.proyect.core.models.User;
-import edu.dosw.proyect.core.repositories.UserRepository;
+import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.AuthService;
 import edu.dosw.proyect.core.services.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;

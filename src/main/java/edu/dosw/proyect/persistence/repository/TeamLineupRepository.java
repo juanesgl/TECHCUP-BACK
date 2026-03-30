@@ -1,4 +1,4 @@
-package edu.dosw.proyect.core.repositories;
+package edu.dosw.proyect.persistence.repository;
 
 import edu.dosw.proyect.core.models.TeamLineup;
 import org.springframework.stereotype.Repository;

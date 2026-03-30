@@ -6,7 +6,7 @@ import edu.dosw.proyect.controllers.dtos.response.ConfiguracionTorneoResponseDTO
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.models.Tournament;
 import edu.dosw.proyect.core.models.enums.TournamentsStatus;
-import edu.dosw.proyect.core.repositories.CanchaRepository;
+import edu.dosw.proyect.persistence.repository.CanchaRepository;
 import edu.dosw.proyect.core.services.ConfiguracionTorneoService;
 import edu.dosw.proyect.core.services.TournamentService;
 import org.junit.jupiter.api.BeforeEach;

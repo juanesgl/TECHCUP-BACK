@@ -10,8 +10,8 @@ import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import edu.dosw.proyect.core.models.enums.TipoEvento;
-import edu.dosw.proyect.core.repositories.EventoPartidoRepository;
-import edu.dosw.proyect.core.repositories.PartidoRepository;
+import edu.dosw.proyect.persistence.repository.EventoPartidoRepository;
+import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

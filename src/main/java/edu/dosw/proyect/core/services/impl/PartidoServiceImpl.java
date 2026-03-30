@@ -5,7 +5,7 @@ import edu.dosw.proyect.controllers.dtos.response.PartidoResponseDTO;
 import edu.dosw.proyect.controllers.mappers.PartidoMapper;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
 import edu.dosw.proyect.core.models.Partido;
-import edu.dosw.proyect.core.repositories.PartidoRepository;
+import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import edu.dosw.proyect.core.services.PartidoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
