@@ -120,8 +120,8 @@ y se comienza a construir el equipo con el patrón Builder asignando nombre, esc
   Se persiste el equipo y la invitación en sus repositorios, luego se mapea la respuesta con EquipoMapper construyendo 
 un CrearEquipoResponseDTO con el mensaje de confirmación y la lista de notificaciones enviadas a los jugadores invitados.
 
-![EquipoController1.png](evidencias/pruebas/EquipoController1.png)
-![EquipoController2.png](evidencias/pruebas/EquipoController2.png)
+![EquipoController1.png](../../docs/uml/diagrama_secuencia/EquipoController1.png)
+![EquipoController2.png](../../docs/uml/diagrama_secuencia/EquipoController2.png)
 
 ## Controlador Invitacion
 
@@ -130,10 +130,10 @@ en sus repositorios, crea las entidades necesarias y persiste los cambios. Se in
 InvitacionResponseDTO. e completa la construcción del DTO con invitacionId, mensajeCapitan y estadoActualizado, 
 y se retorna la respuesta al actor.
 
-![InvitacionController1.png](evidencias/pruebas/InvitacionController1.png)
-![InvitacionController2.png](evidencias/pruebas/InvitacionController2.png)
+![InvitacionController1.png](../../docs/uml/diagrama_secuencia/InvitacionController1.png)
+![InvitacionController2.png](../../docs/uml/diagrama_secuencia/InvitacionController2.png)
 
 ## Controlador Jugador
 * El actor llama a actualizarDisponibilidad desde el JugadorController. El servicio busca al jugador por ID, mapea 
 el estado con DisponibilidadMapper, persiste el cambio y retorna un DisponibilidadResponseDTO con el mensaje y el estado final.
-![JugadorController.png](evidencias/pruebas/JugadorController.png)
+![JugadorController.png](../../docs/uml/diagrama_secuencia/JugadorController.png)
