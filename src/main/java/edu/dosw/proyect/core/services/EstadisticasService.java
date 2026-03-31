@@ -10,6 +10,8 @@ import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import edu.dosw.proyect.core.models.enums.TipoEvento;
+import edu.dosw.proyect.persistence.entity.PartidoEntity;
+import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.EventoPartidoRepository;
 import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +25,16 @@ public class EstadisticasService {
 
     private final PartidoRepository partidoRepository;
     private final EventoPartidoRepository eventoPartidoRepository;
+    private final PartidoPersistenceMapper partidoMapper;
+
+
 
     public EstadisticasTorneoDTO obtenerEstadisticasTorneo(String tournId) {
-        List<Partido> partidos = partidoRepository.findByTorneo_TournId(tournId);
+        List<PartidoEntity> entities = partidoRepository.findByTorneo_TournId(tournId);
+
+        List<Partido> partidos = entities.stream()
+                .map(partidoMapper::toDomain)
+                .toList();
         List<EventoPartido> eventos = eventoPartidoRepository.findByPartido_Torneo_TournId(tournId);
 
         Map<Long, EstadisticasEquipoDTO> mapEquipos = new HashMap<>();

@@ -12,6 +12,8 @@ import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.EstadisticaEquipo;
 import edu.dosw.proyect.core.models.Tournament;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
+import edu.dosw.proyect.persistence.entity.PartidoEntity;
+import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.EstadisticaEquipoRepository;
 import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import edu.dosw.proyect.persistence.repository.TournamentRepository;
@@ -31,27 +33,28 @@ public class StandingsTableServiceImpl implements StandingsTableService {
     private final EstadisticaEquipoRepository statsRepository;
     private final TournamentRepository tournamentRepository;
     private final StandingsTableMapper standingsMapper;
+    private final PartidoPersistenceMapper partidoMapper;
 
     @Override
     public RegisterMatchResultResponseDTO registerResult(Long matchId,
-            RegisterMatchResultRequestDTO request) {
+                                                         RegisterMatchResultRequestDTO request) {
+
         log.info("Registering result for match ID: {}", matchId);
 
-        Partido match = matchRepository.findById(matchId)
+        PartidoEntity entity = matchRepository.findById(matchId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Match not found with ID: " + matchId));
+
+        Partido match = partidoMapper.toDomain(entity);
 
         validateMatchIsRegistrable(match);
 
         match.setGolesLocal(request.getHomeGoals());
         match.setGolesVisitante(request.getAwayGoals());
         match.setEstado(MatchStatus.FINALIZADO);
-        matchRepository.save(match);
 
-        updateTeamStats(match);
-
-        log.info("Result registered and stats updated: match {} â†’ {}:{} (FINISHED)",
-                matchId, request.getHomeGoals(), request.getAwayGoals());
+        PartidoEntity updatedEntity = partidoMapper.toEntity(match);
+        matchRepository.save(updatedEntity);
 
         return standingsMapper.toRegisterMatchResultResponseDTO(match);
     }

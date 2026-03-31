@@ -13,6 +13,8 @@ import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.enums.LineupStatus;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import edu.dosw.proyect.core.models.enums.UserRole;
+import edu.dosw.proyect.persistence.entity.PartidoEntity;
+import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.*;
 import edu.dosw.proyect.core.services.TeamLineupService;
 import edu.dosw.proyect.core.services.authorization.AuthorizationValidator;
@@ -38,6 +40,7 @@ public class TeamLineupServiceImpl implements TeamLineupService {
     private final UserRepository       userRepository;
     private final TeamLineupMapper     lineupMapper;
     private final AuthorizationValidator authorizationValidator;
+    private final PartidoPersistenceMapper partidoMapper;
 
     @Override
     public TeamLineupResponseDTO saveLineup(Long captainId, SaveLineupRequestDTO request) {
@@ -159,9 +162,11 @@ public class TeamLineupServiceImpl implements TeamLineupService {
     }
 
     private Partido resolveScheduledMatch(Long matchId, Long teamId) {
-        Partido match = matchRepository.findById(matchId)
+        PartidoEntity entity = matchRepository.findById(matchId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Match not found with ID: " + matchId));
+
+        Partido match = partidoMapper.toDomain(entity);
 
         boolean teamInvolved =
                 (match.getEquipoLocal()     != null && teamId.equals(match.getEquipoLocal().getId())) ||

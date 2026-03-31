@@ -1,7 +1,6 @@
 package edu.dosw.proyect.core.models;
 
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,34 +10,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "ALINEACION")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Alineacion {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "partido_id", nullable = false)
     private Partido partido;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipo_id", nullable = false)
     private Equipo equipo;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "formacion")
     private TacticalFormation formacion;
-
-    @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;
 
-    @OneToMany(mappedBy = "alineacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<AlineacionJugador> jugadores = new ArrayList<>();
 
