@@ -1,11 +1,11 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.controllers.dtos.PaymentResponse;
+import edu.dosw.proyect.controllers.dtos.response.PaymentResponse;
 import edu.dosw.proyect.controllers.dtos.PaymentStatusRequest;
 import edu.dosw.proyect.core.exceptions.BusinessException;
 import edu.dosw.proyect.core.models.Payment;
 import edu.dosw.proyect.core.models.enums.PaymentStatus;
-import edu.dosw.proyect.core.repositories.PaymentRepository;
+import edu.dosw.proyect.persistence.repository.PaymentRepository;
 import edu.dosw.proyect.core.services.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

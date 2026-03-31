@@ -18,28 +18,28 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/equipos")
 @RequiredArgsConstructor
-@Tag(name = "Equipos", description = "Operaciones relacionadas con la gestiÃ³n dinÃ¡mica de equipos del torneo")
+@Tag(name = "Capitan - Equipos", description = "Crear y gestionar equipos del torneo")
 public class EquipoController {
 
     private final EquipoService equipoService;
 
-    @Operation(summary = "Crear un nuevo equipo", description = "Habilita a un capitÃ¡n para registrar y crear un nuevo equipo en TechCup validado estrictamente mediante TH-01, TH-02, y TH-03.")
+    @Operation(summary = "Crear un nuevo equipo", description = "Habilita a un capitan para registrar y crear un nuevo equipo en TechCup validado estrictamente mediante TH-01, TH-02, y TH-03.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Equipo validado y creado de forma exitosa. Notificaciones de integrantes distribuidas."),
             @ApiResponse(responseCode = "400", description = "Argumento RequestBody malformado o error en los constraints."),
-            @ApiResponse(responseCode = "404", description = "Identificador del capitÃ¡n no encontrado dentro de los repositorios de usuarios."),
-            @ApiResponse(responseCode = "409", description = "LÃ³gica bloqueada por violaciones a reglas de competencia. Ejemplo, nombre en uso o cuotas deficientes (TH-03).")
+            @ApiResponse(responseCode = "404", description = "Identificador del capitan no encontrado dentro de los repositorios de usuarios."),
+            @ApiResponse(responseCode = "409", description = "Logica bloqueada por violaciones a reglas de competencia. Ejemplo, nombre en uso o cuotas deficientes (TH-03).")
     })
     @PostMapping("/crear")
     public ResponseEntity<CrearEquipoResponseDTO> crearEquipo(
             @RequestHeader("X-Capitan-ID") Long capitanId,
             @Valid @RequestBody CrearEquipoRequestDTO request) {
         
-        log.info("Endpoint invocado para la creaciÃ³n de un nuevo equipo: '{}'", request.getNombreEquipo());
+        log.info("Endpoint invocado para la creacion de un nuevo equipo: '{}'", request.getNombreEquipo());
         
         CrearEquipoResponseDTO response = equipoService.crearEquipo(capitanId, request);
         
-        log.info("OperaciÃ³n interceptada como exitosa: equipo '{}' resuelto con ID de HTTP 201", request.getNombreEquipo());
+        log.info("Operacion interceptada como exitosa: equipo '{}' resuelto con ID de HTTP 201", request.getNombreEquipo());
         
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

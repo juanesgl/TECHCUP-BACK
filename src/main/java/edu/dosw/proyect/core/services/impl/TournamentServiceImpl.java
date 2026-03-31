@@ -2,10 +2,10 @@ package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.core.exceptions.TournamentException;
 import edu.dosw.proyect.core.models.Tournament;
-import edu.dosw.proyect.core.models.TournamentRequest;
-import edu.dosw.proyect.core.models.TournamentResponse;
+import edu.dosw.proyect.controllers.dtos.request.TournamentRequest;
+import edu.dosw.proyect.controllers.dtos.response.TournamentResponse;
 import edu.dosw.proyect.core.models.enums.TournamentsStatus;
-import edu.dosw.proyect.core.repositories.TournamentRepository;
+import edu.dosw.proyect.persistence.repository.TournamentRepository;
 import edu.dosw.proyect.core.services.TournamentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

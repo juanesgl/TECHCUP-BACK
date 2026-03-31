@@ -1,7 +1,7 @@
 package edu.dosw.proyect.core.utils;
 
-import edu.dosw.proyect.controllers.dtos.DisponibilidadRequestDTO;
-import edu.dosw.proyect.controllers.dtos.DisponibilidadResponseDTO;
+import edu.dosw.proyect.controllers.dtos.request.DisponibilidadRequestDTO;
+import edu.dosw.proyect.controllers.dtos.response.DisponibilidadResponseDTO;
 import edu.dosw.proyect.core.models.Jugador;
 
 public class DisponibilidadMapper {

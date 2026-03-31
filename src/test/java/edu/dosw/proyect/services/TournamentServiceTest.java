@@ -1,6 +1,6 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.core.repositories.TournamentRepository;
+import edu.dosw.proyect.persistence.repository.TournamentRepository;
 import edu.dosw.proyect.core.services.impl.TournamentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

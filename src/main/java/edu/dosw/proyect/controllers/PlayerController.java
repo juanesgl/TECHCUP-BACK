@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/players")
 @RequiredArgsConstructor
-@Tag(name = "Jugadores", description = "Endpoints para busqueda de jugadores")
+@Tag(name = "Jugador - Busqueda", description = "Endpoints para busqueda de jugadores")
 public class PlayerController {
 
     private final PlayerService playerService;

@@ -6,7 +6,7 @@ import edu.dosw.proyect.controllers.mappers.PartidoMapper;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
 import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.Partido;
-import edu.dosw.proyect.core.repositories.PartidoRepository;
+import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import edu.dosw.proyect.core.services.impl.PartidoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

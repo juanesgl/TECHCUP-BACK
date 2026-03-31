@@ -1,9 +1,9 @@
 package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
-import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
+import edu.dosw.proyect.controllers.dtos.response.RegisterResponseDTO;
 import edu.dosw.proyect.core.models.User;
-import edu.dosw.proyect.core.repositories.UserRepository;
+import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
