@@ -1,6 +1,6 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.controllers.dtos.PaymentResponse;
+import edu.dosw.proyect.controllers.dtos.response.PaymentResponse;
 import edu.dosw.proyect.controllers.dtos.PaymentStatusRequest;
 import edu.dosw.proyect.core.exceptions.BusinessException;
 import edu.dosw.proyect.core.models.Payment;

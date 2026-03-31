@@ -1,6 +1,6 @@
 package edu.dosw.proyect.core.models;
 
-import edu.dosw.proyect.core.models.enums.FormacionTecnica;
+import edu.dosw.proyect.core.models.enums.TacticalFormation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +33,7 @@ public class Alineacion {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "formacion")
-    private FormacionTecnica formacion;
+    private TacticalFormation formacion;
 
     @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;

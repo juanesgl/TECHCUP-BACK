@@ -1,6 +1,6 @@
 package edu.dosw.proyect.core.exceptions;
 
-import edu.dosw.proyect.controllers.dtos.PaymentResponse;
+import edu.dosw.proyect.controllers.dtos.response.PaymentResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

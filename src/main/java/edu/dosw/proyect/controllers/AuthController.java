@@ -1,7 +1,7 @@
 package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
-import edu.dosw.proyect.controllers.dtos.LoginResponseDTO;
+import edu.dosw.proyect.controllers.dtos.response.LoginResponseDTO;
 import edu.dosw.proyect.core.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "AutenticaciÃ³n", description = "Endpoints de control de acceso y login")
+@Tag(name = "Autenticacion", description = "Endpoints de control de acceso y login")
 public class AuthController {
 
     private final AuthService authService;
@@ -22,7 +22,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @Operation(summary = "Iniciar SesiÃ³n", description = "Autentica con email y contraseÃ±a. Retorna la validez del intento.")
+    @Operation(summary = "Iniciar Sesion", description = "Autentica con email y contraseñas. Retorna la validez del intento.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Login exitoso."),
             @ApiResponse(responseCode = "401", description = "Credenciales incorrectas o inexistentes."),

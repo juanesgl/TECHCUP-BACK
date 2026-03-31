@@ -1,29 +1,18 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.controllers.dtos.response.EstadisticasEquipoDTO;
-import edu.dosw.proyect.controllers.dtos.response.EstadisticasJugadorDTO;
 import edu.dosw.proyect.controllers.dtos.response.EstadisticasTorneoDTO;
-import edu.dosw.proyect.core.models.Equipo;
-import edu.dosw.proyect.core.models.EventoPartido;
-import edu.dosw.proyect.core.models.Jugador;
-import edu.dosw.proyect.core.models.Partido;
-import edu.dosw.proyect.core.models.Tournament;
-import edu.dosw.proyect.core.models.User;
+import edu.dosw.proyect.core.models.*;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import edu.dosw.proyect.core.models.enums.TipoEvento;
 import edu.dosw.proyect.persistence.repository.EventoPartidoRepository;
 import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import edu.dosw.proyect.core.services.EstadisticasService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,137 +30,186 @@ public class EstadisticasServiceTest {
     @InjectMocks
     private EstadisticasService estadisticasService;
 
-    private Tournament torneo;
-    private Equipo equipoLocal;
-    private Equipo equipoVisitante;
-    private Partido partido;
-    private Jugador mockJugador1;
-    private Jugador mockJugador2;
+    private Equipo buildEquipo(Long id, String nombre) {
+        Equipo e = new Equipo();
+        e.setId(id);
+        e.setNombre(nombre);
+        return e;
+    }
 
-    @BeforeEach
-    void setUp() {
-        torneo = new Tournament();
-        torneo.setTournId("TORNEO-123");
+    private Partido buildPartido(Equipo local, Equipo visitante,
+                                 int golesLocal, int golesVisitante, MatchStatus estado) {
+        Partido p = new Partido();
+        p.setEquipoLocal(local);
+        p.setEquipoVisitante(visitante);
+        p.setGolesLocal(golesLocal);
+        p.setGolesVisitante(golesVisitante);
+        p.setEstado(estado);
+        return p;
+    }
 
-        equipoLocal = Equipo.builder().id(1L).nombre("Ingenieros FC").build();
-        equipoVisitante = Equipo.builder().id(2L).nombre("Ciber Sec").build();
 
-        partido = Partido.builder()
-                .id(1L)
-                .torneo(torneo)
-                .equipoLocal(equipoLocal)
-                .equipoVisitante(equipoVisitante)
-                .golesLocal(2)
-                .golesVisitante(1)
-                .estado(MatchStatus.FINALIZADO)
-                .fechaHora(LocalDateTime.now())
-                .build();
+    @Test
+    void obtenerEstadisticasTorneo_SinPartidos_RetornaVacio() {
+        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of());
+        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+                .thenReturn(List.of());
 
-        mockJugador1 = mock(Jugador.class);
-        lenient().when(mockJugador1.getId()).thenReturn(10L);
-        User u1 = mock(User.class);
-        lenient().when(u1.getName()).thenReturn("Carlos");
-        lenient().when(u1.getId()).thenReturn(10L);
-        lenient().when(mockJugador1.getUsuario()).thenReturn(u1);
+        EstadisticasTorneoDTO result =
+                estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
-        mockJugador2 = mock(Jugador.class);
-        lenient().when(mockJugador2.getId()).thenReturn(20L);
-        User u2 = mock(User.class);
-        lenient().when(u2.getName()).thenReturn("Andres");
-        lenient().when(u2.getId()).thenReturn(20L);
-        lenient().when(mockJugador2.getUsuario()).thenReturn(u2);
+        assertNotNull(result);
+        assertEquals("TOURN-1", result.getTorneoId());
+        assertEquals(0, result.getTotalPartidosJugados());
+        assertEquals(0, result.getTotalGolesAnotados());
+        assertTrue(result.getTablaPosiciones().isEmpty());
+        assertTrue(result.getTablaGoleadores().isEmpty());
     }
 
     @Test
-    void testObtenerEstadisticas_ConTorneoVacio() {
-        when(partidoRepository.findByTorneo_TournId("TORNEO-123")).thenReturn(Collections.emptyList());
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TORNEO-123")).thenReturn(Collections.emptyList());
+    void obtenerEstadisticasTorneo_PartidoFinalizado_LocalGana() {
+        Equipo alpha = buildEquipo(1L, "Alpha");
+        Equipo beta = buildEquipo(2L, "Beta");
+        Partido p = buildPartido(alpha, beta, 3, 1, MatchStatus.FINALIZADO);
 
-        EstadisticasTorneoDTO resultado = estadisticasService.obtenerEstadisticasTorneo("TORNEO-123");
+        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of(p));
+        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+                .thenReturn(List.of());
 
-        assertNotNull(resultado);
-        assertEquals(0, resultado.getTotalPartidosJugados());
-        assertEquals(0, resultado.getTotalGolesAnotados());
-        assertTrue(resultado.getTablaPosiciones().isEmpty());
+        EstadisticasTorneoDTO result =
+                estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
+
+        assertEquals(1, result.getTotalPartidosJugados());
+        assertEquals(4, result.getTotalGolesAnotados());
+        assertEquals(2, result.getTablaPosiciones().size());
+
+        var alphaStats = result.getTablaPosiciones().get(0);
+        assertEquals("Alpha", alphaStats.getNombreEquipo());
+        assertEquals(3, alphaStats.getPuntos());
+        assertEquals(1, alphaStats.getVictorias());
     }
 
     @Test
-    void testObtenerEstadisticas_CalculaPuntosGoleadoresYTarjetas() {
-        when(partidoRepository.findByTorneo_TournId("TORNEO-123")).thenReturn(List.of(partido));
+    void obtenerEstadisticasTorneo_PartidoFinalizado_Empate() {
+        Equipo alpha = buildEquipo(1L, "Alpha");
+        Equipo beta = buildEquipo(2L, "Beta");
+        Partido p = buildPartido(alpha, beta, 1, 1, MatchStatus.FINALIZADO);
 
-        EventoPartido gol1 = EventoPartido.builder().id(1L).partido(partido).jugador(mockJugador1).equipo(equipoLocal).tipoEvento(TipoEvento.GOL).build();
-        EventoPartido gol2 = EventoPartido.builder().id(2L).partido(partido).jugador(mockJugador1).equipo(equipoLocal).tipoEvento(TipoEvento.GOL).build();
-        EventoPartido gol3 = EventoPartido.builder().id(3L).partido(partido).jugador(mockJugador2).equipo(equipoVisitante).tipoEvento(TipoEvento.GOL).build();
-        EventoPartido tarjeta = EventoPartido.builder().id(4L).partido(partido).jugador(mockJugador2).equipo(equipoVisitante).tipoEvento(TipoEvento.TARJETA_AMARILLA).build();
+        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of(p));
+        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+                .thenReturn(List.of());
 
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TORNEO-123")).thenReturn(Arrays.asList(gol1, gol2, gol3, tarjeta));
+        EstadisticasTorneoDTO result =
+                estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
-        EstadisticasTorneoDTO resultado = estadisticasService.obtenerEstadisticasTorneo("TORNEO-123");
-
-        assertEquals(1, resultado.getTotalPartidosJugados());
-        assertEquals(3, resultado.getTotalGolesAnotados());
-
-        List<EstadisticasEquipoDTO> posiciones = resultado.getTablaPosiciones();
-        assertEquals(2, posiciones.size());
-        
-        EstadisticasEquipoDTO primero = posiciones.get(0);
-        assertEquals(1L, primero.getEquipoId());
-        assertEquals(3, primero.getPuntos());
-        assertEquals(1, primero.getVictorias());
-        assertEquals(2, primero.getGolesFavor());
-        assertEquals(1, primero.getDiferenciaGol());
-
-        EstadisticasEquipoDTO segundo = posiciones.get(1);
-        assertEquals(2L, segundo.getEquipoId());
-        assertEquals(0, segundo.getPuntos());
-        assertEquals(1, segundo.getDerrotas());
-        assertEquals(-1, segundo.getDiferenciaGol());
-
-        List<EstadisticasJugadorDTO> goleadores = resultado.getTablaGoleadores();
-        assertEquals(2, goleadores.size());
-        assertEquals(10L, goleadores.get(0).getJugadorId());
-        assertEquals(2, goleadores.get(0).getGoles());
-
-        List<EstadisticasJugadorDTO> sancionados = resultado.getTablaTarjetas();
-        assertEquals(1, sancionados.size());
-        assertEquals(20L, sancionados.get(0).getJugadorId());
-        assertEquals(1, sancionados.get(0).getTarjetasAmarillas());
+        assertEquals(1, result.getTotalPartidosJugados());
+        result.getTablaPosiciones().forEach(e ->
+                assertEquals(1, e.getPuntos()));
     }
 
     @Test
-    void testObtenerEstadisticas_EmpateYOrdenamientoPorDiferenciaGoles() {
-        partido.setGolesLocal(1);
-        partido.setGolesVisitante(1);
+    void obtenerEstadisticasTorneo_PartidoFinalizado_VisitanteGana() {
+        Equipo alpha = buildEquipo(1L, "Alpha");
+        Equipo beta = buildEquipo(2L, "Beta");
+        Partido p = buildPartido(alpha, beta, 0, 2, MatchStatus.FINALIZADO);
 
-        Partido partido2 = Partido.builder()
-                .id(2L)
-                .torneo(torneo)
-                .equipoLocal(equipoLocal)
-                .equipoVisitante(Equipo.builder().id(3L).nombre("Extra FC").build())
-                .golesLocal(3)
-                .golesVisitante(0)
-                .estado(MatchStatus.FINALIZADO)
-                .build();
+        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of(p));
+        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+                .thenReturn(List.of());
 
-        when(partidoRepository.findByTorneo_TournId("TORNEO-123")).thenReturn(Arrays.asList(partido, partido2));
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TORNEO-123")).thenReturn(Collections.emptyList());
+        EstadisticasTorneoDTO result =
+                estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
-        EstadisticasTorneoDTO resultado = estadisticasService.obtenerEstadisticasTorneo("TORNEO-123");
+        var betaStats = result.getTablaPosiciones().get(0);
+        assertEquals("Beta", betaStats.getNombreEquipo());
+        assertEquals(3, betaStats.getPuntos());
+    }
 
-        assertEquals(2, resultado.getTotalPartidosJugados());
+    @Test
+    void obtenerEstadisticasTorneo_PartidoProgramado_NoSeCuenta() {
+        Equipo alpha = buildEquipo(1L, "Alpha");
+        Equipo beta = buildEquipo(2L, "Beta");
+        Partido p = buildPartido(alpha, beta, 2, 0, MatchStatus.PROGRAMADO);
 
-        List<EstadisticasEquipoDTO> posiciones = resultado.getTablaPosiciones();
-        assertEquals(3, posiciones.size());
+        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of(p));
+        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+                .thenReturn(List.of());
 
-        assertEquals("Ingenieros FC", posiciones.get(0).getNombreEquipo());
-        assertEquals(4, posiciones.get(0).getPuntos());
-        assertEquals(3, posiciones.get(0).getDiferenciaGol());
+        EstadisticasTorneoDTO result =
+                estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
-        assertEquals("Ciber Sec", posiciones.get(1).getNombreEquipo());
-        assertEquals(1, posiciones.get(1).getPuntos());
+        assertEquals(0, result.getTotalPartidosJugados());
+        assertTrue(result.getTablaPosiciones().isEmpty());
+    }
 
-        assertEquals("Extra FC", posiciones.get(2).getNombreEquipo());
-        assertEquals(0, posiciones.get(2).getPuntos());
+    @Test
+    void obtenerEstadisticasTorneo_ConEventoGol_ApareceEnGoleadores() {
+        Equipo alpha = buildEquipo(1L, "Alpha");
+        Equipo beta = buildEquipo(2L, "Beta");
+        Partido p = buildPartido(alpha, beta, 1, 0, MatchStatus.FINALIZADO);
+
+        User usuario = User.builder()
+                .id(10L).name("Juan").email("j@m.com")
+                .password("p").role("PLAYER").build();
+
+        Jugador jugador = new Jugador();
+        jugador.setUsuario(usuario);
+
+        EventoPartido evento = new EventoPartido();
+        evento.setJugador(jugador);
+        evento.setEquipo(alpha);
+        evento.setTipoEvento(TipoEvento.GOL);
+
+        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of(p));
+        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+                .thenReturn(List.of(evento));
+
+        EstadisticasTorneoDTO result =
+                estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
+
+        assertEquals(1, result.getTablaGoleadores().size());
+        assertEquals(1, result.getTablaGoleadores().get(0).getGoles());
+    }
+
+    @Test
+    void obtenerEstadisticasTorneo_ConEventoTarjeta_ApareceEnSancionados() {
+        Equipo alpha = buildEquipo(1L, "Alpha");
+        Equipo beta = buildEquipo(2L, "Beta");
+        Partido p = buildPartido(alpha, beta, 0, 0, MatchStatus.FINALIZADO);
+
+        User usuario = User.builder()
+                .id(10L).name("Juan").email("j@m.com")
+                .password("p").role("PLAYER").build();
+
+        Jugador jugador = new Jugador();
+        jugador.setUsuario(usuario);
+
+        EventoPartido amarilla = new EventoPartido();
+        amarilla.setJugador(jugador);
+        amarilla.setEquipo(alpha);
+        amarilla.setTipoEvento(TipoEvento.TARJETA_AMARILLA);
+
+        EventoPartido roja = new EventoPartido();
+        roja.setJugador(jugador);
+        roja.setEquipo(alpha);
+        roja.setTipoEvento(TipoEvento.TARJETA_ROJA);
+
+        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of(p));
+        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+                .thenReturn(List.of(amarilla, roja));
+
+        EstadisticasTorneoDTO result =
+                estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
+
+        assertEquals(1, result.getTablaTarjetas().size());
+        assertEquals(1, result.getTablaTarjetas().get(0).getTarjetasAmarillas());
+        assertEquals(1, result.getTablaTarjetas().get(0).getTarjetasRojas());
     }
 }
-

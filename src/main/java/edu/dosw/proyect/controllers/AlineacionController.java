@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/alineaciones")
 @RequiredArgsConstructor
-@Tag(name = "Alineaciones", description = "Endpoints para consulta de alineaciones del torneo")
+@Tag(name = "Jugador - Alineacion Rival", description = "Endpoints para consulta de alineaciones del torneo")
 public class AlineacionController {
 
     private final AlineacionService alineacionService;

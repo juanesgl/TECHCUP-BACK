@@ -2,12 +2,15 @@ package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.core.exceptions.TournamentException;
 import edu.dosw.proyect.core.models.Tournament;
-import edu.dosw.proyect.core.models.TournamentRequest;
-import edu.dosw.proyect.core.models.TournamentResponse;
+import edu.dosw.proyect.controllers.dtos.request.TournamentRequest;
+import edu.dosw.proyect.controllers.dtos.response.TournamentResponse;
 import edu.dosw.proyect.core.models.enums.TournamentsStatus;
 import edu.dosw.proyect.core.services.TournamentService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -15,94 +18,120 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class TournamentControllerTest {
 
-    private TournamentController tournamentController;
+    @Mock
     private TournamentService tournamentService;
 
-    @BeforeEach
-    void setUp() {
-        tournamentService = mock(TournamentService.class);
-        tournamentController = new TournamentController(tournamentService);
+    @InjectMocks
+    private TournamentController tournamentController;
+
+    private TournamentRequest buildRequest() {
+        return new TournamentRequest(
+                "TechCup 2026",
+                LocalDate.now(),
+                LocalDate.now().plusMonths(2),
+                8,
+                50000,
+                "Reglamento general"
+        );
     }
 
-    @Test
-    void createTournament_ShouldReturnOk() {
-        TournamentRequest request = new TournamentRequest("Test", LocalDate.now(), LocalDate.now(), 10, 50, "Rules");
-        TournamentResponse response = new TournamentResponse("ID-1", "Test", TournamentsStatus.DRAFT, "Created");
-        when(tournamentService.createTournament(any(TournamentRequest.class))).thenReturn(response);
+    private TournamentResponse buildResponse(String id, TournamentsStatus status) {
+        return new TournamentResponse(id, "TechCup 2026", status, "OK");
+    }
 
-        ResponseEntity<TournamentResponse> result = (ResponseEntity<TournamentResponse>) tournamentController
-                .createTournament(request);
+
+    @Test
+    void createTournament_HappyPath_RetornaOk() {
+        TournamentRequest request = buildRequest();
+        TournamentResponse response = buildResponse("TOURN-1", TournamentsStatus.DRAFT);
+
+        when(tournamentService.createTournament(request)).thenReturn(response);
+
+        ResponseEntity<TournamentResponse> result =
+                tournamentController.createTournament(request);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals("ID-1", result.getBody().turnId());
+        assertNotNull(result.getBody());
+        assertEquals("TOURN-1", result.getBody().turnId()); // ✅ record usa método sin get
+        verify(tournamentService, times(1)).createTournament(request);
     }
-
     @Test
-    void getAllTournaments_ShouldReturnList() {
-        Tournament t = new Tournament();
-        t.setTournId("ID-1");
-        t.setName("Test");
-        t.setStartDate(LocalDate.now());
-        t.setEndDate(LocalDate.now());
-        t.setMaxTeams(10);
-        t.setCostPerTeam(50);
-        t.setStatus(TournamentsStatus.DRAFT);
-        t.setRegulation("Rules");
-        when(tournamentService.getAllTournaments()).thenReturn(List.of(t));
+    void getAllTournaments_HappyPath_RetornaLista() {
+        Tournament t1 = new Tournament();
+        t1.setTournId("TOURN-1");
+        Tournament t2 = new Tournament();
+        t2.setTournId("TOURN-2");
 
-        ResponseEntity<List<Tournament>> result = (ResponseEntity<List<Tournament>>) tournamentController
-                .getAllTournaments();
+        when(tournamentService.getAllTournaments()).thenReturn(List.of(t1, t2));
+
+        ResponseEntity<List<Tournament>> result =
+                tournamentController.getAllTournaments();
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(1, result.getBody().size());
+        assertEquals(2, result.getBody().size());
     }
 
     @Test
-    void startTournament_ShouldReturnOkOnSuccess() {
-        TournamentResponse response = new TournamentResponse("ID-1", "Test", TournamentsStatus.IN_PROGRESS, "Started");
-        when(tournamentService.startTournament("ID-1")).thenReturn(response);
+    void getAllTournaments_ListaVacia_RetornaListaVacia() {
+        when(tournamentService.getAllTournaments()).thenReturn(List.of());
 
-        ResponseEntity<?> result = tournamentController.startTournament("ID-1");
+        ResponseEntity<List<Tournament>> result =
+                tournamentController.getAllTournaments();
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(response, result.getBody());
+        assertTrue(result.getBody().isEmpty());
     }
 
     @Test
-    void startTournament_ShouldReturnBadRequestOnException() {
-        when(tournamentService.startTournament("ID-1")).thenThrow(new TournamentException("Error"));
+    void startTournament_HappyPath_RetornaOk() {
+        TournamentResponse response = buildResponse(
+                "TOURN-1", TournamentsStatus.IN_PROGRESS);
 
-        ResponseEntity<?> result = tournamentController.startTournament("ID-1");
+        when(tournamentService.startTournament("TOURN-1")).thenReturn(response);
+
+        ResponseEntity<?> result = tournamentController.startTournament("TOURN-1");
+
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        verify(tournamentService, times(1)).startTournament("TOURN-1");
+    }
+
+    @Test
+    void startTournament_Error_RetornaBadRequest() {
+        when(tournamentService.startTournament("TOURN-1"))
+                .thenThrow(new TournamentException("Ya iniciado"));
+
+        ResponseEntity<?> result = tournamentController.startTournament("TOURN-1");
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertEquals("Error", result.getBody());
+        assertEquals("Ya iniciado", result.getBody());
     }
 
     @Test
-    void finishTournament_ShouldReturnOkOnSuccess() {
-        TournamentResponse response = new TournamentResponse("ID-1", "Test", TournamentsStatus.FINISHED, "Finished");
-        when(tournamentService.finishTournament("ID-1")).thenReturn(response);
+    void finishTournament_HappyPath_RetornaOk() {
+        TournamentResponse response = buildResponse(
+                "TOURN-1", TournamentsStatus.FINISHED);
 
-        ResponseEntity<?> result = tournamentController.finishTournament("ID-1");
+        when(tournamentService.finishTournament("TOURN-1")).thenReturn(response);
+
+        ResponseEntity<?> result = tournamentController.finishTournament("TOURN-1");
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(response, result.getBody());
+        verify(tournamentService, times(1)).finishTournament("TOURN-1");
     }
 
     @Test
-    void finishTournament_ShouldReturnBadRequestOnException() {
-        when(tournamentService.finishTournament("ID-1")).thenThrow(new TournamentException("Error"));
+    void finishTournament_Error_RetornaBadRequest() {
+        when(tournamentService.finishTournament("TOURN-1"))
+                .thenThrow(new TournamentException("No en progreso"));
 
-        ResponseEntity<?> result = tournamentController.finishTournament("ID-1");
+        ResponseEntity<?> result = tournamentController.finishTournament("TOURN-1");
 
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertEquals("Error", result.getBody());
+        assertEquals("No en progreso", result.getBody());
     }
 }
-

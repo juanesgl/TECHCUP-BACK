@@ -2,11 +2,13 @@ package edu.dosw.proyect.controllers;
 
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.persistence.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Hidden
 @RestController
 @RequestMapping("/api/debug")
 @RequiredArgsConstructor

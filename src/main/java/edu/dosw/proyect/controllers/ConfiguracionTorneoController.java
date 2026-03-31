@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/torneos")
+@RequestMapping("/api/torneos")
 @RequiredArgsConstructor
-@Tag(name = "ConfiguraciÃ³n de Torneo", description = "Endpoints para la gestiÃ³n de las reglas, canchas y fechas del torneo")
+@Tag(name = "Organizador - Configuracion", description = "Gestion de reglas, canchas y fechas del torneo")
 public class ConfiguracionTorneoController {
 
     private final ConfiguracionTorneoService configuracionService;

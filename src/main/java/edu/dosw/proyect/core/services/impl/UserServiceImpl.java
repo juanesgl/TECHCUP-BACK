@@ -1,7 +1,7 @@
 package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
-import edu.dosw.proyect.controllers.dtos.RegisterResponseDTO;
+import edu.dosw.proyect.controllers.dtos.response.RegisterResponseDTO;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.UserService;

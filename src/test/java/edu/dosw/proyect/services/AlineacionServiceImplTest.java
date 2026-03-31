@@ -4,13 +4,11 @@ import edu.dosw.proyect.controllers.dtos.response.AlineacionRivalResponseDTO;
 import edu.dosw.proyect.controllers.mappers.AlineacionMapper;
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
-import edu.dosw.proyect.core.models.Alineacion;
-import edu.dosw.proyect.core.models.Equipo;
-import edu.dosw.proyect.core.models.Partido;
-import edu.dosw.proyect.core.models.enums.FormacionTecnica;
+import edu.dosw.proyect.core.models.*;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
-import edu.dosw.proyect.core.repositories.AlineacionRepository;
-import edu.dosw.proyect.core.repositories.PartidoRepository;
+import edu.dosw.proyect.core.models.enums.TacticalFormation;
+import edu.dosw.proyect.persistence.repository.AlineacionRepository;
+import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import edu.dosw.proyect.core.services.impl.AlineacionServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,47 +45,56 @@ class AlineacionServiceImplTest {
     }
 
     private Partido buildPartido(Long id, Equipo local, Equipo visitante) {
-        return Partido.builder()
-                .id(id)
-                .equipoLocal(local)
-                .equipoVisitante(visitante)
-                .nombreEquipoLocal(local.getNombre())
-                .nombreEquipoVisitante(visitante.getNombre())
-                .fecha(LocalDate.now().plusDays(3))
-                .hora(LocalTime.of(10, 0))
-                .cancha("Cancha Principal")
-                .estado(MatchStatus.PROGRAMADO)
-                .build();
+        Partido p = new Partido();
+        p.setId(id);
+        p.setEquipoLocal(local);
+        p.setEquipoVisitante(visitante);
+        p.setNombreEquipoLocal(local.getNombre());
+        p.setNombreEquipoVisitante(visitante.getNombre());
+        p.setEstado(MatchStatus.PROGRAMADO);
+        return p;
     }
 
-    private Alineacion buildAlineacion(Long partidoId, Long equipoId, String nombre) {
-        return Alineacion.builder()
-                .id(1L)
-                .partidoId(partidoId)
-                .equipoId(equipoId)
-                .nombreEquipo(nombre)
-                .formacion(FormacionTecnica.F_2_3_2)
-                .titulares(List.of("J1", "J2", "J3", "J4", "J5", "J6", "J7"))
-                .reservas(List.of("J8", "J9"))
-                .build();
-    }
+    private Alineacion buildAlineacion(Long equipoId, String nombreEquipo) {
+        Equipo equipo = buildEquipo(equipoId, nombreEquipo);
 
+        Jugador jugador = new Jugador();
+        jugador.setNombre("Jugador Test");
+
+        AlineacionJugador titular = new AlineacionJugador();
+        titular.setJugador(jugador);
+        titular.setRol("TITULAR");
+
+        AlineacionJugador reserva = new AlineacionJugador();
+        reserva.setJugador(jugador);
+        reserva.setRol("RESERVA");
+
+        Alineacion a = new Alineacion();
+        a.setId(1L);
+        a.setEquipo(equipo);
+        a.setFormacion(TacticalFormation.F_1_2_3_1);
+        a.setJugadores(List.of(
+                titular, titular, titular, titular,
+                titular, titular, titular,
+                reserva, reserva
+        ));
+        return a;
+    }
 
     @Test
     void consultarAlineacionRival_HappyPath_SolicitanteEsLocal() {
-
         Equipo alpha = buildEquipo(1L, "Equipo Alpha");
         Equipo beta = buildEquipo(2L, "Equipo Beta");
         Partido partido = buildPartido(1L, alpha, beta);
-        Alineacion alineacionBeta = buildAlineacion(1L, 2L, "Equipo Beta");
+        Alineacion alineacionBeta = buildAlineacion(2L, "Equipo Beta");
 
         AlineacionRivalResponseDTO expectedDTO = AlineacionRivalResponseDTO.builder()
                 .partidoId(1L)
                 .nombreEquipoRival("Equipo Beta")
-                .formacion(FormacionTecnica.F_2_3_2)
+                .formacion(TacticalFormation.F_1_2_3_1)
                 .titulares(List.of("J1", "J2", "J3", "J4", "J5", "J6", "J7"))
                 .reservas(List.of("J8", "J9"))
-                .mensaje("Alineación del equipo rival disponible")
+                .mensaje("Alineacion del equipo rival disponible")
                 .build();
 
         when(partidoRepository.findById(1L)).thenReturn(Optional.of(partido));
@@ -113,15 +118,15 @@ class AlineacionServiceImplTest {
         Equipo alpha = buildEquipo(1L, "Equipo Alpha");
         Equipo beta = buildEquipo(2L, "Equipo Beta");
         Partido partido = buildPartido(1L, alpha, beta);
-        Alineacion alineacionAlpha = buildAlineacion(1L, 1L, "Equipo Alpha");
+        Alineacion alineacionAlpha = buildAlineacion(1L, "Equipo Alpha");
 
         AlineacionRivalResponseDTO expectedDTO = AlineacionRivalResponseDTO.builder()
                 .partidoId(1L)
                 .nombreEquipoRival("Equipo Alpha")
-                .formacion(FormacionTecnica.F_2_3_2)
+                .formacion(TacticalFormation.F_1_2_3_1)
                 .titulares(List.of("J1", "J2", "J3", "J4", "J5", "J6", "J7"))
                 .reservas(List.of("J8", "J9"))
-                .mensaje("Alineación del equipo rival disponible")
+                .mensaje("Alineacion del equipo rival disponible")
                 .build();
 
         when(partidoRepository.findById(1L)).thenReturn(Optional.of(partido));
@@ -139,6 +144,7 @@ class AlineacionServiceImplTest {
                 .findByPartidoIdAndEquipoId(1L, 1L);
     }
 
+
     @Test
     void consultarAlineacionRival_Error_PartidoNoEncontrado() {
         when(partidoRepository.findById(999L)).thenReturn(Optional.empty());
@@ -155,7 +161,6 @@ class AlineacionServiceImplTest {
 
     @Test
     void consultarAlineacionRival_Error_EquipoNoParticipa() {
-
         Equipo alpha = buildEquipo(1L, "Equipo Alpha");
         Equipo beta = buildEquipo(2L, "Equipo Beta");
         Partido partido = buildPartido(1L, alpha, beta);

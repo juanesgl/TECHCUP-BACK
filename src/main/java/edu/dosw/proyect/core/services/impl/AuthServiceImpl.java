@@ -1,11 +1,11 @@
 package edu.dosw.proyect.core.services.impl;
 
 import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
-import edu.dosw.proyect.controllers.dtos.LoginResponseDTO;
+import edu.dosw.proyect.controllers.dtos.response.LoginResponseDTO;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.AuthService;
-import edu.dosw.proyect.core.services.jwt.JwtProvider;
+import edu.dosw.proyect.core.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
