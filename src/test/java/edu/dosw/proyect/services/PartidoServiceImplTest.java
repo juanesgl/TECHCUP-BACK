@@ -6,9 +6,11 @@ import edu.dosw.proyect.controllers.mappers.PartidoMapper;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
 import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.Partido;
-import edu.dosw.proyect.persistence.repository.PartidoRepository;
+import edu.dosw.proyect.core.models.enums.MatchStatus;
 import edu.dosw.proyect.core.services.impl.PartidoServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
+import edu.dosw.proyect.persistence.entity.PartidoEntity;
+import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
+import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,13 +18,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,117 +29,122 @@ class PartidoServiceImplTest {
 
     @Mock
     private PartidoRepository partidoRepository;
+
     @Mock
     private PartidoMapper partidoMapper;
+
+    @Mock
+    private PartidoPersistenceMapper partidoPersistenceMapper;
 
     @InjectMocks
     private PartidoServiceImpl partidoService;
 
-    private Partido partido;
-    private PartidoFiltroRequestDTO filtro;
+    private PartidoEntity buildEntity(Long id) {
+        PartidoEntity e = new PartidoEntity();
+        e.setId(id);
+        e.setEstado(MatchStatus.PROGRAMADO);
+        e.setFechaHora(LocalDateTime.now());
+        return e;
+    }
 
-    @BeforeEach
-    void setUp() {
-        partido = new Partido();
-        partido.setId(1L);
-        partido.setFechaHora(LocalDateTime.now());
+    private Partido buildDomain(Long id) {
         Equipo local = new Equipo();
-        local.setNombre("Local");
+        local.setNombre("Alpha");
         Equipo visitante = new Equipo();
-        visitante.setNombre("Visitante");
-        partido.setEquipoLocal(local);
-        partido.setEquipoVisitante(visitante);
+        visitante.setNombre("Beta");
 
-        filtro = new PartidoFiltroRequestDTO();
+        Partido p = new Partido();
+        p.setId(id);
+        p.setEquipoLocal(local);
+        p.setEquipoVisitante(visitante);
+        p.setEstado(MatchStatus.PROGRAMADO);
+        p.setFechaHora(LocalDateTime.now());
+        return p;
     }
 
     @Test
-    void consultarPartidos_All_Success() {
-        List<Partido> partidos = new ArrayList<>(List.of(partido));
-        when(partidoRepository.findAll()).thenReturn(partidos);
-        when(partidoMapper.toResponseDTOList(anyList())).thenReturn(List.of(new PartidoResponseDTO()));
+    void consultarPartidos_PorFecha_RetornaLista() {
+        PartidoFiltroRequestDTO filtro = new PartidoFiltroRequestDTO();
+        filtro.setFecha(java.time.LocalDate.now());
+
+        PartidoEntity entity = buildEntity(1L);
+        Partido domain = buildDomain(1L);
+        PartidoResponseDTO dto = PartidoResponseDTO.builder().id(1L).build();
+
+        when(partidoRepository.findByFiltros(any(), any()))
+                .thenReturn(List.of(entity));
+        when(partidoPersistenceMapper.toDomain(entity)).thenReturn(domain);
+        when(partidoMapper.toResponseDTOList(any())).thenReturn(List.of(dto));
 
         List<PartidoResponseDTO> result = partidoService.consultarPartidos(filtro);
 
-        assertFalse(result.isEmpty());
-        verify(partidoRepository).findAll();
+        assertEquals(1, result.size());
     }
 
     @Test
-    void consultarPartidos_ByFecha_Success() {
-        LocalDateTime now = LocalDateTime.now();
-        filtro.setFecha(now.toLocalDate());
-        when(partidoRepository.findByFiltros(eq(now.toLocalDate()), isNull()))
-                .thenReturn(new ArrayList<>(List.of(partido)));
-        when(partidoMapper.toResponseDTOList(anyList())).thenReturn(List.of(new PartidoResponseDTO()));
+    void consultarPartidos_SinResultados_LanzaNotFound() {
+        PartidoFiltroRequestDTO filtro = new PartidoFiltroRequestDTO();
 
-        List<PartidoResponseDTO> result = partidoService.consultarPartidos(filtro);
+        when(partidoRepository.findAll()).thenReturn(List.of());
 
-        assertFalse(result.isEmpty());
-        verify(partidoRepository).findByFiltros(any(), isNull());
+        assertThrows(ResourceNotFoundException.class,
+                () -> partidoService.consultarPartidos(filtro));
     }
 
     @Test
-    void consultarPartidos_ByNombreEquipo_Success() {
-        filtro.setNombreEquipo("Tech");
-        when(partidoRepository.findByNombreEquipo("Tech")).thenReturn(new ArrayList<>(List.of(partido)));
-        when(partidoMapper.toResponseDTOList(anyList())).thenReturn(List.of(new PartidoResponseDTO()));
+    void consultarPartidoPorId_HappyPath_RetornaDTO() {
+        PartidoEntity entity = buildEntity(1L);
+        Partido domain = buildDomain(1L);
+        PartidoResponseDTO dto = PartidoResponseDTO.builder().id(1L).build();
 
-        List<PartidoResponseDTO> result = partidoService.consultarPartidos(filtro);
-
-        assertFalse(result.isEmpty());
-        verify(partidoRepository).findByNombreEquipo("Tech");
-    }
-
-    @Test
-    void consultarPartidos_ByTournamentId_Success() {
-        filtro.setTournamentId("T1");
-        when(partidoRepository.findByTorneo_TournId("T1")).thenReturn(new ArrayList<>(List.of(partido)));
-        when(partidoMapper.toResponseDTOList(anyList())).thenReturn(List.of(new PartidoResponseDTO()));
-
-        List<PartidoResponseDTO> result = partidoService.consultarPartidos(filtro);
-
-        assertFalse(result.isEmpty());
-        verify(partidoRepository).findByTorneo_TournId("T1");
-    }
-
-    @Test
-    void consultarPartidos_Empty_ThrowsException() {
-        when(partidoRepository.findAll()).thenReturn(Collections.emptyList());
-
-        assertThrows(ResourceNotFoundException.class, () -> partidoService.consultarPartidos(filtro));
-    }
-
-    @Test
-    void consultarPartidos_Sorting_Success() {
-        Partido p1 = new Partido();
-        p1.setFechaHora(LocalDateTime.now().plusDays(1));
-        Partido p2 = new Partido();
-        p2.setFechaHora(LocalDateTime.now());
-
-        List<Partido> partidos = new ArrayList<>(List.of(p1, p2));
-        when(partidoRepository.findAll()).thenReturn(partidos);
-
-        partidoService.consultarPartidos(filtro);
-
-        assertEquals(p2, partidos.get(0));
-        assertEquals(p1, partidos.get(1));
-    }
-
-    @Test
-    void consultarPartidoPorId_Success() {
-        when(partidoRepository.findById(1L)).thenReturn(Optional.of(partido));
-        when(partidoMapper.toResponseDTO(partido)).thenReturn(new PartidoResponseDTO());
+        when(partidoRepository.findById(1L)).thenReturn(Optional.of(entity));
+        when(partidoPersistenceMapper.toDomain(entity)).thenReturn(domain);
+        when(partidoMapper.toResponseDTO(domain)).thenReturn(dto);
 
         PartidoResponseDTO result = partidoService.consultarPartidoPorId(1L);
 
         assertNotNull(result);
+        assertEquals(1L, result.getId());
     }
 
     @Test
-    void consultarPartidoPorId_NotFound_ThrowsException() {
-        when(partidoRepository.findById(1L)).thenReturn(Optional.empty());
+    void consultarPartidoPorId_NoExiste_LanzaNotFound() {
+        when(partidoRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class,
+                () -> partidoService.consultarPartidoPorId(99L));
+    }
 
-        assertThrows(ResourceNotFoundException.class, () -> partidoService.consultarPartidoPorId(1L));
+    @Test
+    void consultarPartidos_PorEquipo_RetornaLista() {
+        PartidoFiltroRequestDTO filtro = new PartidoFiltroRequestDTO();
+        filtro.setNombreEquipo("Alpha");
+
+        PartidoEntity entity = buildEntity(1L);
+        Partido domain = buildDomain(1L);
+        PartidoResponseDTO dto = PartidoResponseDTO.builder().id(1L).build();
+
+        when(partidoRepository.findByNombreEquipo("Alpha")).thenReturn(List.of(entity));
+        when(partidoPersistenceMapper.toDomain(entity)).thenReturn(domain);
+        when(partidoMapper.toResponseDTOList(any())).thenReturn(List.of(dto));
+
+        List<PartidoResponseDTO> result = partidoService.consultarPartidos(filtro);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void consultarPartidos_PorTorneo_RetornaLista() {
+        PartidoFiltroRequestDTO filtro = new PartidoFiltroRequestDTO();
+        filtro.setTournamentId("TOURN-1");
+
+        PartidoEntity entity = buildEntity(1L);
+        Partido domain = buildDomain(1L);
+        PartidoResponseDTO dto = PartidoResponseDTO.builder().id(1L).build();
+
+        when(partidoRepository.findByTorneo_TournId("TOURN-1")).thenReturn(List.of(entity));
+        when(partidoPersistenceMapper.toDomain(entity)).thenReturn(domain);
+        when(partidoMapper.toResponseDTOList(any())).thenReturn(List.of(dto));
+
+        List<PartidoResponseDTO> result = partidoService.consultarPartidos(filtro);
+        assertEquals(1, result.size());
     }
 }

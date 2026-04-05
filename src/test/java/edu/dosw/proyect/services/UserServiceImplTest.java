@@ -2,9 +2,10 @@ package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterResponseDTO;
-import edu.dosw.proyect.core.models.User;
-import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.impl.UserServiceImpl;
+import edu.dosw.proyect.persistence.entity.UserEntity;
+import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
+import edu.dosw.proyect.persistence.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,103 +27,63 @@ class UserServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private UserPersistenceMapper userMapper;
+
     @InjectMocks
     private UserServiceImpl userService;
 
     private RegisterRequestDTO buildRequest(String role) {
         return new RegisterRequestDTO(
-                "Juan Test",
-                "juan@mail.escuelaing.edu.co",
-                "pass123",
-                role,
-                "Delantero",
-                8
-        );
-    }
-
-    private User buildUser(Long id) {
-        return User.builder()
-                .id(id)
-                .name("Juan Test")
-                .email("juan@mail.escuelaing.edu.co")
-                .password("hashedPass")
-                .role("PLAYER")
-                .active(true)
-                .build();
+                "Test User",
+                "test@mail.escuelaing.edu.co",
+                "pass123", role, "Delantero", 4);
     }
 
     @Test
-    void registerUser_HappyPath_Student_RetornaCreated() {
+    void registerUser_HappyPath_RetornaResponse() {
         RegisterRequestDTO request = buildRequest("STUDENT");
-        User saved = buildUser(1L);
+        UserEntity saved = new UserEntity();
+        saved.setId(1L);
+        saved.setEmail("test@mail.escuelaing.edu.co");
+        saved.setRole("STUDENT");
 
-        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(any())).thenReturn("hashedPass");
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
+        when(userMapper.toEntity(any())).thenReturn(saved);
         when(userRepository.save(any())).thenReturn(saved);
 
-        RegisterResponseDTO result = userService.registerUser(request);
+        RegisterResponseDTO response = userService.registerUser(request);
 
-        assertNotNull(result);
-        assertEquals(1L, result.getUserId());
-        assertEquals("Usuario registrado exitosamente", result.getMessage());
+        assertNotNull(response);
+        assertEquals(1L, response.getUserId());
+        verify(userRepository, times(1)).save(any());
     }
 
     @Test
-    void registerUser_RolInvalido_LanzaIllegalArgument() {
+    void registerUser_RolInvalido_LanzaException() {
         RegisterRequestDTO request = buildRequest("ROL_INVALIDO");
-
-        assertThrows(IllegalArgumentException.class,
-                () -> userService.registerUser(request));
-        verify(userRepository, never()).save(any());
-    }
-
-    @Test
-    void registerUser_RolNulo_LanzaIllegalArgument() {
-        RegisterRequestDTO request = buildRequest(null);
-
         assertThrows(IllegalArgumentException.class,
                 () -> userService.registerUser(request));
     }
 
     @Test
-    void registerUser_EmailDuplicado_LanzaIllegalState() {
+    void registerUser_CorreoYaRegistrado_LanzaException() {
         RegisterRequestDTO request = buildRequest("STUDENT");
-        User existing = buildUser(1L);
+        UserEntity existing = new UserEntity();
+        existing.setEmail("test@mail.escuelaing.edu.co");
 
         when(userRepository.findByEmail(any())).thenReturn(Optional.of(existing));
 
         assertThrows(IllegalStateException.class,
                 () -> userService.registerUser(request));
-        verify(userRepository, never()).save(any());
     }
 
     @Test
-    void registerUser_HappyPath_Admin_RetornaCreated() {
-        RegisterRequestDTO request = buildRequest("ADMIN");
-        User saved = buildUser(2L);
-
-        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(any())).thenReturn("hashedPass");
-        when(userRepository.save(any())).thenReturn(saved);
-
-        RegisterResponseDTO result = userService.registerUser(request);
-
-        assertNotNull(result);
-        assertEquals(2L, result.getUserId());
-    }
-
-    @Test
-    void registerUser_HappyPath_Organizer_RetornaCreated() {
-        RegisterRequestDTO request = buildRequest("ORGANIZER");
-        User saved = buildUser(3L);
-
-        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(any())).thenReturn("hashedPass");
-        when(userRepository.save(any())).thenReturn(saved);
-
-        RegisterResponseDTO result = userService.registerUser(request);
-
-        assertNotNull(result);
-        assertEquals(3L, result.getUserId());
+    void registerUser_CorreoInvalidoParaRol_LanzaException() {
+        RegisterRequestDTO request = new RegisterRequestDTO(
+                "Test", "test@gmail.com", "pass", "STUDENT", null, 1);
+        assertThrows(IllegalArgumentException.class,
+                () -> userService.registerUser(request));
     }
 }

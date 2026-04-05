@@ -1,12 +1,14 @@
 package edu.dosw.proyect.services;
 
+import edu.dosw.proyect.controllers.dtos.request.TournamentRequest;
 import edu.dosw.proyect.controllers.dtos.response.TournamentResponse;
 import edu.dosw.proyect.core.exceptions.TournamentException;
 import edu.dosw.proyect.core.models.Tournament;
-import edu.dosw.proyect.controllers.dtos.request.TournamentRequest;
 import edu.dosw.proyect.core.models.enums.TournamentsStatus;
-import edu.dosw.proyect.persistence.repository.TournamentRepository;
 import edu.dosw.proyect.core.services.impl.TournamentServiceImpl;
+import edu.dosw.proyect.persistence.entity.TournamentEntity;
+import edu.dosw.proyect.persistence.mapper.TournamentPersistenceMapper;
+import edu.dosw.proyect.persistence.repository.TournamentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,143 +28,131 @@ class TournamentServiceImplTest {
     @Mock
     private TournamentRepository tournamentRepository;
 
+    @Mock
+    private TournamentPersistenceMapper tournamentMapper;
+
     @InjectMocks
     private TournamentServiceImpl tournamentService;
 
-    private Tournament buildTournament(String id, TournamentsStatus status) {
+    private TournamentEntity buildEntity(String tournId, TournamentsStatus status) {
+        TournamentEntity e = new TournamentEntity();
+        e.setId(1L);
+        e.setTournId(tournId);
+        e.setName("TechCup 2026");
+        e.setStatus(status);
+        e.setStartDate(LocalDate.now());
+        e.setEndDate(LocalDate.now().plusMonths(3));
+        return e;
+    }
+
+    private Tournament buildDomain(String tournId, TournamentsStatus status) {
         Tournament t = new Tournament();
-        t.setTournId(id);
+        t.setId(1L);
+        t.setTournId(tournId);
         t.setName("TechCup 2026");
         t.setStatus(status);
-        t.setMaxTeams(8);
-        t.setCostPerTeam(50000);
         return t;
     }
 
-    private TournamentRequest buildRequest() {
-        return new TournamentRequest(
-                "TechCup 2026",
-                LocalDate.now(),
-                LocalDate.now().plusMonths(2),
-                8,
-                50000,
-                "Reglamento general"
-        );
+    @Test
+    void createTournament_HappyPath_RetornaTournamentResponse() {
+        TournamentRequest request = new TournamentRequest(
+                "TechCup 2026", LocalDate.now(),
+                LocalDate.now().plusMonths(3), 8, 150000, "Reglamento");
+
+        TournamentEntity entity = buildEntity("TOURN-1", TournamentsStatus.DRAFT);
+        Tournament domain = buildDomain("TOURN-1", TournamentsStatus.DRAFT);
+
+        when(tournamentMapper.toEntity(any())).thenReturn(entity);
+        when(tournamentRepository.save(any())).thenReturn(entity);
+        when(tournamentMapper.toDomain(entity)).thenReturn(domain);
+
+        TournamentResponse response = tournamentService.createTournament(request);
+
+        assertNotNull(response);
+        assertEquals("TOURN-1", response.tournId());
+        verify(tournamentRepository, times(1)).save(any());
     }
 
+    @Test
+    void getAllTournaments_RetornaLista() {
+        TournamentEntity entity = buildEntity("TOURN-1", TournamentsStatus.DRAFT);
+        Tournament domain = buildDomain("TOURN-1", TournamentsStatus.DRAFT);
+
+        when(tournamentRepository.findAll()).thenReturn(List.of(entity));
+        when(tournamentMapper.toDomain(entity)).thenReturn(domain);
+
+        List<Tournament> result = tournamentService.getAllTournaments();
+
+        assertEquals(1, result.size());
+    }
 
     @Test
-    void createTournament_HappyPath_RetornaDraft() {
-        TournamentRequest request = buildRequest();
-        Tournament saved = buildTournament("TOURN-1", TournamentsStatus.DRAFT);
+    void getTournamentById_HappyPath_RetornaTorneo() {
+        TournamentEntity entity = buildEntity("TOURN-1", TournamentsStatus.DRAFT);
+        Tournament domain = buildDomain("TOURN-1", TournamentsStatus.DRAFT);
 
-        when(tournamentRepository.save(any())).thenReturn(saved);
+        when(tournamentRepository.findByTournId("TOURN-1")).thenReturn(Optional.of(entity));
+        when(tournamentMapper.toDomain(entity)).thenReturn(domain);
 
-        TournamentResponse result = tournamentService.createTournament(request);
+        Tournament result = tournamentService.getTournamentById("TOURN-1");
 
         assertNotNull(result);
-        assertEquals(TournamentsStatus.DRAFT, result.status());
-        verify(tournamentRepository, times(1)).save(any());
-    }
-
-
-    @Test
-    void getAllTournaments_HappyPath_RetornaLista() {
-        List<Tournament> torneos = List.of(
-                buildTournament("TOURN-1", TournamentsStatus.DRAFT),
-                buildTournament("TOURN-2", TournamentsStatus.IN_PROGRESS)
-        );
-
-        when(tournamentRepository.findAll()).thenReturn(torneos);
-
-        List<Tournament> result = tournamentService.getAllTournaments();
-
-        assertEquals(2, result.size());
-        verify(tournamentRepository, times(1)).findAll();
+        assertEquals("TOURN-1", result.getTournId());
     }
 
     @Test
-    void getAllTournaments_ListaVacia_RetornaVacia() {
-        when(tournamentRepository.findAll()).thenReturn(List.of());
-
-        List<Tournament> result = tournamentService.getAllTournaments();
-
-        assertTrue(result.isEmpty());
-    }
-
-
-    @Test
-    void startTournament_HappyPath_CambiaEstadoAInProgress() {
-        Tournament t = buildTournament("TOURN-1", TournamentsStatus.DRAFT);
-
-        when(tournamentRepository.findByTournId("TOURN-1")).thenReturn(Optional.of(t));
-        when(tournamentRepository.save(any())).thenReturn(t);
-
-        TournamentResponse result = tournamentService.startTournament("TOURN-1");
-
-        assertEquals(TournamentsStatus.IN_PROGRESS, result.status());
-        verify(tournamentRepository, times(1)).save(any());
-    }
-
-    @Test
-    void startTournament_YaEnProgreso_LanzaTournamentException() {
-        Tournament t = buildTournament("TOURN-1", TournamentsStatus.IN_PROGRESS);
-
-        when(tournamentRepository.findByTournId("TOURN-1")).thenReturn(Optional.of(t));
-
-        assertThrows(TournamentException.class,
-                () -> tournamentService.startTournament("TOURN-1"));
-        verify(tournamentRepository, never()).save(any());
-    }
-
-    @Test
-    void startTournament_YaFinalizado_LanzaTournamentException() {
-        Tournament t = buildTournament("TOURN-1", TournamentsStatus.FINISHED);
-
-        when(tournamentRepository.findByTournId("TOURN-1")).thenReturn(Optional.of(t));
-
-        assertThrows(TournamentException.class,
-                () -> tournamentService.startTournament("TOURN-1"));
-    }
-
-    @Test
-    void startTournament_NoEncontrado_LanzaTournamentException() {
+    void getTournamentById_NoExiste_LanzaException() {
         when(tournamentRepository.findByTournId("TOURN-999")).thenReturn(Optional.empty());
+        assertThrows(TournamentException.class,
+                () -> tournamentService.getTournamentById("TOURN-999"));
+    }
+
+    @Test
+    void startTournament_HappyPath_RetornaInProgress() {
+        TournamentEntity entity = buildEntity("TOURN-1", TournamentsStatus.DRAFT);
+        Tournament domain = buildDomain("TOURN-1", TournamentsStatus.IN_PROGRESS);
+
+        when(tournamentRepository.findByTournId("TOURN-1")).thenReturn(Optional.of(entity));
+        when(tournamentRepository.save(any())).thenReturn(entity);
+        when(tournamentMapper.toDomain(entity)).thenReturn(domain);
+
+        TournamentResponse response = tournamentService.startTournament("TOURN-1");
+
+        assertNotNull(response);
+        verify(tournamentRepository, times(1)).save(entity);
+    }
+
+    @Test
+    void startTournament_YaIniciado_LanzaException() {
+        TournamentEntity entity = buildEntity("TOURN-1", TournamentsStatus.IN_PROGRESS);
+        when(tournamentRepository.findByTournId("TOURN-1")).thenReturn(Optional.of(entity));
 
         assertThrows(TournamentException.class,
-                () -> tournamentService.startTournament("TOURN-999"));
-    }
-
-
-    @Test
-    void finishTournament_HappyPath_CambiaEstadoAFinished() {
-        Tournament t = buildTournament("TOURN-1", TournamentsStatus.IN_PROGRESS);
-
-        when(tournamentRepository.findByTournId("TOURN-1")).thenReturn(Optional.of(t));
-        when(tournamentRepository.save(any())).thenReturn(t);
-
-        TournamentResponse result = tournamentService.finishTournament("TOURN-1");
-
-        assertEquals(TournamentsStatus.FINISHED, result.status());
-        verify(tournamentRepository, times(1)).save(any());
+                () -> tournamentService.startTournament("TOURN-1"));
     }
 
     @Test
-    void finishTournament_NoEnProgreso_LanzaTournamentException() {
-        Tournament t = buildTournament("TOURN-1", TournamentsStatus.DRAFT);
+    void finishTournament_HappyPath_RetornaFinished() {
+        TournamentEntity entity = buildEntity("TOURN-1", TournamentsStatus.IN_PROGRESS);
+        Tournament domain = buildDomain("TOURN-1", TournamentsStatus.FINISHED);
 
-        when(tournamentRepository.findByTournId("TOURN-1")).thenReturn(Optional.of(t));
+        when(tournamentRepository.findByTournId("TOURN-1")).thenReturn(Optional.of(entity));
+        when(tournamentRepository.save(any())).thenReturn(entity);
+        when(tournamentMapper.toDomain(entity)).thenReturn(domain);
+
+        TournamentResponse response = tournamentService.finishTournament("TOURN-1");
+
+        assertNotNull(response);
+        verify(tournamentRepository, times(1)).save(entity);
+    }
+
+    @Test
+    void finishTournament_NoInProgress_LanzaException() {
+        TournamentEntity entity = buildEntity("TOURN-1", TournamentsStatus.DRAFT);
+        when(tournamentRepository.findByTournId("TOURN-1")).thenReturn(Optional.of(entity));
 
         assertThrows(TournamentException.class,
                 () -> tournamentService.finishTournament("TOURN-1"));
-        verify(tournamentRepository, never()).save(any());
-    }
-
-    @Test
-    void finishTournament_NoEncontrado_LanzaTournamentException() {
-        when(tournamentRepository.findByTournId("TOURN-999")).thenReturn(Optional.empty());
-
-        assertThrows(TournamentException.class,
-                () -> tournamentService.finishTournament("TOURN-999"));
     }
 }

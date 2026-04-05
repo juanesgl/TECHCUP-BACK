@@ -7,7 +7,6 @@ import jakarta.persistence.Entity;
 
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
 public class Professor extends User {
 
