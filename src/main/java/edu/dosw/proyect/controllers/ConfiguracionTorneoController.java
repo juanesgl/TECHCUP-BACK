@@ -19,7 +19,7 @@ public class ConfiguracionTorneoController {
     private final ConfiguracionTorneoService configuracionService;
 
     @PutMapping("/{tournId}/configuracion")
-    @Operation(summary = "Configurar parÃ¡metros del torneo", description = "Permite al organizador definir canchas, cierre de inscripciones, reglas y fechas importantes.")
+    @Operation(summary = "Configurar parametros del torneo", description = "Permite al organizador definir canchas, cierre de inscripciones, reglas y fechas importantes.")
     public ResponseEntity<ConfiguracionTorneoResponseDTO> configurarTorneo(
             @PathVariable String tournId,
             @Valid @RequestBody ConfiguracionTorneoRequestDTO configDto) {

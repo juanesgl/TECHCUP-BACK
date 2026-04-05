@@ -32,12 +32,12 @@ public class AuthServiceImpl implements AuthService {
 
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             log.warn("Intento fallido de login para: {}", request.getEmail());
-            return new LoginResponseDTO("Credenciales invÃ¡lidas", false, null);
+            return new LoginResponseDTO("Credenciales invalidas", false, null);
         }
         String jwtToken = jwtProvider.generateToken(user.getEmail(), user.getRole(), user.getId());
         
         log.info("Login exitoso para usuario: {} con rol: {}", user.getEmail(), user.getRole());
-        return new LoginResponseDTO("Inicio de sesiÃ³n exitoso", true, jwtToken);
+        return new LoginResponseDTO("Inicio de sesion exitoso", true, jwtToken);
     }
 }
 
