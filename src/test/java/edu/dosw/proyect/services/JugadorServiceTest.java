@@ -111,4 +111,27 @@ class JugadorServiceTest {
         assertThrows(DisponibilidadException.class,
                 () -> jugadorService.actualizarDisponibilidad(1L, request));
     }
+
+    @Test
+    void unirseAEquipo_HappyPath_ActualizaJugador() {
+        JugadorEntity entity = buildEntity(true, false, true);
+
+        when(jugadorRepository.findById(1L)).thenReturn(Optional.of(entity));
+        when(jugadorRepository.save(any())).thenReturn(entity);
+
+        jugadorService.unirseAEquipo(1L, 2L);
+
+        assertTrue(entity.isTieneEquipo());
+        assertFalse(entity.isDisponible());
+        verify(jugadorRepository, times(1)).save(entity);
+    }
+
+    @Test
+    void unirseAEquipo_JugadorNoExiste_NoHaceNada() {
+        when(jugadorRepository.findById(99L)).thenReturn(Optional.empty());
+
+        jugadorService.unirseAEquipo(99L, 2L);
+
+        verify(jugadorRepository, never()).save(any());
+    }
 }

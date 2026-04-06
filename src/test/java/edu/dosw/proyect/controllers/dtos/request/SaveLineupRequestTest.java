@@ -9,7 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class SaveLineupRequestTest {
+class SaveLineupRequestTest {
 
     @Test
     void saveLineupRequestDTO_AllArgsConstructor_ConstruyeCorrectamente() {

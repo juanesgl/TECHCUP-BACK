@@ -3,7 +3,6 @@ package edu.dosw.proyect.core.models;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.Entity;
 
 @Getter
 @Setter

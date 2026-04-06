@@ -1,7 +1,6 @@
 package edu.dosw.proyect.core.models;
 
 import edu.dosw.proyect.core.models.enums.TipoEvento;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

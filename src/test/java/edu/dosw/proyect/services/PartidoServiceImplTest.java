@@ -147,4 +147,59 @@ class PartidoServiceImplTest {
         List<PartidoResponseDTO> result = partidoService.consultarPartidos(filtro);
         assertEquals(1, result.size());
     }
+
+    @Test
+    void consultarPartidos_ConFechaHoraNula_OrdenaCorrectamente() {
+        PartidoFiltroRequestDTO filtro = new PartidoFiltroRequestDTO();
+        filtro.setTournamentId("TOURN-1");
+
+        PartidoEntity entity1 = buildEntity(1L);
+        PartidoEntity entity2 = buildEntity(2L);
+
+        Partido p1 = buildDomain(1L);
+        p1.setFechaHora(null);
+
+        Partido p2 = buildDomain(2L);
+        p2.setFechaHora(LocalDateTime.now().plusDays(1));
+
+        PartidoResponseDTO dto = PartidoResponseDTO.builder().id(1L).build();
+
+        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of(entity1, entity2));
+        when(partidoPersistenceMapper.toDomain(entity1)).thenReturn(p1);
+        when(partidoPersistenceMapper.toDomain(entity2)).thenReturn(p2);
+        when(partidoMapper.toResponseDTOList(any())).thenReturn(List.of(dto));
+
+        List<PartidoResponseDTO> result = partidoService.consultarPartidos(filtro);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void consultarPartidos_SegundoConFechaHoraNula_OrdenaCorrectamente() {
+        PartidoFiltroRequestDTO filtro = new PartidoFiltroRequestDTO();
+        filtro.setTournamentId("TOURN-1");
+
+        PartidoEntity entity1 = buildEntity(1L);
+        PartidoEntity entity2 = buildEntity(2L);
+
+        Partido p1 = buildDomain(1L);
+        p1.setFechaHora(LocalDateTime.now());
+
+        Partido p2 = buildDomain(2L);
+        p2.setFechaHora(null);
+
+        PartidoResponseDTO dto = PartidoResponseDTO.builder().id(1L).build();
+
+        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of(entity1, entity2));
+        when(partidoPersistenceMapper.toDomain(entity1)).thenReturn(p1);
+        when(partidoPersistenceMapper.toDomain(entity2)).thenReturn(p2);
+        when(partidoMapper.toResponseDTOList(any())).thenReturn(List.of(dto));
+
+        List<PartidoResponseDTO> result = partidoService.consultarPartidos(filtro);
+
+        assertNotNull(result);
+    }
 }

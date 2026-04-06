@@ -1,6 +1,5 @@
 package edu.dosw.proyect.core.models;
 
-import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

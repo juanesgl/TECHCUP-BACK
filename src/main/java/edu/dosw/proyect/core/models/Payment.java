@@ -1,7 +1,6 @@
 package edu.dosw.proyect.core.models;
 
 import edu.dosw.proyect.core.models.enums.PaymentStatus;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
