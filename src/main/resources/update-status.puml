@@ -1,0 +1,21 @@
+@startuml
+actor Cliente
+participant PaymentController
+participant PaymentService
+
+== Happy Path ==
+Cliente -> PaymentController : PUT /payments/status
+PaymentController -> PaymentService : updatePaymentStatus(request)
+PaymentService -> PaymentService : valida paymentId
+PaymentService -> PaymentService : busca pago en lista
+PaymentService -> PaymentService : actualiza status
+PaymentService --> PaymentController : PaymentResponse OK
+PaymentController --> Cliente : 200 - Estado actualizado
+
+== Error ==
+Cliente -> PaymentController : PUT /payments/status
+PaymentController -> PaymentService : updatePaymentStatus(request)
+PaymentService -> PaymentService : BusinessException (ID nulo o no existe)
+PaymentService --> PaymentController : GlobalExceptionHandler
+PaymentController --> Cliente : 400 - mensaje de error
+@enduml

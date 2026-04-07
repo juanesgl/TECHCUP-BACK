@@ -1,0 +1,34 @@
+package edu.dosw.proyect.persistence.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "EQUIPO_JUGADOR")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class EquipoJugadorEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "equipo_id", nullable = false)
+    private EquipoEntity equipo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "jugador_id", nullable = false)
+    private JugadorEntity jugador;
+
+    @Column(name = "fecha_union")
+    private LocalDateTime fechaUnion;
+
+    @Column(name = "activo")
+    private boolean activo = true;
+}
