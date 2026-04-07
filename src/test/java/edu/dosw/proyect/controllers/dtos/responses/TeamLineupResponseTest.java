@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TeamLineupResponseTest {
+class TeamLineupResponseTest {
 
     @Test
     void teamLineupResponseDTO_Builder_ConstruyeCorrectamente() {

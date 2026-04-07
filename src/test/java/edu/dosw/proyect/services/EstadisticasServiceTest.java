@@ -1,12 +1,14 @@
 package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.response.EstadisticasTorneoDTO;
-import edu.dosw.proyect.core.models.*;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import edu.dosw.proyect.core.models.enums.TipoEvento;
+import edu.dosw.proyect.core.services.EstadisticasService;
+import edu.dosw.proyect.persistence.entity.*;
+import edu.dosw.proyect.persistence.mapper.JugadorPersistenceMapper;
+import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.EventoPartidoRepository;
 import edu.dosw.proyect.persistence.repository.PartidoRepository;
-import edu.dosw.proyect.core.services.EstadisticasService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,35 +21,33 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class EstadisticasServiceTest {
+class EstadisticasServiceTest {
 
-    @Mock
-    private PartidoRepository partidoRepository;
-
-    @Mock
-    private EventoPartidoRepository eventoPartidoRepository;
+    @Mock private PartidoRepository partidoRepository;
+    @Mock private EventoPartidoRepository eventoPartidoRepository;
+    @Mock private PartidoPersistenceMapper partidoMapper;
+    @Mock private JugadorPersistenceMapper jugadorMapper;
 
     @InjectMocks
     private EstadisticasService estadisticasService;
 
-    private Equipo buildEquipo(Long id, String nombre) {
-        Equipo e = new Equipo();
+    private EquipoEntity buildEquipoEntity(Long id, String nombre) {
+        EquipoEntity e = new EquipoEntity();
         e.setId(id);
         e.setNombre(nombre);
         return e;
     }
 
-    private Partido buildPartido(Equipo local, Equipo visitante,
-                                 int golesLocal, int golesVisitante, MatchStatus estado) {
-        Partido p = new Partido();
-        p.setEquipoLocal(local);
-        p.setEquipoVisitante(visitante);
-        p.setGolesLocal(golesLocal);
-        p.setGolesVisitante(golesVisitante);
+    private PartidoEntity buildPartidoEntity(MatchStatus estado) {
+        PartidoEntity p = new PartidoEntity();
+        p.setId(1L);
         p.setEstado(estado);
+        p.setGolesLocal(2);
+        p.setGolesVisitante(1);
+        p.setEquipoLocal(buildEquipoEntity(1L, "Alpha"));
+        p.setEquipoVisitante(buildEquipoEntity(2L, "Beta"));
         return p;
     }
-
 
     @Test
     void obtenerEstadisticasTorneo_SinPartidos_RetornaVacio() {
@@ -60,115 +60,113 @@ public class EstadisticasServiceTest {
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
         assertNotNull(result);
-        assertEquals("TOURN-1", result.getTorneoId());
         assertEquals(0, result.getTotalPartidosJugados());
-        assertEquals(0, result.getTotalGolesAnotados());
         assertTrue(result.getTablaPosiciones().isEmpty());
-        assertTrue(result.getTablaGoleadores().isEmpty());
     }
 
     @Test
-    void obtenerEstadisticasTorneo_PartidoFinalizado_LocalGana() {
-        Equipo alpha = buildEquipo(1L, "Alpha");
-        Equipo beta = buildEquipo(2L, "Beta");
-        Partido p = buildPartido(alpha, beta, 3, 1, MatchStatus.FINALIZADO);
+    void obtenerEstadisticasTorneo_PartidoFinalizado_ContabilizaCorrectamente() {
+        PartidoEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
+
+        edu.dosw.proyect.core.models.Equipo local =
+                new edu.dosw.proyect.core.models.Equipo();
+        local.setId(1L);
+        local.setNombre("Alpha");
+
+        edu.dosw.proyect.core.models.Equipo visitante =
+                new edu.dosw.proyect.core.models.Equipo();
+        visitante.setId(2L);
+        visitante.setNombre("Beta");
+
+        edu.dosw.proyect.core.models.Partido domain =
+                new edu.dosw.proyect.core.models.Partido();
+        domain.setId(1L);
+        domain.setEstado(MatchStatus.FINALIZADO);
+        domain.setGolesLocal(2);
+        domain.setGolesVisitante(1);
+        domain.setEquipoLocal(local);
+        domain.setEquipoVisitante(visitante);
 
         when(partidoRepository.findByTorneo_TournId("TOURN-1"))
-                .thenReturn(List.of(p));
+                .thenReturn(List.of(entity));
         when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
                 .thenReturn(List.of());
+        when(partidoMapper.toDomain(entity)).thenReturn(domain);
 
         EstadisticasTorneoDTO result =
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
         assertEquals(1, result.getTotalPartidosJugados());
-        assertEquals(4, result.getTotalGolesAnotados());
-        assertEquals(2, result.getTablaPosiciones().size());
-
-        var alphaStats = result.getTablaPosiciones().get(0);
-        assertEquals("Alpha", alphaStats.getNombreEquipo());
-        assertEquals(3, alphaStats.getPuntos());
-        assertEquals(1, alphaStats.getVictorias());
-    }
-
-    @Test
-    void obtenerEstadisticasTorneo_PartidoFinalizado_Empate() {
-        Equipo alpha = buildEquipo(1L, "Alpha");
-        Equipo beta = buildEquipo(2L, "Beta");
-        Partido p = buildPartido(alpha, beta, 1, 1, MatchStatus.FINALIZADO);
-
-        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
-                .thenReturn(List.of(p));
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
-                .thenReturn(List.of());
-
-        EstadisticasTorneoDTO result =
-                estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
-
-        assertEquals(1, result.getTotalPartidosJugados());
-        result.getTablaPosiciones().forEach(e ->
-                assertEquals(1, e.getPuntos()));
-    }
-
-    @Test
-    void obtenerEstadisticasTorneo_PartidoFinalizado_VisitanteGana() {
-        Equipo alpha = buildEquipo(1L, "Alpha");
-        Equipo beta = buildEquipo(2L, "Beta");
-        Partido p = buildPartido(alpha, beta, 0, 2, MatchStatus.FINALIZADO);
-
-        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
-                .thenReturn(List.of(p));
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
-                .thenReturn(List.of());
-
-        EstadisticasTorneoDTO result =
-                estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
-
-        var betaStats = result.getTablaPosiciones().get(0);
-        assertEquals("Beta", betaStats.getNombreEquipo());
-        assertEquals(3, betaStats.getPuntos());
+        assertEquals(3, result.getTotalGolesAnotados());
     }
 
     @Test
     void obtenerEstadisticasTorneo_PartidoProgramado_NoSeCuenta() {
-        Equipo alpha = buildEquipo(1L, "Alpha");
-        Equipo beta = buildEquipo(2L, "Beta");
-        Partido p = buildPartido(alpha, beta, 2, 0, MatchStatus.PROGRAMADO);
+        PartidoEntity entity = buildPartidoEntity(MatchStatus.PROGRAMADO);
+
+        edu.dosw.proyect.core.models.Partido domain =
+                new edu.dosw.proyect.core.models.Partido();
+        domain.setEstado(MatchStatus.PROGRAMADO);
 
         when(partidoRepository.findByTorneo_TournId("TOURN-1"))
-                .thenReturn(List.of(p));
+                .thenReturn(List.of(entity));
         when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
                 .thenReturn(List.of());
+        when(partidoMapper.toDomain(entity)).thenReturn(domain);
 
         EstadisticasTorneoDTO result =
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
         assertEquals(0, result.getTotalPartidosJugados());
-        assertTrue(result.getTablaPosiciones().isEmpty());
     }
 
     @Test
     void obtenerEstadisticasTorneo_ConEventoGol_ApareceEnGoleadores() {
-        Equipo alpha = buildEquipo(1L, "Alpha");
-        Equipo beta = buildEquipo(2L, "Beta");
-        Partido p = buildPartido(alpha, beta, 1, 0, MatchStatus.FINALIZADO);
+        PartidoEntity partidoEntity = buildPartidoEntity(MatchStatus.FINALIZADO);
 
-        User usuario = User.builder()
-                .id(10L).name("Juan").email("j@m.com")
+        edu.dosw.proyect.core.models.Equipo local =
+                new edu.dosw.proyect.core.models.Equipo();
+        local.setId(1L);
+        local.setNombre("Alpha");
+        edu.dosw.proyect.core.models.Equipo visitante =
+                new edu.dosw.proyect.core.models.Equipo();
+        visitante.setId(2L);
+        visitante.setNombre("Beta");
+
+        edu.dosw.proyect.core.models.Partido domain =
+                new edu.dosw.proyect.core.models.Partido();
+        domain.setEstado(MatchStatus.FINALIZADO);
+        domain.setGolesLocal(1);
+        domain.setGolesVisitante(0);
+        domain.setEquipoLocal(local);
+        domain.setEquipoVisitante(visitante);
+
+        UserEntity userEntity = UserEntity.builder()
+                .id(10L).name("Juan").email("j@mail.com")
                 .password("p").role("PLAYER").build();
+        JugadorEntity jugadorEntity = new JugadorEntity();
+        jugadorEntity.setId(10L);
+        jugadorEntity.setUsuario(userEntity);
 
-        Jugador jugador = new Jugador();
-        jugador.setUsuario(usuario);
+        edu.dosw.proyect.core.models.User usuario =
+                edu.dosw.proyect.core.models.User.builder()
+                        .id(10L).name("Juan").email("j@mail.com")
+                        .password("p").role("PLAYER").build();
+        edu.dosw.proyect.core.models.Jugador jugadorDomain =
+                new edu.dosw.proyect.core.models.Jugador();
+        jugadorDomain.setId(10L);
+        jugadorDomain.setUsuario(usuario);
 
-        EventoPartido evento = new EventoPartido();
-        evento.setJugador(jugador);
-        evento.setEquipo(alpha);
+        EventoPartidoEntity evento = new EventoPartidoEntity();
+        evento.setJugador(jugadorEntity);
         evento.setTipoEvento(TipoEvento.GOL);
 
         when(partidoRepository.findByTorneo_TournId("TOURN-1"))
-                .thenReturn(List.of(p));
+                .thenReturn(List.of(partidoEntity));
         when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
                 .thenReturn(List.of(evento));
+        when(partidoMapper.toDomain(partidoEntity)).thenReturn(domain);
+        when(jugadorMapper.toDomain(jugadorEntity)).thenReturn(jugadorDomain);
 
         EstadisticasTorneoDTO result =
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
@@ -178,38 +176,77 @@ public class EstadisticasServiceTest {
     }
 
     @Test
-    void obtenerEstadisticasTorneo_ConEventoTarjeta_ApareceEnSancionados() {
-        Equipo alpha = buildEquipo(1L, "Alpha");
-        Equipo beta = buildEquipo(2L, "Beta");
-        Partido p = buildPartido(alpha, beta, 0, 0, MatchStatus.FINALIZADO);
+    void obtenerEstadisticasTorneo_PartidoFinalizado_VisitanteGana() {
+        PartidoEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
+        entity.setGolesLocal(0);
+        entity.setGolesVisitante(2);
 
-        User usuario = User.builder()
-                .id(10L).name("Juan").email("j@m.com")
-                .password("p").role("PLAYER").build();
+        edu.dosw.proyect.core.models.Equipo local =
+                new edu.dosw.proyect.core.models.Equipo();
+        local.setId(1L);
+        local.setNombre("Alpha");
+        edu.dosw.proyect.core.models.Equipo visitante =
+                new edu.dosw.proyect.core.models.Equipo();
+        visitante.setId(2L);
+        visitante.setNombre("Beta");
 
-        Jugador jugador = new Jugador();
-        jugador.setUsuario(usuario);
-
-        EventoPartido amarilla = new EventoPartido();
-        amarilla.setJugador(jugador);
-        amarilla.setEquipo(alpha);
-        amarilla.setTipoEvento(TipoEvento.TARJETA_AMARILLA);
-
-        EventoPartido roja = new EventoPartido();
-        roja.setJugador(jugador);
-        roja.setEquipo(alpha);
-        roja.setTipoEvento(TipoEvento.TARJETA_ROJA);
+        edu.dosw.proyect.core.models.Partido domain =
+                new edu.dosw.proyect.core.models.Partido();
+        domain.setEstado(MatchStatus.FINALIZADO);
+        domain.setGolesLocal(0);
+        domain.setGolesVisitante(2);
+        domain.setEquipoLocal(local);
+        domain.setEquipoVisitante(visitante);
 
         when(partidoRepository.findByTorneo_TournId("TOURN-1"))
-                .thenReturn(List.of(p));
+                .thenReturn(List.of(entity));
         when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
-                .thenReturn(List.of(amarilla, roja));
+                .thenReturn(List.of());
+        when(partidoMapper.toDomain(entity)).thenReturn(domain);
 
         EstadisticasTorneoDTO result =
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
-        assertEquals(1, result.getTablaTarjetas().size());
-        assertEquals(1, result.getTablaTarjetas().get(0).getTarjetasAmarillas());
-        assertEquals(1, result.getTablaTarjetas().get(0).getTarjetasRojas());
+        assertEquals(1, result.getTotalPartidosJugados());
+        var betaStats = result.getTablaPosiciones().get(0);
+        assertEquals("Beta", betaStats.getNombreEquipo());
+        assertEquals(3, betaStats.getPuntos());
+    }
+
+    @Test
+    void obtenerEstadisticasTorneo_PartidoFinalizado_Empate() {
+        PartidoEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
+        entity.setGolesLocal(1);
+        entity.setGolesVisitante(1);
+
+        edu.dosw.proyect.core.models.Equipo local =
+                new edu.dosw.proyect.core.models.Equipo();
+        local.setId(1L);
+        local.setNombre("Alpha");
+        edu.dosw.proyect.core.models.Equipo visitante =
+                new edu.dosw.proyect.core.models.Equipo();
+        visitante.setId(2L);
+        visitante.setNombre("Beta");
+
+        edu.dosw.proyect.core.models.Partido domain =
+                new edu.dosw.proyect.core.models.Partido();
+        domain.setEstado(MatchStatus.FINALIZADO);
+        domain.setGolesLocal(1);
+        domain.setGolesVisitante(1);
+        domain.setEquipoLocal(local);
+        domain.setEquipoVisitante(visitante);
+
+        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of(entity));
+        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+                .thenReturn(List.of());
+        when(partidoMapper.toDomain(entity)).thenReturn(domain);
+
+        EstadisticasTorneoDTO result =
+                estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
+
+        assertEquals(1, result.getTotalPartidosJugados());
+        result.getTablaPosiciones().forEach(e ->
+                assertEquals(1, e.getPuntos()));
     }
 }

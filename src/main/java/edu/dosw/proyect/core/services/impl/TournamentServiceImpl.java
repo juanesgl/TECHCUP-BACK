@@ -5,6 +5,8 @@ import edu.dosw.proyect.core.models.Tournament;
 import edu.dosw.proyect.controllers.dtos.request.TournamentRequest;
 import edu.dosw.proyect.controllers.dtos.response.TournamentResponse;
 import edu.dosw.proyect.core.models.enums.TournamentsStatus;
+import edu.dosw.proyect.persistence.entity.TournamentEntity;
+import edu.dosw.proyect.persistence.mapper.TournamentPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.TournamentRepository;
 import edu.dosw.proyect.core.services.TournamentService;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +14,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TournamentServiceImpl implements TournamentService {
 
     private final TournamentRepository tournamentRepository;
+    private final TournamentPersistenceMapper tournamentMapper;
 
     @Transactional
     public TournamentResponse createTournament(TournamentRequest request) {
@@ -31,53 +35,61 @@ public class TournamentServiceImpl implements TournamentService {
         newTournament.setRegulation(request.regulation());
         newTournament.setTournId(edu.dosw.proyect.core.utils.IdGenerator.generateTournamentId());
 
-        Tournament saved = tournamentRepository.save(newTournament);
+        TournamentEntity entity = tournamentMapper.toEntity(newTournament);
+        TournamentEntity saved = tournamentRepository.save(entity);
+        Tournament savedDomain = tournamentMapper.toDomain(saved);
 
         return new TournamentResponse(
-                saved.getTournId(), saved.getName(),
-                saved.getStatus(), "Tournament successfully created");
+                savedDomain.getTournId(), savedDomain.getName(),
+                savedDomain.getStatus(), "Tournament successfully created");
     }
 
     public List<Tournament> getAllTournaments() {
-        return tournamentRepository.findAll();
+        return tournamentRepository.findAll().stream()
+                .map(tournamentMapper::toDomain)
+                .collect(Collectors.toList());
     }
 
     public Tournament getTournamentById(String turnId) {
         return tournamentRepository.findByTournId(turnId)
+                .map(tournamentMapper::toDomain)
                 .orElseThrow(() -> new TournamentException("Tournament not found"));
     }
 
     @Transactional
     public TournamentResponse startTournament(String turnId) {
-        Tournament tournament = getTournamentById(turnId);
+        TournamentEntity entity = tournamentRepository.findByTournId(turnId)
+                .orElseThrow(() -> new TournamentException("Tournament not found"));
 
-        if (tournament.getStatus() == TournamentsStatus.IN_PROGRESS
-                || tournament.getStatus() == TournamentsStatus.FINISHED) {
+        if (entity.getStatus() == TournamentsStatus.IN_PROGRESS
+                || entity.getStatus() == TournamentsStatus.FINISHED) {
             throw new TournamentException("The tournament is already initialized or finished.");
         }
 
-        tournament.setStatus(TournamentsStatus.IN_PROGRESS);
-        tournamentRepository.save(tournament);
+        entity.setStatus(TournamentsStatus.IN_PROGRESS);
+        tournamentRepository.save(entity);
+        Tournament domain = tournamentMapper.toDomain(entity);
 
         return new TournamentResponse(
-                tournament.getTournId(), tournament.getName(),
-                tournament.getStatus(), "The tournament is now IN PROGRESS");
+                domain.getTournId(), domain.getName(),
+                domain.getStatus(), "The tournament is now IN PROGRESS");
     }
 
     @Transactional
     public TournamentResponse finishTournament(String turnId) {
-        Tournament tournament = getTournamentById(turnId);
+        TournamentEntity entity = tournamentRepository.findByTournId(turnId)
+                .orElseThrow(() -> new TournamentException("Tournament not found"));
 
-        if (tournament.getStatus() != TournamentsStatus.IN_PROGRESS) {
+        if (entity.getStatus() != TournamentsStatus.IN_PROGRESS) {
             throw new TournamentException("Cannot finish a tournament that is not IN PROGRESS.");
         }
 
-        tournament.setStatus(TournamentsStatus.FINISHED);
-        tournamentRepository.save(tournament);
+        entity.setStatus(TournamentsStatus.FINISHED);
+        tournamentRepository.save(entity);
+        Tournament domain = tournamentMapper.toDomain(entity);
 
         return new TournamentResponse(
-                tournament.getTournId(), tournament.getName(),
-                tournament.getStatus(), "The tournament has been successfully FINISHED");
+                domain.getTournId(), domain.getName(),
+                domain.getStatus(), "The tournament has been successfully FINISHED");
     }
 }
-

@@ -1,9 +1,7 @@
 package edu.dosw.proyect.core.models;
 
 import lombok.NoArgsConstructor;
-import jakarta.persistence.Entity;
 
-@Entity
 @NoArgsConstructor
 public class Referee extends User {
     

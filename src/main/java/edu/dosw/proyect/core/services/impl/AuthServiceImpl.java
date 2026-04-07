@@ -3,6 +3,8 @@ package edu.dosw.proyect.core.services.impl;
 import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.LoginResponseDTO;
 import edu.dosw.proyect.core.models.User;
+import edu.dosw.proyect.persistence.entity.UserEntity;
+import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.AuthService;
 import edu.dosw.proyect.core.security.JwtProvider;
@@ -19,6 +21,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+    private final UserPersistenceMapper userMapper;
 
     @Override
     public LoginResponseDTO loginUser(LoginRequestDTO request) {
@@ -27,17 +30,17 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Email y password son requeridos");
         }
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElse(null);
+        UserEntity entity = userRepository.findByEmail(request.getEmail()).orElse(null);
 
-        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (entity == null || !passwordEncoder.matches(request.getPassword(), entity.getPassword())) {
             log.warn("Intento fallido de login para: {}", request.getEmail());
-            return new LoginResponseDTO("Credenciales invÃ¡lidas", false, null);
+            return new LoginResponseDTO("Credenciales invalidas", false, null);
         }
-        String jwtToken = jwtProvider.generateToken(user.getEmail(), user.getRole(), user.getId());
-        
-        log.info("Login exitoso para usuario: {} con rol: {}", user.getEmail(), user.getRole());
-        return new LoginResponseDTO("Inicio de sesiÃ³n exitoso", true, jwtToken);
+
+        String jwtToken = jwtProvider.generateToken(
+                entity.getEmail(), entity.getRole(), entity.getId());
+
+        log.info("Login exitoso para usuario: {} con rol: {}", entity.getEmail(), entity.getRole());
+        return new LoginResponseDTO("Inicio de sesion exitoso", true, jwtToken);
     }
 }
-

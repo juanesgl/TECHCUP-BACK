@@ -3,6 +3,8 @@ package edu.dosw.proyect.core.services.impl;
 import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterResponseDTO;
 import edu.dosw.proyect.core.models.User;
+import edu.dosw.proyect.persistence.entity.UserEntity;
+import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.UserService;
 import edu.dosw.proyect.core.utils.*;
@@ -17,6 +19,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserPersistenceMapper userMapper;
 
     public RegisterResponseDTO registerUser(RegisterRequestDTO request) {
         UserCreator creator = getCreatorByRole(request.getRole());
@@ -30,7 +33,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalStateException("El correo ya estÃ¡ registrado: " + request.getEmail());
+            throw new IllegalStateException("El correo ya esta registrado: " + request.getEmail());
         }
 
         RegisterRequestDTO hashedRequest = new RegisterRequestDTO(
@@ -43,11 +46,13 @@ public class UserServiceImpl implements UserService {
         );
 
         User newUser = creator.createUser(hashedRequest);
-        User saved;
+        UserEntity entity = userMapper.toEntity(newUser);
+
+        UserEntity saved;
         try {
-            saved = userRepository.save(newUser);
+            saved = userRepository.save(entity);
         } catch (DataIntegrityViolationException e) {
-            throw new IllegalStateException("El correo ya estÃ¡ registrado: " + request.getEmail());
+            throw new IllegalStateException("El correo ya esta registrado: " + request.getEmail());
         }
 
         return new RegisterResponseDTO("Usuario registrado exitosamente", saved.getId());
@@ -55,19 +60,18 @@ public class UserServiceImpl implements UserService {
 
     private UserCreator getCreatorByRole(String role) {
         if (role == null) return null;
-
         return switch (role.toUpperCase()) {
-            case "STUDENT"      -> new StudentCreator();
-            case "GRADUATE"     -> new GraduateCreator();
-            case "PROFESSOR"    -> new ProfessorCreator();
-            case "ADMIN"        -> new AdminCreator();
-            case "FAMILY_MEMBER"-> new FamilyCreator();
-            case "ORGANIZER"    -> new OrganizerCreator();
-            case "REFEREE"      -> new RefereeCreator();
-            case "CAPTAIN"      -> new CaptainCreator();
-            case "PLAYER"       -> new PlayerCreator();
-            case "ADMINISTRATOR"-> new AdminCreator();
-            default             -> null;
+            case "STUDENT"       -> new StudentCreator();
+            case "GRADUATE"      -> new GraduateCreator();
+            case "PROFESSOR"     -> new ProfessorCreator();
+            case "ADMIN"         -> new AdminCreator();
+            case "FAMILY_MEMBER" -> new FamilyCreator();
+            case "ORGANIZER"     -> new OrganizerCreator();
+            case "REFEREE"       -> new RefereeCreator();
+            case "CAPTAIN"       -> new CaptainCreator();
+            case "PLAYER"        -> new PlayerCreator();
+            case "ADMINISTRATOR" -> new AdminCreator();
+            default              -> null;
         };
     }
 }
