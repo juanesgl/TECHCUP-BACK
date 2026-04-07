@@ -77,7 +77,6 @@ Se aplica un fitro con una cancha que no existe
 
 
 ```mermaid
-    %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1e1e2e', 'primaryTextColor': '#cdd6f4', 'primaryBorderColor': '#89b4fa', 'lineColor': '#f5c2e7', 'tertiaryColor': '#11111b', 'mainBkg': '#1e1e2e', 'attributeBackgroundColor': '#313244', 'attributeTextColor': '#fab387'}}}%%
 erDiagram
     USUARIO {
         Bigint id PK
