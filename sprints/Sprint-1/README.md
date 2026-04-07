@@ -2,15 +2,17 @@
 
 ##  Integrantes del Equipo
 
-| Nombre | Rol     |
-|--------|---------|
-| Juan Esteban Sanchez | Backend |
-| Zharik Natalia Mahecha | Backend |
-| Mariana Parra Urrego | Fronted |
-| Isaac David Burgos | Fronted |
-| Laura Valentina Santiago | Lider   |
+| Nombre                   | Rol      |
+|--------------------------|----------|
+| Laura Valentina Santiago | Lider    |
+| Juan Esteban Sanchez     | Backend  |
+| Zharik Natalia Mahecha   | Backend  |
+| Mariana Parra Urrego     | Frontend |
+| Isaac David Burgos       | Frontend |
 
-## Descripcion
+
+
+## Descripción
 
 Este repositorio contiene la implementación del backend del sistema TechCup,
 una plataforma diseñada para la gestión de torneos de fútbol universitarios.
@@ -24,14 +26,14 @@ El backend sigue el patrón MVC:
 
 Controller → Maneja las peticiones HTTP
 Service → Implementa la lógica de negocio
-Models / DTOs → Representan la información del sistema
+Models / DTO → Representan la información del sistema
 Validators → Validan los datos de entrada
 
-## Deuda Tecnica
+## Deuda Técnica
 
 #### Requerimientos
 
-![Requerimientos arreglados](Sprint/Sprint-1/evidencias/pruebas/RequerimientosArreglados.png)
+![Requerimientos arreglados](Sprint/Sprint-1/evidencias/pruebas/requerimientos_arreglados.png)
 
 #### Manual de identidad
 

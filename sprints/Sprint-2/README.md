@@ -2,13 +2,13 @@
 
 ##  Integrantes del Equipo
 
-| Nombre                   | Rol     |
-|--------------------------|---------|
-| Juan Esteban Sanchez     | Fronted |
-| Zharik Natalia Mahecha   | Fronted |
-| Mariana Parra Urrego     | Lider   |
-| Isaac David Burgos       | Backend |
-| Laura Valentina Santiago | Backend |
+| Nombre                   | Rol      |
+|--------------------------|----------|
+| Mariana Parra Urrego     | Lider    |
+| Isaac David Burgos       | Backend  |
+| Laura Valentina Santiago | Backend  |
+| Juan Esteban Sanchez     | Frontend |
+| Zharik Natalia Mahecha   | Frontend |
 
 
 ### Historias incluidas
@@ -28,21 +28,21 @@
 
 En esta prueba se simula si se subiera un comprobante correctamente
 
-![Happy path POST](../../Sprint/Sprint-2/evidencias/pruebas/POST1.png)
+![Happy path POST](../../sprints/Sprint-2/evidencias/pruebas/POST1.png)
 
 * Prueba 2 comprobante sin usuario
 
 Se hace una solicitud sin incluir el userId y el servidor responde 400 Bad Request con el mensaje 
 "El usuario es obligatorio".
 
-![ERROR POST](../../Sprint/Sprint-2/evidencias/pruebas/ERROR1.png)
+![ERROR POST](../../sprints/Sprint-2/evidencias/pruebas/ERROR1.png)
 
 * Prueba 3 comprobante sin subir
 
 Se envía userId y tournamentId pero sin el fileUrl. El servidor responde 400 Bad Request con el
 mensaje "El comprobante es obligatorio".
 
-![ERROR POST](../../Sprint/Sprint-2/evidencias/pruebas/ERROR2.png)
+![ERROR POST](../../sprints/Sprint-2/evidencias/pruebas/ERROR2.png)
 
 ### PUT/payments/status
 
@@ -50,37 +50,37 @@ mensaje "El comprobante es obligatorio".
 
 Pago Aprobado
 
-![Happy path PUT](../../Sprint/Sprint-2/evidencias/pruebas/PUT_payment_upload.png)
+![Happy path PUT](../../sprints/Sprint-2/evidencias/pruebas/PUT_payment_upload.png)
 
 * Prueba 5 pago rechazado
 
 Pago rechazado
 
-![Happy path PUT](../../Sprint/Sprint-2/evidencias/pruebas/PUT_UPLOAD2.png)
+![Happy path PUT](../../sprints/Sprint-2/evidencias/pruebas/PUT_UPLOAD2.png)
 
 * Prueba 6 pago sin Id 
 
 Se envia un pago sin id y el servidor dice que el id es obligatorio.
 
-![ERROR PUT](../../Sprint/Sprint-2/evidencias/pruebas/ERROR1_UPLOAD.png)
+![ERROR PUT](../../sprints/Sprint-2/evidencias/pruebas/ERROR1_UPLOAD.png)
 
 * Prueba 7 pago no encontrado
 
 Se envía paymentId: 999 con estado APPROVED y el servidor responde 400 Bad Request indicando que el pago no fue encontrado.
 
-![ERROR PUT](../../Sprint/Sprint-2/evidencias/pruebas/ERROR2_UPLOAD.png)
+![ERROR PUT](../../sprints/Sprint-2/evidencias/pruebas/ERROR2_UPLOAD.png)
 
 
 ## Swagger
 * El controlador de Pagos expone tres endpoints: subir comprobante (POST /payments/upload), cambiar estado de pago 
 (PUT /payments/status) y un test de conexión (GET /payments/test).
 
-![Swagger 1](../../Sprint/Sprint-2/evidencias/pruebas/swagger1.png)
+![Swagger 1](../../sprints/Sprint-2/evidencias/pruebas/swagger1.png)
 
 * El tournament-controller permite crear y listar torneos, además de iniciarlos y finalizarlos por ID. 
 El user-controller expone el registro de nuevos usuarios y el auth-controller el inicio de sesión. 
 
-![Swagger 2](../../Sprint/Sprint-2/evidencias/pruebas/swagger2.png)
+![Swagger 2](../../sprints/Sprint-2/evidencias/pruebas/swagger2.png)
 =======
 # Sprint 2
 
@@ -91,14 +91,14 @@ El user-controller expone el registro de nuevos usuarios y el auth-controller el
 
 Filtro por nombre y posición
 
-![Happy path filter](../../Sprint/Sprint-2/evidencias/pruebas/POST2.png)
+![Happy path filter](../../sprints/Sprint-2/evidencias/pruebas/POST2.png)
 
 
 ## JaCoCo
 * La cobertura total de instrucciones es del 52% y de ramas del 28%. El paquete services lidera con 93% y models.enums
 alcanza el 100%. Los paquetes controllers y config tienen la cobertura más baja.
 
-![Pruebas JaCoCo](../../Sprint/Sprint-2/evidencias/pruebas/jacoco.png)
+![Pruebas JaCoCo](../../sprints/Sprint-2/evidencias/pruebas/jacoco.png)
 
 
 ## SonarQube
@@ -106,8 +106,8 @@ alcanza el 100%. Los paquetes controllers y config tienen la cobertura más baja
 La mantenibilidad reporta 16 issues abiertos pero también con rating A. La cobertura alcanza el 49.5% sobre 360 líneas
 y no se detectan duplicaciones en las 1.2k líneas analizadas.
 
-![SonarQube 1](../../Sprint/Sprint-2/evidencias/pruebas/sonar1.png)
-![SonarQube 2](../../Sprint/Sprint-2/evidencias/pruebas/sonar2.png)
+![SonarQube 1](../../sprints/Sprint-2/evidencias/pruebas/sonar1.png)
+![SonarQube 2](../../sprints/Sprint-2/evidencias/pruebas/sonar2.png)
 
 
 =======

@@ -2,13 +2,13 @@
 
 ##  Integrantes del Equipo
 
-| Nombre | Rol     |
-|--------|---------|
-| Juan Esteban Sanchez | Backend |
-| Zharik Natalia Mahecha | Backend |
-| Mariana Parra Urrego | Fronted |
-| Isaac David Burgos | Lider   |
-| Laura Valentina Santiago | Backend |
+| Nombre                      | Rol      |
+|-----------------------------|----------|
+| Isaac David Burgos          | Líder    |
+| Andrea Mariana Parra Urrego | Frontend |
+| Juan Esteban Sanchez        | Backend  |
+| Laura Valentina Santiago    | Backend  |
+| Zharik Natalia Mahecha      | Backend  |
 
 ### Objetivo del Sprint
 Elevar el sistema TechCup a un nivel de producción real implementando las funcionalidades core del torneo: configuración de torneos, gestión y consulta de alineaciones, consulta de partidos, tabla de posiciones automática y estadísticas. Adicionalmente, migrar la persistencia de memoria a base de datos relacional, blindar la API con seguridad 
@@ -26,7 +26,7 @@ Elevar el sistema TechCup a un nivel de producción real implementando las funci
 
 #### Swagger
 
-![Swagger pantalla](swaggerPartidos.png)
+![Swagger pantalla](evidencias/swaggerPartidos.png)
 
 En la imagen podemos observar los endpoints que creamos para cada Tag, donde los endpoints son los siguientes
 
@@ -40,42 +40,219 @@ GET       /api/partidos/{partidoId} Consultar detalle de un partido
 
 Se consultan todos los partidos programados sin aplicar ningun tipo de filtro
 
-![Prueba 1](postman1_partidos.png)
+![Prueba 1](evidencias/postman1_partidos.png)
 
 - Prueba 2 Filtramos por cancha
 
 Se aplica el filtro por cancha para solo observar los partidos de una cancha especifica
 
-![Prueba 2](postman2_partidos.png)
+![Prueba 2](evidencias/postman2_partidos.png)
 
 - Prueba 3 Filtro por equipos
 
 Se aplica el filtro por equipos para solo obtener lso partidos de un equipo en especifico.
 
-![Prueba 3](postman3_partidos.png)
+![Prueba 3](evidencias/postman3_partidos.png)
 
 - Prueba 4 Filtro por torneo
 
 Se aplica el filtro por el ID  del torneo, permitiendo ver los partidos de un torneo en especifico.
 
-![Preueba 4](postman4_partidos.png)
+![Preueba 4](evidencias/postman4_partidos.png)
 
 - Prueba 5 Consultar un partido en especifico
 
 Se consulta el detalle completo de un partido por su ID.
 
-![Prueba 5](postman5_partido.png)
+![Prueba 5](evidencias/postman5_partido.png)
 
 - Prueba 6 Filtro sin resultados
 
 Se aplica un fitro con una cancha que no existe
 
-![Prueba 6](postman6_partidos.png)
+![Prueba 6](evidencias/postman6_partidos.png)
 
 
 ### Diagrama entidad-relacion
 
-![Diagrama de entidad-relacion](../../docs/uml/diagrama_entidad_relacion.png)
+
+```mermaid
+    %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1e1e2e', 'primaryTextColor': '#cdd6f4', 'primaryBorderColor': '#89b4fa', 'lineColor': '#f5c2e7', 'tertiaryColor': '#11111b', 'mainBkg': '#1e1e2e', 'attributeBackgroundColor': '#313244', 'attributeTextColor': '#fab387'}}}%%
+erDiagram
+    USUARIO {
+        Bigint id PK
+        Varchar correo
+        Varchar contrasena_hash
+        Varchar tipo_usuario
+        Varchar nombre
+        Varchar apellido
+        timestamp fecha_registro
+        boolean activo
+    }
+    JUGADOR {
+        Bigint id PK
+        Bigint usuario_id FK
+        Varchar foto_url
+        Varchar posiciones
+        int dorsal
+        boolean disponible
+        Varchar semestre
+        int edad
+        Varchar genero
+        Varchar identificacion
+    }
+    EQUIPO {
+        Bigint id PK
+        Varchar nombre
+        Varchar escudo_url
+        Varchar color_uniforme_local
+        Varchar color_uniforme_visita
+        Biginit capitan_id FK
+        Biginit torneo_id FK
+        Varchar estado_inscripcion
+    }
+    EQUIPO_JUGADOR {
+        Bigint id PK
+        Bigint equipo_id FK
+        Bigint jugador_id FK
+        timestamp fecha_union
+        boolean activo
+    }
+    INVITACION {
+        Bigint id PK
+        Bigint equipo_id FK
+        Bigint jugador_id FK
+        Varchar estado
+        timestamp fecha_envio
+        timestamp fecha_respuesta
+    }
+    TORNEO {
+        Bigint id PK
+        Varchar nombre
+        date fecha_inicio
+        date fecha_fin
+        int cantidad_equipos
+        decimal costo_por_equipo
+        string estado
+        Bigint organizador_id FK
+    }
+    CONFIGURACION_TORNEO {
+        Bigint id PK
+        Biginit torneo_id FK
+        text reglamento
+        date cierre_inscripciones
+        text sanciones
+        Varchar fechas_importantes
+    }
+    CANCHA {
+        Bigint id PK
+        Varchar nombre
+        Varchar direccion
+        Varchar descripcion
+    }
+    PAGO {
+        Bigint id PK
+        Bigint equipo_id FK
+        Bigint torneo_id FK
+        Varchar comprobante_url
+        Varchar estado
+        timestamp fecha_subida
+        timestamp fecha_revision
+        Bigint revisado_por FK
+    }
+    PARTIDO {
+        Bigint id PK
+        Bigint torneo_id FK
+        Bigint equipo_local_id FK
+        Bigint equipo_visitante_id FK
+        Bigint cancha_id FK
+        Bigint arbitro_id FK
+        datetime fecha_hora
+        int goles_local
+        int goles_visitante
+        Varchar fase
+        Varchar estado
+    }
+    EVENTO_PARTIDO {
+        Bigint id PK
+        Bigint partido_id FK
+        Bigint jugador_id FK
+        Varchar tipo_evento
+        int minuto
+        Varchar descripcion
+    }
+    ALINEACION {
+        Bigint id PK
+        Bigint partido_id FK
+        Bigint equipo_id FK
+        Varchar formacion
+        timestamp fecha_registro
+    }
+    ALINEACION_JUGADOR {
+        Bigint id PK
+        Bigint alineacion_id FK
+        Bigint jugador_id FK
+        Varchar rol
+        Varchar posicion_en_cancha
+        int numero_camiseta
+    }
+    LLAVE_ELIMINATORIA {
+        Bigint id PK
+        Bigint torneo_id FK
+        Varchar fase
+        int numero_llave
+        Bigint equipo1_id FK
+        Bigint equipo2_id FK
+        Bigint partido_id FK
+        Bigint ganador_id FK
+    }
+    ESTADISTICA_EQUIPO {
+        Bigint id PK
+        Bigint equipo_id FK
+        Bigint torneo_id FK
+        int partidos_jugados
+        int partidos_ganados
+        int partidos_empatados
+        int partidos_perdidos
+        int goles_favor
+        int goles_contra
+        int diferencia_gol
+        int puntos
+    }
+    USUARIO ||--o| JUGADOR : tiene
+    JUGADOR ||--o{ EQUIPO_JUGADOR : pertenece
+    EQUIPO ||--o{ EQUIPO_JUGADOR : tiene
+    EQUIPO }o--|| JUGADOR : capitan
+    EQUIPO }o--|| TORNEO : participa
+    JUGADOR ||--o{ INVITACION : recibe
+    EQUIPO ||--o{ INVITACION : envia
+    TORNEO ||--o| CONFIGURACION_TORNEO : config
+    TORNEO }o--|| USUARIO : organiza
+    EQUIPO ||--o{ PAGO : paga
+    PAGO }o--|| TORNEO : corresponde
+    PAGO }o--o| USUARIO : revisa
+    PARTIDO }o--|| TORNEO : pertenece
+    PARTIDO }o--|| EQUIPO : local
+    PARTIDO }o--|| EQUIPO : visitante
+    PARTIDO }o--o| CANCHA : juega
+    PARTIDO }o--o| USUARIO : arbitro
+    PARTIDO ||--o{ EVENTO_PARTIDO : tiene
+    EVENTO_PARTIDO }o--|| JUGADOR : realiza
+    PARTIDO ||--o{ ALINEACION : tiene
+    ALINEACION }o--|| EQUIPO : pertenece
+    ALINEACION ||--o{ ALINEACION_JUGADOR : incluye
+    ALINEACION_JUGADOR }o--|| JUGADOR : asigna
+    TORNEO ||--o{ LLAVE_ELIMINATORIA : genera
+    LLAVE_ELIMINATORIA }o--o| EQUIPO : eq1
+    LLAVE_ELIMINATORIA }o--o| EQUIPO : eq2
+    LLAVE_ELIMINATORIA }o--o| PARTIDO : partido
+    LLAVE_ELIMINATORIA }o--o| EQUIPO : ganador
+    TORNEO ||--o{ ESTADISTICA_EQUIPO : tiene
+    ESTADISTICA_EQUIPO }o--|| EQUIPO : pertenece
+
+```
+
+
 
 - El diagrama de entidad-relación muestra el modelo de datos del sistema TechCup, es decir, cómo están estructuradas las tablas, qué atributos tiene cada una y cómo se relacionan entre ellas a través de llaves foráneas.
 Comenzando por el centro del diagrama, la entidad más importante es PARTIDO, que actúa como el núcleo del sistema porque casi todas las demás entidades se conectan a ella. Un partido tiene su propio id como llave primaria, referencias al torneo al que pertenece (torneo_id), al equipo local (equipo_local_id), al equipo visitante (equipo_visitante_id), y también guarda la cancha, la fecha, el estado y los goles de cada equipo.
