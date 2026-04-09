@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Data
 public class RespuestaInvitacionRequestDTO {
-    @NotNull(message = "La respuesta a la invitaciÃ³n es obligatoria")
+    @NotNull(message = "La respuesta a la invitacion es obligatoria")
     private RespuestaInvitacion respuesta;
 }
 
