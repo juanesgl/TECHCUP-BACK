@@ -14,7 +14,7 @@ public interface KnockoutBracketService {
      */
     TournamentBracketResponseDTO generateBracket(String tournamentId);
 
-    / /**
+     /**
      * Consulta el bracket actual de un torneo.
      */
     TournamentBracketResponseDTO getBracket(String tournamentId);
