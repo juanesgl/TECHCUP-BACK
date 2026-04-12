@@ -149,6 +149,4 @@ $RECYCLE.BIN/
 .Trash-*
 .nfs*
 postgres_data/
-.env
-.github
 /uploads/
