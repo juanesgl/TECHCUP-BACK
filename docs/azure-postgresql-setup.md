@@ -118,9 +118,9 @@ spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
 jwt.secret=${JWT_SECRET}
 ```
 
-- **Azure (QA/PROD):** definir esas variables en el servicio de cómputo (p. ej. Azure App Service) o, mejor, referenciar secretos desde **Azure Key Vault**.
-- **Local con Docker:** usar `docker-compose.yml`, que inyecta la URL JDBC hacia el servicio `database` y reutiliza `POSTGRES_*` del archivo `.env`.
-- **Local sin Docker:** copiar `.env.example` → `.env` y apuntar `SPRING_DATASOURCE_URL` a `localhost` y el puerto mapeado (p. ej. `5433`).
+- **Azure (QA/PROD):** definir esas variables en el servicio de cómputo (p. ej. Azure App Service) o, mejor, referenciar secretos desde **Azure Key Vault**; JDBC con `sslmode=require` (ver ejemplos arriba en este documento).
+- **Local con Docker (stack completo):** `docker-compose.yml` levanta **PostgreSQL** y la **API** en contenedor; Compose inyecta `SPRING_DATASOURCE_URL` hacia el host `database` en la red interna. El archivo `.env` aporta usuario, contraseña, JWT, etc. (sin commitear).
+- **Local híbrido (solo Postgres en Docker):** ejecutar la API con Maven/IDE y en `.env` usar `SPRING_DATASOURCE_URL` hacia `localhost` y el puerto publicado (p. ej. `5433`).
 
 ---
 
@@ -161,5 +161,6 @@ Si la conexión es exitosa, verás el prompt de PostgreSQL (`techcup_db=>`).
 |---|---|
 | `application.properties` | Lee BD y JWT solo desde variables de entorno (sin secretos en el código) |
 | `.env.example` | Plantilla de variables para local y Docker (copiar a `.env`, no commitear) |
-| `docker-compose.yml` | Postgres local + API; URL JDBC interna `database:5432` |
+| `docker-compose.yml` | Orquesta Postgres + API; credenciales vía `.env` |
+| `Dockerfile` | Imagen del backend Spring Boot (Java 21) |
 | GitHub Secrets (cuando haya CI) | Credenciales QA/PROD para pipelines, no en el repositorio |
