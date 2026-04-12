@@ -45,6 +45,8 @@ buildNumber.properties
 .env.development.local
 .env.test.local
 .env.production.local
+.env.qa
+.env.prod
 
 #### POSTGRESQL ####
 *.sql
@@ -149,6 +151,4 @@ $RECYCLE.BIN/
 .Trash-*
 .nfs*
 postgres_data/
-.env
-.github
 /uploads/
