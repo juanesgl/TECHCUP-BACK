@@ -109,12 +109,18 @@ jdbc:postgresql://<nombre-servidor>.postgres.database.azure.com:5432/<nombre-db>
 
 ### Cómo funciona la integración:
 
-El archivo `application.properties` usa la sintaxis `${VARIABLE:valor_por_defecto}` de Spring Boot:
+El archivo `application.properties` **no** incluye contraseñas ni secretos JWT en el código: lee obligatoriamente variables de entorno (o un archivo `.env` local vía `spring.config.import`, ver `.env.example` en la raíz del backend).
+
 ```properties
-spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/techcup_db}
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+jwt.secret=${JWT_SECRET}
 ```
-- Si la variable de entorno `SPRING_DATASOURCE_URL` **existe** → usa su valor (Azure)
-- Si la variable de entorno **no existe** → usa el valor por defecto (`localhost`, para desarrollo local)
+
+- **Azure (QA/PROD):** definir esas variables en el servicio de cómputo (p. ej. Azure App Service) o, mejor, referenciar secretos desde **Azure Key Vault**.
+- **Local con Docker:** usar `docker-compose.yml`, que inyecta la URL JDBC hacia el servicio `database` y reutiliza `POSTGRES_*` del archivo `.env`.
+- **Local sin Docker:** copiar `.env.example` → `.env` y apuntar `SPRING_DATASOURCE_URL` a `localhost` y el puerto mapeado (p. ej. `5433`).
 
 ---
 
@@ -122,19 +128,18 @@ spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/t
 
 ### Validación automática en el Pipeline CI
 
-Se añadió un paso en el workflow de GitHub Actions (`.github/workflows/ci.yml`) que valida la conexión antes de ejecutar las pruebas:
+Cuando exista un workflow en GitHub Actions, un paso típico valida la conexión antes de pruebas (usando **GitHub Secrets**, no archivos `.env` en el repo), por ejemplo:
 
 ```yaml
 - name: Validate Database Connection
   run: |
-    PGPASSWORD="${{ env.SPRING_DATASOURCE_PASSWORD }}" psql \
-      "${{ env.SPRING_DATASOURCE_URL }}" \
-      -U "${{ env.SPRING_DATASOURCE_USERNAME }}" \
+    PGPASSWORD="${{ secrets.DB_PASSWORD }}" psql \
+      "host=${{ secrets.DB_HOST }} port=5432 dbname=techcup_db sslmode=require" \
+      -U "${{ secrets.DB_USER }}" \
       -c "SELECT version();"
 ```
 
-- ✅ Si la conexión es exitosa, el pipeline continúa
-- ❌ Si falla, el pipeline se detiene inmediatamente con un error claro
+- Si la conexión es exitosa, el pipeline continúa; si falla, se detiene con un error claro.
 
 ### Validación manual desde tu máquina local
 
@@ -150,11 +155,11 @@ Si la conexión es exitosa, verás el prompt de PostgreSQL (`techcup_db=>`).
 
 ---
 
-## Resumen de archivos modificados
+## Resumen de archivos relevantes
 
-| Archivo | Cambio |
+| Archivo | Rol |
 |---|---|
-| `application.properties` | Usa `${VAR:default}` para leer credenciales de variables de entorno |
-| `.env.qa` | Contiene credenciales de Azure PostgreSQL para QA |
-| `.env.prod` | Contiene credenciales de Azure PostgreSQL para PROD |
-| `.github/workflows/ci.yml` | Carga `.env` según rama y valida conexión a BD |
+| `application.properties` | Lee BD y JWT solo desde variables de entorno (sin secretos en el código) |
+| `.env.example` | Plantilla de variables para local y Docker (copiar a `.env`, no commitear) |
+| `docker-compose.yml` | Postgres local + API; URL JDBC interna `database:5432` |
+| GitHub Secrets (cuando haya CI) | Credenciales QA/PROD para pipelines, no en el repositorio |
