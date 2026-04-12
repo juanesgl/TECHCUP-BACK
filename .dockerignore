@@ -5,7 +5,7 @@ target/
 *.iml
 .env
 .env.*
-!.env.example
+!docs/env-examples/.env.example
 README.md
 sprints/
 docs/

@@ -33,3 +33,23 @@
 | Sprint 2 | Deuda técnica Sprint-1, Swagger, Logs, diagramas de secuencia, pruebas con Jacoco y SonarQube                   | [Ver Sprint 2](sprints/Sprint-2/README.md)  |
 | Sprint 3 | Deuda técnica Sprint-2, persistencia, seguridad API (JWT + OAuth2 + Roles + SSL/TLS), diagrama Entidad-relacion | [Ver Sprint 3](sprints/Sprint-3/README.md)  |
 
+---
+
+## Docker
+
+Documentación completa (arquitectura, variables, troubleshooting, Azure vs local): **[docs/dockerizacion.md](docs/dockerizacion.md)**.
+
+### Uso rápido
+
+1. Copiar `.env.example` a `.env` y definir `POSTGRES_PASSWORD` y `JWT_SECRET`.
+2. Construir la imagen del backend y levantar API + PostgreSQL:
+
+```bash
+docker build -t techcup-backend:local .
+docker compose -f compose.yml up -d --build
+```
+
+3. Comprobar: `http://localhost:8085/swagger-ui.html` (o el puerto configurado en `APP_PORT`).
+
+Validación opcional: `.\scripts\validate-docker-stack.ps1` (Windows) o `./scripts/validate-docker-stack.sh` (Linux/macOS).
+
