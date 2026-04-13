@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StarterEntryRequestDTO {
 
-    @NotNull(message = "Player ID is required")
+    @NotNull(message = "El id del jugador es obligatorio")
     private Long playerId;
 
-    @NotNull(message = "Field position is required for each starter")
+    @NotNull(message = "La posicion de campo de cada titular es obligatoria")
     private FieldPosition fieldPosition;
 }

@@ -1,7 +1,7 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.controllers.dtos.PlayerFilterRequest;
-import edu.dosw.proyect.controllers.dtos.PlayerResponse;
+import edu.dosw.proyect.controllers.dtos.request.PlayerFilterRequest;
+import edu.dosw.proyect.controllers.dtos.response.PlayerResponse;
 import edu.dosw.proyect.core.exceptions.BusinessException;
 import edu.dosw.proyect.core.services.PlayerService;
 import org.junit.jupiter.api.Test;

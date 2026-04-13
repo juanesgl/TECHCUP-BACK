@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos;
+package edu.dosw.proyect.controllers.dtos.request;
 
 import edu.dosw.proyect.controllers.dtos.validation.InstitutionalEmail;
 import jakarta.validation.constraints.NotBlank;

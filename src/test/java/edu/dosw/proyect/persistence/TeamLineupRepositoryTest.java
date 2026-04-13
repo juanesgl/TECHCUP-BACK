@@ -3,7 +3,6 @@ package edu.dosw.proyect.persistence;
 import edu.dosw.proyect.core.models.TeamLineup;
 import edu.dosw.proyect.core.models.enums.LineupStatus;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
-import edu.dosw.proyect.persistence.repository.TeamLineupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -14,12 +14,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/jugadores")
 @RequiredArgsConstructor
-@Tag(name = "Jugador - Disponibilidad", description = "Actualizar disponibilidad de jugadores en el torneo")
+@Tag(name = "13 Jugador Disponibilidad")
 public class JugadorController {
 
     private final JugadorService jugadorService;
 
-    @Operation(summary = "Actualizar disponibilidad de un jugador", description = "Permite a un jugador entrar o salir de la agencia libre para ser invitado a equipos, validando si su perfil esta completo.")
+    @Operation(summary = "Actualizar disponibilidad de un jugador", description = "Permite a un jugador entrar o salir" +
+            " de la agencia libre para ser invitado a equipos, validando si su perfil esta completo.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "El estado de disponibilidad ha sido modificado exitosamente."),
             @ApiResponse(responseCode = "404", description = "Identificador del jugador no encontrado en el sistema."),

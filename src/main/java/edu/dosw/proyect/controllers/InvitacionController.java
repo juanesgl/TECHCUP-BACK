@@ -15,19 +15,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/invitaciones")
 @RequiredArgsConstructor
-@Tag(name = "Jugador - Invitaciones", description = "Enviar y responder invitaciones a equipos")
+@Tag(name = "14 Jugador Invitaciones")
 public class InvitacionController {
 
     private final InvitacionService invitacionService;
 
     @Operation(
             summary = "Responder invitacion de equipo",
-            description = "Permite a un jugador aceptar o rechazar una invitacion. " +
-                    "Si acepta, queda vinculado al equipo automaticamente."
+            description = "Permite a un jugador aceptar o rechazar una invitación. " +
+                    "Si acepta, queda vinculado al equipo automáticamente."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Respuesta procesada exitosamente."),
-            @ApiResponse(responseCode = "404", description = "El Jugador o la Invitacion no existen en el sistema."),
+            @ApiResponse(responseCode = "404", description = "El Jugador o la Invitación no existen en el sistema."),
             @ApiResponse(responseCode = "409", description = "Violacion de regla de negocio (Ej: Violacion TH-01, ya perteneces a un equipo).")
     })
     @PostMapping("/{invitacionId}/responder")

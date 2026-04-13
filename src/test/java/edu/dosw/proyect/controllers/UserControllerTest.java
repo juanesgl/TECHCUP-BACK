@@ -1,6 +1,6 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterResponseDTO;
 import edu.dosw.proyect.core.services.UserService;
 import org.junit.jupiter.api.Test;
