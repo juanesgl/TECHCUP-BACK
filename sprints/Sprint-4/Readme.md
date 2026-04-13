@@ -23,4 +23,4 @@ Resolver la deuda técnica del Sprint #3, avanzar en la implementación del pipe
 
 ### Diagrama De Despliegue
 
-![Diagrama de Despliegue](evidencias/DiagramaDeDespliegue.jpeg)
+![Diagrama.png](../../docs/uml/Diagrama.png)
