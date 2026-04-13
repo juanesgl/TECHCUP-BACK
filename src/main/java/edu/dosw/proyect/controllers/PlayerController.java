@@ -1,7 +1,7 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.controllers.dtos.PlayerFilterRequest;
-import edu.dosw.proyect.controllers.dtos.PlayerResponse;
+import edu.dosw.proyect.controllers.dtos.request.PlayerFilterRequest;
+import edu.dosw.proyect.controllers.dtos.response.PlayerResponse;
 import edu.dosw.proyect.core.services.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/players")
 @RequiredArgsConstructor
-@Tag(name = "Jugador - Busqueda", description = "Endpoints para busqueda de jugadores")
+@Tag(name = "17 Jugador Busqueda")
 public class PlayerController {
 
     private final PlayerService playerService;

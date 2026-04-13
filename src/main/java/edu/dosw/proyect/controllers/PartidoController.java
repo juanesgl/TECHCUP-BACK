@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/partidos")
 @RequiredArgsConstructor
-@Tag(name = "Arbitro - Partidos", description = "Endpoints para consulta de partidos programados del torneo")
+@Tag(name = "07 Arbitro Partidos")
 public class PartidoController {
 
     private final PartidoService partidoService;
@@ -44,7 +44,7 @@ public class PartidoController {
 
     @Operation(
             summary = "Consultar detalle de un partido",
-            description = "Retorna la informacion completa de un partido especifico incluyendo arbitro asignado (TC-18)"
+            description = "Retorna la información completa de un partido especifico incluyendo arbitro asignado (TC-18)"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Detalle del partido encontrado"),

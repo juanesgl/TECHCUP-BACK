@@ -8,55 +8,65 @@ import edu.dosw.proyect.core.models.StarterEntry;
 import edu.dosw.proyect.core.models.TeamLineup;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.enums.LineupStatus;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
-public class TeamLineupMapper {
+/**
+ * MapStruct mapper.
+ * Objeto origen: SaveLineupRequestDTO → TeamLineup (dominio).
+ * Objeto origen: TeamLineup (dominio) → TeamLineupResponseDTO.
+ * Usa métodos default para lógica compleja con playerMap.
+ */
+@Mapper(componentModel = "spring")
+public interface TeamLineupMapper {
 
-    public TeamLineup toNewTeamLineup(SaveLineupRequestDTO request,
-                                      Long captainId,
-                                      Map<Long, User> playerMap) {
-        List<StarterEntry> starters = buildStarters(request.getStarters(), playerMap);
+    @Mapping(target = "playerId",     source = "playerId")
+    @Mapping(target = "playerName",   ignore = true)
+    @Mapping(target = "fieldPosition",source = "fieldPosition")
+    StarterEntry toStarterEntry(StarterEntryRequestDTO request);
 
+    @Mapping(target = "playerId",     source = "playerId")
+    @Mapping(target = "playerName",   source = "playerName")
+    @Mapping(target = "fieldPosition",source = "fieldPosition")
+    StarterEntryResponseDTO toStarterEntryResponseDTO(StarterEntry entry);
+
+    default TeamLineup toNewTeamLineup(SaveLineupRequestDTO request,
+                                       Long captainId,
+                                       Map<Long, User> playerMap) {
         return TeamLineup.builder()
                 .teamId(request.getTeamId())
                 .matchId(request.getMatchId())
                 .captainId(captainId)
                 .formation(request.getFormation())
                 .status(LineupStatus.SAVED)
-                .starters(starters)
+                .starters(buildStarters(request.getStarters(), playerMap))
                 .reserveIds(request.getReserveIds() != null
-                        ? request.getReserveIds()
-                        : new ArrayList<>())
+                        ? request.getReserveIds() : new ArrayList<>())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
     }
 
-    public void applyUpdate(TeamLineup existing,
-                            SaveLineupRequestDTO request,
-                            Map<Long, User> playerMap) {
+    default void applyUpdate(TeamLineup existing,
+                             SaveLineupRequestDTO request,
+                             Map<Long, User> playerMap) {
         existing.setFormation(request.getFormation());
         existing.setStarters(buildStarters(request.getStarters(), playerMap));
         existing.setReserveIds(request.getReserveIds() != null
-                ? request.getReserveIds()
-                : new ArrayList<>());
+                ? request.getReserveIds() : new ArrayList<>());
         existing.setStatus(LineupStatus.SAVED);
         existing.setUpdatedAt(LocalDateTime.now());
     }
 
-    public TeamLineupResponseDTO toResponseDTO(TeamLineup lineup, String message) {
+    default TeamLineupResponseDTO toResponseDTO(TeamLineup lineup, String message) {
         List<StarterEntryResponseDTO> starterDTOs = lineup.getStarters().stream()
-                .map(s -> StarterEntryResponseDTO.builder()
-                        .playerId(s.getPlayerId())
-                        .playerName(s.getPlayerName())
-                        .fieldPosition(s.getFieldPosition())
-                        .build())
+                .map(this::toStarterEntryResponseDTO)
                 .collect(Collectors.toList());
 
         return TeamLineupResponseDTO.builder()
@@ -80,10 +90,9 @@ public class TeamLineupMapper {
         return requests.stream()
                 .map(req -> {
                     User player = playerMap.get(req.getPlayerId());
-                    String name = (player != null) ? player.getName() : "Unknown";
                     return StarterEntry.builder()
                             .playerId(req.getPlayerId())
-                            .playerName(name)
+                            .playerName(player != null ? player.getName() : "Unknown")
                             .fieldPosition(req.getFieldPosition())
                             .build();
                 })

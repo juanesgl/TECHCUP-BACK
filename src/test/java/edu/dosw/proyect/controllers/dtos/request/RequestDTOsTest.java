@@ -1,6 +1,5 @@
 package edu.dosw.proyect.controllers.dtos.request;
 
-import edu.dosw.proyect.controllers.dtos.*;
 import edu.dosw.proyect.core.models.enums.PaymentStatus;
 import edu.dosw.proyect.core.models.enums.FieldPosition;
 import edu.dosw.proyect.core.models.enums.RespuestaInvitacion;

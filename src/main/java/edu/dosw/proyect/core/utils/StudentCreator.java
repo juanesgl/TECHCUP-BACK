@@ -3,7 +3,7 @@ package edu.dosw.proyect.core.utils;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.Student;
 import edu.dosw.proyect.core.models.SportProfile;
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 
 public class StudentCreator extends UserCreator {
     public StudentCreator() {

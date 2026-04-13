@@ -2,38 +2,33 @@ package edu.dosw.proyect.persistence.mapper;
 
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.persistence.entity.UserEntity;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class UserPersistenceMapper {
+/**
+ * MapStruct mapper — objeto base del sistema.
+ * Mapea entre User (dominio) y UserEntity (persistencia).
+ */
+@Mapper(componentModel = "spring")
+public interface UserPersistenceMapper {
 
-    public UserEntity toEntity(User domain) {
-        if (domain == null) return null;
-        return UserEntity.builder()
-                .id(domain.getId())
-                .name(domain.getName())
-                .lastName(domain.getLastName())
-                .email(domain.getEmail())
-                .password(domain.getPassword())
-                .role(domain.getRole())
-                .registrationDate(domain.getRegistrationDate())
-                .active(domain.isActive())
-                .academicProgram(domain.getAcademicProgram())
-                .build();
-    }
+    @Mapping(target = "name",            source = "name")
+    @Mapping(target = "lastName",        source = "lastName")
+    @Mapping(target = "email",           source = "email")
+    @Mapping(target = "password",        source = "password")
+    @Mapping(target = "role",            source = "role")
+    @Mapping(target = "registrationDate",source = "registrationDate")
+    @Mapping(target = "active",          source = "active")
+    @Mapping(target = "academicProgram", source = "academicProgram")
+    UserEntity toEntity(User domain);
 
-    public User toDomain(UserEntity entity) {
-        if (entity == null) return null;
-        return User.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .lastName(entity.getLastName())
-                .email(entity.getEmail())
-                .password(entity.getPassword())
-                .role(entity.getRole())
-                .registrationDate(entity.getRegistrationDate())
-                .active(entity.isActive())
-                .academicProgram(entity.getAcademicProgram())
-                .build();
-    }
+    @Mapping(target = "name",            source = "name")
+    @Mapping(target = "lastName",        source = "lastName")
+    @Mapping(target = "email",           source = "email")
+    @Mapping(target = "password",        source = "password")
+    @Mapping(target = "role",            source = "role")
+    @Mapping(target = "registrationDate",source = "registrationDate")
+    @Mapping(target = "active",          source = "active")
+    @Mapping(target = "academicProgram", source = "academicProgram")
+    User toDomain(UserEntity entity);
 }

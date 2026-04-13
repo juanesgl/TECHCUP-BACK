@@ -1,6 +1,6 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterResponseDTO;
 import edu.dosw.proyect.controllers.dtos.request.UpdateUserRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.UserResponseDTO;
@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@Tag(name = "Registro de Usuarios", description = "Gestión de usuarios de la plataforma")
+@Tag(name = "02 Registro de Usuarios", description = "Registro y gestión de usuarios")
 public class UserController {
 
     private final UserService userService;

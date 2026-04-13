@@ -18,10 +18,10 @@ public class AuthorizationValidator {
         
         UserRole userRole = UserRole.valueOf(user.getRole());
         if (!userRole.equals(requiredRole)) {
-            log.warn("Acceso denegado: usuario {} (rol: {}) intentÃ³ accesar recurso de {}", 
+            log.warn("Acceso denegado: usuario {} (rol: {}) intentó accesar recurso de {}",
                     user.getId(), userRole, requiredRole);
             throw new BusinessRuleException(
-                    "Solo " + requiredRole.getDisplayName() + "s pueden realizar esta acciÃ³n");
+                    "Solo " + requiredRole.getDisplayName() + "s pueden realizar esta acción");
         }
     }
 
@@ -55,13 +55,13 @@ public class AuthorizationValidator {
         
         log.warn("Permisos denegados: usuario {} no tiene ninguno de los permisos requeridos", 
                 user.getId());
-        throw new BusinessRuleException("No tiene permisos suficientes para realizar esta acciÃ³n");
+        throw new BusinessRuleException("No tiene permisos suficientes para realizar esta acción");
     }
 
     
     public void validateOwnership(Long userId, Long resourceOwnerId) {
         if (!userId.equals(resourceOwnerId)) {
-            log.warn("Acceso denegado: usuario {} intentÃ³ acceder recurso de usuario {}", 
+            log.warn("Acceso denegado: usuario {} intentó acceder recurso de usuario {}",
                     userId, resourceOwnerId);
             throw new BusinessRuleException(
                     "Solo puede acceder a sus propios recursos");
@@ -76,7 +76,7 @@ public class AuthorizationValidator {
         try {
             return UserRole.valueOf(user.getRole());
         } catch (IllegalArgumentException e) {
-            throw new BusinessRuleException("Rol de usuario invÃ¡lido: " + user.getRole());
+            throw new BusinessRuleException("Rol de usuario inválido: " + user.getRole());
         }
     }
 }

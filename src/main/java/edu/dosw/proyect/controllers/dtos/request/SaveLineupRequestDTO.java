@@ -15,17 +15,17 @@ import java.util.List;
 @AllArgsConstructor
 public class SaveLineupRequestDTO {
 
-    @NotNull(message = "Team ID is required")
+    @NotNull(message = "El id del equipo es obligatorio")
     private Long teamId;
 
-    @NotNull(message = "Match ID is required")
+    @NotNull(message = "El id del partido es obligatorio")
     private Long matchId;
 
-    @NotNull(message = "A tactical formation must be selected")
+    @NotNull(message = "Se debe seleccionar una formación táctica")
     private TacticalFormation formation;
 
-    @NotNull(message = "Starters list is required")
-    @Size(min = 7, max = 7, message = "You must select exactly 7 starter players")
+    @NotNull(message = "La lista de titulares es obligatoria")
+    @Size(min = 7, max = 7, message = "Debe seleccionar 7 jugadores titulares")
     @Valid
     private List<StarterEntryRequestDTO> starters;
 

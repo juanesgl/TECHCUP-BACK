@@ -2,34 +2,26 @@ package edu.dosw.proyect.persistence.mapper;
 
 import edu.dosw.proyect.core.models.Cancha;
 import edu.dosw.proyect.persistence.entity.CanchaEntity;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-@RequiredArgsConstructor
-public class CanchaPersistenceMapper {
+/**
+ * MapStruct mapper.
+ * Objeto origen: CanchaEntity (persistencia) → Cancha (dominio).
+ * Usa TournamentPersistenceMapper para el torneo anidado.
+ */
+@Mapper(componentModel = "spring", uses = { TournamentPersistenceMapper.class })
+public interface CanchaPersistenceMapper {
 
-    private final TournamentPersistenceMapper tournamentMapper;
+    @Mapping(target = "nombre",     source = "nombre")
+    @Mapping(target = "direccion",  source = "direccion")
+    @Mapping(target = "descripcion",source = "descripcion")
+    @Mapping(target = "torneo",     source = "torneo")
+    CanchaEntity toEntity(Cancha domain);
 
-    public CanchaEntity toEntity(Cancha domain) {
-        if (domain == null) return null;
-        return CanchaEntity.builder()
-                .id(domain.getId())
-                .nombre(domain.getNombre())
-                .direccion(domain.getDireccion())
-                .descripcion(domain.getDescripcion())
-                .torneo(tournamentMapper.toEntity(domain.getTorneo()))
-                .build();
-    }
-
-    public Cancha toDomain(CanchaEntity entity) {
-        if (entity == null) return null;
-        Cancha c = new Cancha();
-        c.setId(entity.getId());
-        c.setNombre(entity.getNombre());
-        c.setDireccion(entity.getDireccion());
-        c.setDescripcion(entity.getDescripcion());
-        c.setTorneo(tournamentMapper.toDomain(entity.getTorneo()));
-        return c;
-    }
+    @Mapping(target = "nombre",     source = "nombre")
+    @Mapping(target = "direccion",  source = "direccion")
+    @Mapping(target = "descripcion",source = "descripcion")
+    @Mapping(target = "torneo",     source = "torneo")
+    Cancha toDomain(CanchaEntity entity);
 }
