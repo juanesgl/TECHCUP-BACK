@@ -13,6 +13,8 @@
 
 ### Objetivo del Sprint
 Resolver la deuda técnica del Sprint #3, avanzar en la implementación del pipeline CI/CD con GitHub Actions y Azure, e iniciar la implementación de pantallas frontend con conectividad al backend mediante Axios.
+
+
 ### Historias incluidas
 
 - TC - 17: Registro de partidos
