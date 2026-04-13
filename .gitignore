@@ -151,3 +151,4 @@ $RECYCLE.BIN/
 postgres_data/
 .env
 .github
+/uploads/

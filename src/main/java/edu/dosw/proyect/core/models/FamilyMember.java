@@ -3,11 +3,9 @@ package edu.dosw.proyect.core.models;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.Entity;
 
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
 public class FamilyMember extends User {
 
@@ -16,7 +14,7 @@ public class FamilyMember extends User {
         this.setName(name);
         this.setEmail(email);
         this.setPassword(password);
-        this.setRole("PLAYER");
+        this.setRole("FAMILY_MEMBER");
     }
 }
 

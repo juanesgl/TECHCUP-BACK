@@ -8,9 +8,12 @@ import edu.dosw.proyect.controllers.mappers.InvitacionMapper;
 import edu.dosw.proyect.core.models.Invitacion;
 import edu.dosw.proyect.core.models.Jugador;
 import edu.dosw.proyect.core.models.enums.RespuestaInvitacion;
+import edu.dosw.proyect.persistence.entity.InvitacionEntity;
+import edu.dosw.proyect.persistence.entity.JugadorEntity;
+import edu.dosw.proyect.persistence.mapper.InvitacionPersistenceMapper;
+import edu.dosw.proyect.persistence.mapper.JugadorPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.InvitacionRepository;
 import edu.dosw.proyect.persistence.repository.JugadorRepository;
-import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.InvitacionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,67 +26,58 @@ public class InvitacionServiceImpl implements InvitacionService {
 
     private final InvitacionRepository invitacionRepository;
     private final JugadorRepository jugadorRepository;
-    private final UserRepository userRepository;
     private final InvitacionMapper invitacionMapper;
+    private final JugadorPersistenceMapper jugadorPersistenceMapper;
+    private final InvitacionPersistenceMapper invitacionPersistenceMapper;
 
     @Override
     public InvitacionResponseDTO responderInvitacion(Long jugadorId, Long invitacionId,
-            RespuestaInvitacionRequestDTO request) {
-        log.info("Iniciando procesamiento de respuesta: Jugador {} responde {} a la invitaciÃ³n {}", jugadorId,
-                request.getRespuesta(), invitacionId);
+                                                     RespuestaInvitacionRequestDTO request) {
+        log.info("Procesando respuesta: Jugador {} responde {} a la invitacion {}",
+                jugadorId, request.getRespuesta(), invitacionId);
 
         if (request.getRespuesta() == null) {
-            log.warn("La peticiÃ³n recibida no contiene una respuesta vÃ¡lida.");
-            throw new BusinessRuleException("La respuesta a la invitaciÃ³n es obligatoria");
+            throw new BusinessRuleException("La respuesta a la invitacion es obligatoria");
         }
 
-        Jugador jugador = jugadorRepository.findById(jugadorId)
+        JugadorEntity jugadorEntity = jugadorRepository.findById(jugadorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Jugador no encontrado"));
 
-        Invitacion invitacion = invitacionRepository.findById(invitacionId)
-                .orElseThrow(() -> new ResourceNotFoundException("InvitaciÃ³n no encontrada"));
+        InvitacionEntity invitacionEntity = invitacionRepository.findById(invitacionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Invitacion no encontrada"));
 
-        if (!invitacion.getJugadorInvitado().getId().equals(jugadorId)) {
-            throw new BusinessRuleException("La invitaciÃ³n no pertenece a este jugador");
+        if (!invitacionEntity.getJugador().getId().equals(jugadorId)) {
+            throw new BusinessRuleException("La invitacion no pertenece a este jugador");
         }
 
-        if (!"PENDIENTE".equals(invitacion.getEstado())) {
-            throw new BusinessRuleException("La invitaciÃ³n ya fue " + invitacion.getEstado());
+        if (!"PENDIENTE".equals(invitacionEntity.getEstado())) {
+            throw new BusinessRuleException("La invitacion ya fue " + invitacionEntity.getEstado());
         }
 
         if (request.getRespuesta() == RespuestaInvitacion.ACEPTAR) {
-            log.info("El jugador {} ha elegido ACEPTAR la invitaciÃ³n {}. Validando reglas de negocio...", jugadorId,
-                    invitacionId);
-
-            if (jugador.isTieneEquipo()) {
-                invitacion.setEstado("RECHAZADA");
-                invitacionRepository.save(invitacion);
+            if (jugadorEntity.isTieneEquipo()) {
+                invitacionEntity.setEstado("RECHAZADA");
+                invitacionRepository.save(invitacionEntity);
                 throw new BusinessRuleException(
-                        "Ya perteneces a un equipo de futbol, no puedes aceptar la invitaciÃ³n");
+                        "Ya perteneces a un equipo, no puedes aceptar la invitacion");
             }
-
-            invitacion.setEstado("ACEPTADA");
-            jugador.setTieneEquipo(true);
-            jugadorRepository.save(jugador);
-
-            if (jugador.getUsuario() != null) {
-                userRepository.save(jugador.getUsuario());
-            }
-
+            invitacionEntity.setEstado("ACEPTADA");
+            jugadorEntity.setTieneEquipo(true);
+            jugadorRepository.save(jugadorEntity);
         } else {
-            log.info("El jugador {} decidiÃ³ RECHAZAR la invitaciÃ³n {}.", jugadorId, invitacionId);
-            invitacion.setEstado("RECHAZADA");
+            invitacionEntity.setEstado("RECHAZADA");
         }
 
-        invitacionRepository.save(invitacion);
+        invitacionRepository.save(invitacionEntity);
 
-        String nombreJugador = jugador.getUsuario() != null ? jugador.getUsuario().getName() : jugador.getNombre();
+        String nombreJugador = jugadorEntity.getUsuario() != null
+                ? jugadorEntity.getUsuario().getName() : "Jugador";
         String mensajeCapitan = request.getRespuesta() == RespuestaInvitacion.ACEPTAR
-                ? "El jugador " + nombreJugador + " ha aceptado tu invitaciÃ³n."
-                : "El jugador " + nombreJugador + " ha rechazado tu invitaciÃ³n.";
+                ? "El jugador " + nombreJugador + " ha aceptado tu invitacion."
+                : "El jugador " + nombreJugador + " ha rechazado tu invitacion.";
 
-        log.info("InvitaciÃ³n {} procesada exitosamente. Estado final: {}", invitacionId, invitacion.getEstado());
-
+        Invitacion invitacion = invitacionPersistenceMapper.toDomain(invitacionEntity);
+        log.info("Invitacion {} procesada. Estado: {}", invitacionId, invitacionEntity.getEstado());
         return invitacionMapper.toResponseDTO(invitacion, mensajeCapitan);
     }
 }

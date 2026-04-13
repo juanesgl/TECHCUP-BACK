@@ -1,6 +1,6 @@
 package edu.dosw.proyect.persistence.repository;
 
-import edu.dosw.proyect.core.models.Partido;
+import edu.dosw.proyect.persistence.entity.PartidoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,18 +10,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface PartidoRepository extends JpaRepository<Partido, Long> {
+public interface PartidoRepository extends JpaRepository<PartidoEntity, Long> {
 
-        @Query("SELECT p FROM Partido p WHERE " +
-                        "(:canchaId IS NULL OR p.cancha.id = :canchaId) AND " +
-                        "(:fecha IS NULL OR CAST(p.fechaHora AS date) = :fecha)")
-        List<Partido> findByFiltros(@Param("fecha") LocalDate fecha,
-                        @Param("canchaId") Long canchaId);
+    @Query("SELECT p FROM PartidoEntity p WHERE " +
+            "(:canchaId IS NULL OR p.cancha.id = :canchaId) AND " +
+            "(:fecha IS NULL OR CAST(p.fechaHora AS date) = :fecha)")
+    List<PartidoEntity> findByFiltros(@Param("fecha") LocalDate fecha,
+                                      @Param("canchaId") Long canchaId);
 
-        List<Partido> findByTorneoId(Long torneoId);
+    List<PartidoEntity> findByTorneoId(Long torneoId);
 
-        List<Partido> findByTorneo_TournId(String tournId);
+    List<PartidoEntity> findByTorneo_TournId(String tournId);
 
-        @Query("SELECT p FROM Partido p WHERE p.equipoLocal.nombre = :nombre OR p.equipoVisitante.nombre = :nombre")
-        List<Partido> findByNombreEquipo(@Param("nombre") String nombre);
+    @Query("SELECT p FROM PartidoEntity p WHERE " +
+            "p.equipoLocal.nombre = :nombre OR p.equipoVisitante.nombre = :nombre")
+    List<PartidoEntity> findByNombreEquipo(@Param("nombre") String nombre);
 }

@@ -57,7 +57,7 @@ class TournamentControllerTest {
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
-        assertEquals("TOURN-1", result.getBody().turnId()); // ✅ record usa método sin get
+        assertEquals("TOURN-1", result.getBody().tournId()); // ✅ record usa método sin get
         verify(tournamentService, times(1)).createTournament(request);
     }
     @Test

@@ -9,7 +9,5 @@ public interface StandingsTableService {
     
     RegisterMatchResultResponseDTO registerResult(Long matchId,
                                                   RegisterMatchResultRequestDTO request);
-
-    
     StandingsTableResponseDTO getStandings(String tournamentId);
 }

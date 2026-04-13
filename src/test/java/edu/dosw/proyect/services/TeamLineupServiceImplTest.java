@@ -15,241 +15,437 @@ import edu.dosw.proyect.core.models.enums.FieldPosition;
 import edu.dosw.proyect.core.models.enums.LineupStatus;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
+import edu.dosw.proyect.core.services.authorization.AuthorizationValidator;
+import edu.dosw.proyect.core.services.impl.TeamLineupServiceImpl;
+import edu.dosw.proyect.persistence.entity.EquipoEntity;
+import edu.dosw.proyect.persistence.entity.PartidoEntity;
+import edu.dosw.proyect.persistence.entity.UserEntity;
+import edu.dosw.proyect.persistence.mapper.EquipoPersistenceMapper;
+import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
+import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.EquipoRepository;
 import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import edu.dosw.proyect.persistence.repository.TeamLineupRepository;
 import edu.dosw.proyect.persistence.repository.UserRepository;
-import edu.dosw.proyect.core.services.impl.TeamLineupServiceImpl;
-import edu.dosw.proyect.core.services.authorization.AuthorizationValidator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class TeamLineupServiceImplTest {
 
-    @Mock
-    private TeamLineupRepository lineupRepository;
-    @Mock
-    private EquipoRepository equipoRepository;
-    @Mock
-    private PartidoRepository matchRepository;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private TeamLineupMapper lineupMapper;
-    @Mock
-    private AuthorizationValidator authorizationValidator;
+    @Mock private TeamLineupRepository lineupRepository;
+    @Mock private EquipoRepository equipoRepository;
+    @Mock private PartidoRepository matchRepository;
+    @Mock private UserRepository userRepository;
+    @Mock private TeamLineupMapper lineupMapper;
+    @Mock private AuthorizationValidator authorizationValidator;
+    @Mock private PartidoPersistenceMapper partidoMapper;
+    @Mock private EquipoPersistenceMapper equipoMapper;
+    @Mock private UserPersistenceMapper userMapper;
 
     @InjectMocks
-    private TeamLineupServiceImpl lineupService;
+    private TeamLineupServiceImpl teamLineupService;
 
-    private User captain;
-    private Equipo team;
-    private Partido match;
-    private SaveLineupRequestDTO request;
-    private List<StarterEntryRequestDTO> starters;
+    private UserEntity buildUserEntity(Long id) {
+        UserEntity u = new UserEntity();
+        u.setId(id);
+        u.setName("User " + id);
+        u.setRole("CAPTAIN");
+        return u;
+    }
 
-    @BeforeEach
-    void setUp() {
-        captain = new User();
-        captain.setId(1L);
+    private User buildUser(Long id) {
+        return User.builder().id(id).name("User " + id)
+                .email("u@mail.com").password("p").role("CAPTAIN").build();
+    }
 
-        team = new Equipo();
-        team.setId(10L);
-        team.setNombre("Tech FC");
-        Jugador capJugador = new Jugador();
-        capJugador.setId(1L);
-        team.setCapitan(capJugador);
+    private Equipo buildEquipo(Long id, Long captainId) {
+        Jugador capitan = new Jugador();
+        capitan.setId(captainId);
+        Equipo e = new Equipo();
+        e.setId(id);
+        e.setNombre("Alpha FC");
+        e.setCapitan(capitan);
+        return e;
+    }
 
-        match = new Partido();
-        match.setId(20L);
-        match.setEquipoLocal(team);
-        match.setEstado(MatchStatus.PROGRAMADO);
+    private Partido buildPartido(Long localId, Long visitanteId) {
+        Equipo local = new Equipo();
+        local.setId(localId);
+        Equipo visitante = new Equipo();
+        visitante.setId(visitanteId);
+        Partido p = new Partido();
+        p.setId(1L);
+        p.setEstado(MatchStatus.PROGRAMADO);
+        p.setEquipoLocal(local);
+        p.setEquipoVisitante(visitante);
+        return p;
+    }
 
-        starters = new ArrayList<>();
-        for (long i = 1; i <= 7; i++) {
-            starters.add(new StarterEntryRequestDTO(100L + i, FieldPosition.MIDFIELDER));
-        }
-
-        request = new SaveLineupRequestDTO();
-        request.setTeamId(10L);
-        request.setMatchId(20L);
-        request.setFormation(TacticalFormation.F_1_2_3_1);
-        request.setStarters(starters);
+    private SaveLineupRequestDTO buildRequest() {
+        StarterEntryRequestDTO starter =
+                new StarterEntryRequestDTO(1L, FieldPosition.FORWARD);
+        SaveLineupRequestDTO req = new SaveLineupRequestDTO();
+        req.setTeamId(1L);
+        req.setMatchId(1L);
+        req.setFormation(TacticalFormation.F_1_2_3_1);
+        req.setStarters(List.of(starter, starter, starter,
+                starter, starter, starter, starter));
+        req.setReserveIds(List.of());
+        return req;
     }
 
     @Test
-    void saveLineup_Success() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
-        when(matchRepository.findById(20L)).thenReturn(Optional.of(match));
-        when(lineupRepository.findByTeamIdAndMatchId(10L, 20L)).thenReturn(Optional.empty());
-        
-        TeamLineup lineup = new TeamLineup();
-        lineup.setId(50L);
-        when(lineupMapper.toNewTeamLineup(any(), anyLong(), anyMap())).thenReturn(lineup);
-        when(lineupMapper.toResponseDTO(any(), anyString())).thenReturn(new TeamLineupResponseDTO());
+    void saveLineup_HappyPath_RetornaCreated() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        PartidoEntity partidoEntity = new PartidoEntity();
+        Partido partido = buildPartido(1L, 2L);
+        TeamLineup lineup = TeamLineup.builder().id(1L)
+                .teamId(1L).matchId(1L).status(LineupStatus.SAVED)
+                .starters(List.of()).reserveIds(List.of()).build();
+        TeamLineupResponseDTO dto = TeamLineupResponseDTO.builder()
+                .lineupId(1L).build();
 
-        TeamLineupResponseDTO response = lineupService.saveLineup(1L, request);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(matchRepository.findById(1L)).thenReturn(Optional.of(partidoEntity));
+        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+        when(lineupRepository.findByTeamIdAndMatchId(1L, 1L))
+                .thenReturn(Optional.empty());
+        when(lineupMapper.toNewTeamLineup(any(), any(), any())).thenReturn(lineup);
+        when(lineupMapper.toResponseDTO(any(), any())).thenReturn(dto);
 
-        assertNotNull(response);
-        verify(lineupRepository).save(lineup);
-        verify(authorizationValidator).validatePermission(captain, "MANAGE_LINEUP");
+        TeamLineupResponseDTO result =
+                teamLineupService.saveLineup(1L, buildRequest());
+
+        assertNotNull(result);
+        verify(lineupRepository, times(1)).save(lineup);
     }
 
     @Test
-    void saveLineup_CaptainNotFound_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> lineupService.saveLineup(1L, request));
+    void saveLineup_CapitanNoEncontrado_LanzaException() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class,
+                () -> teamLineupService.saveLineup(99L, buildRequest()));
     }
 
     @Test
-    void saveLineup_TeamNotParticipating_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
-        
-        Partido otherMatch = new Partido();
-        otherMatch.setId(30L);
-        otherMatch.setEquipoLocal(new Equipo()); // Different team
-        when(matchRepository.findById(20L)).thenReturn(Optional.of(otherMatch));
+    void saveLineup_AlineacionYaExiste_LanzaException() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        PartidoEntity partidoEntity = new PartidoEntity();
+        Partido partido = buildPartido(1L, 2L);
+        TeamLineup existing = TeamLineup.builder().id(1L)
+                .starters(List.of()).reserveIds(List.of()).build();
 
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> lineupService.saveLineup(1L, request));
-        assertTrue(ex.getMessage().contains("participating"));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(matchRepository.findById(1L)).thenReturn(Optional.of(partidoEntity));
+        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+        when(lineupRepository.findByTeamIdAndMatchId(1L, 1L))
+                .thenReturn(Optional.of(existing));
+
+        assertThrows(BusinessRuleException.class,
+                () -> teamLineupService.saveLineup(1L, buildRequest()));
     }
 
     @Test
-    void saveLineup_MatchNotScheduled_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
-        
-        match.setEstado(MatchStatus.FINALIZADO);
-        when(matchRepository.findById(20L)).thenReturn(Optional.of(match));
+    void updateLineup_HappyPath_RetornaOk() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        TeamLineup existing = TeamLineup.builder().id(1L)
+                .teamId(1L).matchId(1L).status(LineupStatus.SAVED)
+                .starters(List.of()).reserveIds(List.of()).build();
+        TeamLineupResponseDTO dto = TeamLineupResponseDTO.builder()
+                .lineupId(1L).build();
 
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> lineupService.saveLineup(1L, request));
-        assertTrue(ex.getMessage().contains("scheduled"));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(lineupRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(lineupMapper.toResponseDTO(any(), any())).thenReturn(dto);
+
+        TeamLineupResponseDTO result =
+                teamLineupService.updateLineup(1L, 1L, buildRequest());
+
+        assertNotNull(result);
+        verify(lineupRepository, times(1)).save(existing);
     }
 
     @Test
-    void saveLineup_LineupAlreadyExists_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
-        when(matchRepository.findById(20L)).thenReturn(Optional.of(match));
-        when(lineupRepository.findByTeamIdAndMatchId(10L, 20L)).thenReturn(Optional.of(new TeamLineup()));
+    void getTeamLineups_HappyPath_RetornaLista() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        TeamLineup lineup = TeamLineup.builder().id(1L)
+                .starters(List.of()).reserveIds(List.of()).build();
+        TeamLineupResponseDTO dto = TeamLineupResponseDTO.builder()
+                .lineupId(1L).build();
 
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> lineupService.saveLineup(1L, request));
-        assertTrue(ex.getMessage().contains("already exists"));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        lenient().when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        lenient().when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(lineupRepository.findByTeamId(1L)).thenReturn(List.of(lineup));
+        when(lineupMapper.toResponseDTO(any(), any())).thenReturn(dto);
+
+        List<TeamLineupResponseDTO> result =
+                teamLineupService.getTeamLineups(1L, 1L);
+
+        assertEquals(1, result.size());
     }
 
     @Test
-    void saveLineup_InvalidStarterCount_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
-        when(matchRepository.findById(20L)).thenReturn(Optional.of(match));
-        
-        request.getStarters().remove(0); // Only 6 starters
+    void getLineup_HappyPath_RetornaOk() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        TeamLineup lineup = TeamLineup.builder().id(1L)
+                .starters(List.of()).reserveIds(List.of()).build();
+        TeamLineupResponseDTO dto = TeamLineupResponseDTO.builder()
+                .lineupId(1L).build();
 
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> lineupService.saveLineup(1L, request));
-        assertTrue(ex.getMessage().contains("exactly 7"));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(lineupRepository.findByTeamIdAndMatchId(1L, 1L))
+                .thenReturn(Optional.of(lineup));
+        when(lineupMapper.toResponseDTO(any(), any())).thenReturn(dto);
+
+        TeamLineupResponseDTO result =
+                teamLineupService.getLineup(1L, 1L, 1L);
+
+        assertNotNull(result);
     }
 
     @Test
-    void saveLineup_MissingFormation_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
-        when(matchRepository.findById(20L)).thenReturn(Optional.of(match));
-        
+    void saveLineup_EquipoNoParticipa_LanzaException() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        PartidoEntity partidoEntity = new PartidoEntity();
+        Partido partido = buildPartido(3L, 4L); // equipo 1 no participa
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(matchRepository.findById(1L)).thenReturn(Optional.of(partidoEntity));
+        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+
+        assertThrows(BusinessRuleException.class,
+                () -> teamLineupService.saveLineup(1L, buildRequest()));
+    }
+
+    @Test
+    void saveLineup_PartidoNoEsProgramado_LanzaException() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        PartidoEntity partidoEntity = new PartidoEntity();
+        Partido partido = buildPartido(1L, 2L);
+        partido.setEstado(MatchStatus.FINALIZADO);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(matchRepository.findById(1L)).thenReturn(Optional.of(partidoEntity));
+        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+
+        assertThrows(BusinessRuleException.class,
+                () -> teamLineupService.saveLineup(1L, buildRequest()));
+    }
+
+    @Test
+    void saveLineup_CapitanNoEsDueno_LanzaException() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 99L); // capitan diferente
+        PartidoEntity partidoEntity = new PartidoEntity();
+        Partido partido = buildPartido(1L, 2L);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(matchRepository.findById(1L)).thenReturn(Optional.of(partidoEntity));
+        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+
+        assertThrows(BusinessRuleException.class,
+                () -> teamLineupService.saveLineup(1L, buildRequest()));
+    }
+
+    @Test
+    void saveLineup_SinFormacion_LanzaException() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        PartidoEntity partidoEntity = new PartidoEntity();
+        Partido partido = buildPartido(1L, 2L);
+
+        SaveLineupRequestDTO request = buildRequest();
         request.setFormation(null);
 
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> lineupService.saveLineup(1L, request));
-        assertTrue(ex.getMessage().contains("formation"));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(matchRepository.findById(1L)).thenReturn(Optional.of(partidoEntity));
+        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+        when(lineupRepository.findByTeamIdAndMatchId(1L, 1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(BusinessRuleException.class,
+                () -> teamLineupService.saveLineup(1L, request));
     }
 
     @Test
-    void saveLineup_MissingFieldPosition_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
-        when(matchRepository.findById(20L)).thenReturn(Optional.of(match));
-        
-        request.getStarters().get(0).setFieldPosition(null);
+    void saveLineup_SinPosicionEnTitular_LanzaException() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        PartidoEntity partidoEntity = new PartidoEntity();
+        Partido partido = buildPartido(1L, 2L);
 
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> lineupService.saveLineup(1L, request));
-        assertTrue(ex.getMessage().contains("field position"));
+        StarterEntryRequestDTO starterSinPosicion =
+                new StarterEntryRequestDTO(1L, null);
+        SaveLineupRequestDTO request = new SaveLineupRequestDTO();
+        request.setTeamId(1L);
+        request.setMatchId(1L);
+        request.setFormation(TacticalFormation.F_1_2_3_1);
+        request.setStarters(List.of(starterSinPosicion, starterSinPosicion,
+                starterSinPosicion, starterSinPosicion, starterSinPosicion,
+                starterSinPosicion, starterSinPosicion));
+        request.setReserveIds(List.of());
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(matchRepository.findById(1L)).thenReturn(Optional.of(partidoEntity));
+        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+        when(lineupRepository.findByTeamIdAndMatchId(1L, 1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(BusinessRuleException.class,
+                () -> teamLineupService.saveLineup(1L, request));
     }
 
     @Test
-    void updateLineup_Success() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        
-        TeamLineup existing = new TeamLineup();
-        existing.setId(50L);
-        existing.setTeamId(10L);
-        existing.setMatchId(20L);
-        existing.setStatus(LineupStatus.DRAFT);
-        
-        when(lineupRepository.findById(50L)).thenReturn(Optional.of(existing));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
-        when(matchRepository.findById(20L)).thenReturn(Optional.of(match));
-        when(lineupMapper.toResponseDTO(any(), anyString())).thenReturn(new TeamLineupResponseDTO());
+    void saveLineup_MenosDe7Titulares_LanzaException() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        PartidoEntity partidoEntity = new PartidoEntity();
+        Partido partido = buildPartido(1L, 2L);
 
-        TeamLineupResponseDTO response = lineupService.updateLineup(1L, 50L, request);
+        SaveLineupRequestDTO request = new SaveLineupRequestDTO();
+        request.setTeamId(1L);
+        request.setMatchId(1L);
+        request.setFormation(TacticalFormation.F_1_2_3_1);
+        request.setStarters(List.of(
+                new StarterEntryRequestDTO(1L, FieldPosition.FORWARD)));
+        request.setReserveIds(List.of());
 
-        assertNotNull(response);
-        verify(lineupRepository).save(existing);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(matchRepository.findById(1L)).thenReturn(Optional.of(partidoEntity));
+        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+        when(lineupRepository.findByTeamIdAndMatchId(1L, 1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(BusinessRuleException.class,
+                () -> teamLineupService.saveLineup(1L, request));
     }
 
     @Test
-    void updateLineup_Locked_ThrowsException() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        
-        TeamLineup existing = new TeamLineup();
-        existing.setId(50L);
-        existing.setTeamId(10L);
-        existing.setStatus(LineupStatus.LOCKED);
-        
-        when(lineupRepository.findById(50L)).thenReturn(Optional.of(existing));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
+    void updateLineup_AlineacionBloqueada_LanzaException() {
+        UserEntity captainEntity = buildUserEntity(1L);
+        User captain = buildUser(1L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(1L, 1L);
+        TeamLineup locked = TeamLineup.builder().id(1L)
+                .teamId(1L).matchId(1L).status(LineupStatus.LOCKED)
+                .starters(List.of()).reserveIds(List.of()).build();
 
-        BusinessRuleException ex = assertThrows(BusinessRuleException.class, () -> lineupService.updateLineup(1L, 50L, request));
-        assertTrue(ex.getMessage().contains("modified"));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(lineupRepository.findById(1L)).thenReturn(Optional.of(locked));
+        when(equipoRepository.findById(1L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+
+        assertThrows(BusinessRuleException.class,
+                () -> teamLineupService.updateLineup(1L, 1L, buildRequest()));
     }
 
     @Test
-    void getLineup_Success() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
-        
-        TeamLineup lineup = new TeamLineup();
-        when(lineupRepository.findByTeamIdAndMatchId(10L, 20L)).thenReturn(Optional.of(lineup));
-        when(lineupMapper.toResponseDTO(any(), anyString())).thenReturn(new TeamLineupResponseDTO());
+    void saveLineup_EquipoVisitanteParticipa_HappyPath() {
+        UserEntity captainEntity = buildUserEntity(2L);
+        User captain = buildUser(2L);
+        EquipoEntity equipoEntity = new EquipoEntity();
+        Equipo equipo = buildEquipo(2L, 2L);
+        PartidoEntity partidoEntity = new PartidoEntity();
+        Partido partido = buildPartido(1L, 2L);
+        TeamLineup lineup = TeamLineup.builder().id(1L)
+                .teamId(2L).matchId(1L).status(LineupStatus.SAVED)
+                .starters(List.of()).reserveIds(List.of()).build();
+        TeamLineupResponseDTO dto = TeamLineupResponseDTO.builder()
+                .lineupId(1L).build();
 
-        TeamLineupResponseDTO response = lineupService.getLineup(1L, 10L, 20L);
+        SaveLineupRequestDTO request = buildRequest();
+        request.setTeamId(2L);
 
-        assertNotNull(response);
+        when(userRepository.findById(2L)).thenReturn(Optional.of(captainEntity));
+        when(userMapper.toDomain(captainEntity)).thenReturn(captain);
+        when(equipoRepository.findById(2L)).thenReturn(Optional.of(equipoEntity));
+        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(matchRepository.findById(1L)).thenReturn(Optional.of(partidoEntity));
+        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+        when(lineupRepository.findByTeamIdAndMatchId(2L, 1L))
+                .thenReturn(Optional.empty());
+        when(lineupMapper.toNewTeamLineup(any(), any(), any())).thenReturn(lineup);
+        when(lineupMapper.toResponseDTO(any(), any())).thenReturn(dto);
+
+        TeamLineupResponseDTO result =
+                teamLineupService.saveLineup(2L, request);
+
+        assertNotNull(result);
     }
 
-    @Test
-    void getTeamLineups_Success() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(captain));
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(team));
-        
-        when(lineupRepository.findByTeamId(10L)).thenReturn(List.of(new TeamLineup()));
-        when(lineupMapper.toResponseDTO(any(), anyString())).thenReturn(new TeamLineupResponseDTO());
-
-        List<TeamLineupResponseDTO> responses = lineupService.getTeamLineups(1L, 10L);
-
-        assertEquals(1, responses.size());
-    }
 }

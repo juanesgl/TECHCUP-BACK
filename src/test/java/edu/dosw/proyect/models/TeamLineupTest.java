@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TeamLineupTest {
+class TeamLineupTest {
     @Test
     void teamLineup_Builder_TodosLosCampos() {
         StarterEntry starter = StarterEntry.builder()

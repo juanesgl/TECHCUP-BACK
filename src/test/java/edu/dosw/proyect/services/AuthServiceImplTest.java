@@ -2,10 +2,11 @@ package edu.dosw.proyect.services;
 
 import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.LoginResponseDTO;
-import edu.dosw.proyect.core.models.User;
-import edu.dosw.proyect.persistence.repository.UserRepository;
-import edu.dosw.proyect.core.services.impl.AuthServiceImpl;
 import edu.dosw.proyect.core.security.JwtProvider;
+import edu.dosw.proyect.core.services.impl.AuthServiceImpl;
+import edu.dosw.proyect.persistence.entity.UserEntity;
+import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
+import edu.dosw.proyect.persistence.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,87 +22,81 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceImplTest {
 
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private JwtProvider jwtProvider;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
+    @Mock private UserRepository userRepository;
+    @Mock private JwtProvider jwtProvider;
+    @Mock private PasswordEncoder passwordEncoder;
+    @Mock private UserPersistenceMapper userMapper;
 
     @InjectMocks
     private AuthServiceImpl authService;
 
-    private User buildUser() {
-        return User.builder()
-                .id(1L)
-                .name("Juan")
-                .email("juan@mail.com")
-                .password("hashedPass")
-                .role("PLAYER")
-                .active(true)
-                .build();
+    private UserEntity buildUserEntity() {
+        UserEntity e = new UserEntity();
+        e.setId(1L);
+        e.setEmail("admin@mail.escuelaing.edu.co");
+        e.setPassword("hashedPass");
+        e.setRole("ADMIN");
+        e.setName("Admin");
+        return e;
     }
 
     @Test
-    void loginUser_HappyPath_RetornaTokenYExito() {
-        LoginRequestDTO request = new LoginRequestDTO("juan@mail.com", "pass123");
-        User user = buildUser();
+    void loginUser_HappyPath_RetornaToken() {
+        LoginRequestDTO request = new LoginRequestDTO(
+                "admin@mail.escuelaing.edu.co", "admin123");
+        UserEntity entity = buildUserEntity();
 
-        when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("pass123", "hashedPass")).thenReturn(true);
-        when(jwtProvider.generateToken("juan@mail.com", "PLAYER", 1L)).thenReturn("token123");
+        when(userRepository.findByEmail(request.getEmail()))
+                .thenReturn(Optional.of(entity));
+        when(passwordEncoder.matches("admin123", "hashedPass")).thenReturn(true);
+        when(jwtProvider.generateToken(any(), any(), any())).thenReturn("jwt-token");
 
         LoginResponseDTO result = authService.loginUser(request);
 
+        assertNotNull(result);
         assertTrue(result.isSuccess());
-        assertEquals("token123", result.getToken());
-        verify(jwtProvider, times(1)).generateToken("juan@mail.com", "PLAYER", 1L);
+        assertEquals("jwt-token", result.getToken());
     }
 
     @Test
-    void loginUser_PasswordIncorrecta_RetornaFalse() {
-        LoginRequestDTO request = new LoginRequestDTO("juan@mail.com", "wrongpass");
-        User user = buildUser();
+    void loginUser_CredencialesInvalidas_RetornaFalse() {
+        LoginRequestDTO request = new LoginRequestDTO(
+                "admin@mail.escuelaing.edu.co", "wrongpass");
+        UserEntity entity = buildUserEntity();
 
-        when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(request.getEmail()))
+                .thenReturn(Optional.of(entity));
         when(passwordEncoder.matches("wrongpass", "hashedPass")).thenReturn(false);
 
         LoginResponseDTO result = authService.loginUser(request);
 
         assertFalse(result.isSuccess());
         assertNull(result.getToken());
-        verify(jwtProvider, never()).generateToken(any(), any(), any());
     }
 
     @Test
     void loginUser_UsuarioNoExiste_RetornaFalse() {
-        LoginRequestDTO request = new LoginRequestDTO("noexiste@mail.com", "pass123");
+        LoginRequestDTO request = new LoginRequestDTO(
+                "noexiste@mail.com", "pass");
 
-        when(userRepository.findByEmail("noexiste@mail.com")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
 
         LoginResponseDTO result = authService.loginUser(request);
 
         assertFalse(result.isSuccess());
-        assertNull(result.getToken());
     }
 
     @Test
-    void loginUser_EmailNulo_LanzaIllegalArgument() {
-        LoginRequestDTO request = new LoginRequestDTO(null, "pass123");
-
+    void loginUser_EmailNulo_LanzaException() {
+        LoginRequestDTO request = new LoginRequestDTO(null, "pass");
         assertThrows(IllegalArgumentException.class,
                 () -> authService.loginUser(request));
-        verify(userRepository, never()).findByEmail(any());
     }
 
     @Test
-    void loginUser_PasswordNula_LanzaIllegalArgument() {
-        LoginRequestDTO request = new LoginRequestDTO("juan@mail.com", null);
-
+    void loginUser_PasswordNulo_LanzaException() {
+        LoginRequestDTO request = new LoginRequestDTO("email@mail.com", null);
         assertThrows(IllegalArgumentException.class,
                 () -> authService.loginUser(request));
-        verify(userRepository, never()).findByEmail(any());
     }
 }

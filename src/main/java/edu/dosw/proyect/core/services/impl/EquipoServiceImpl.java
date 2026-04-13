@@ -5,7 +5,11 @@ import edu.dosw.proyect.controllers.dtos.response.CrearEquipoResponseDTO;
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
 import edu.dosw.proyect.controllers.mappers.EquipoMapper;
-import edu.dosw.proyect.core.models.*;
+import edu.dosw.proyect.core.models.Equipo;
+import edu.dosw.proyect.persistence.entity.EquipoEntity;
+import edu.dosw.proyect.persistence.entity.InvitacionEntity;
+import edu.dosw.proyect.persistence.entity.UserEntity;
+import edu.dosw.proyect.persistence.mapper.EquipoPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.EquipoRepository;
 import edu.dosw.proyect.persistence.repository.InvitacionRepository;
 import edu.dosw.proyect.persistence.repository.JugadorRepository;
@@ -30,73 +34,62 @@ public class EquipoServiceImpl implements EquipoService {
     private final JugadorRepository jugadorRepository;
     private final InvitacionRepository invitacionRepository;
     private final EquipoMapper equipoMapper;
+    private final EquipoPersistenceMapper equipoPersistenceMapper;
 
     @Override
     public CrearEquipoResponseDTO crearEquipo(Long capitanId, CrearEquipoRequestDTO request) {
-        log.info("Iniciando creaciÃ³n de equipo, solicitada por el jugador ID: {}", capitanId);
+        log.info("Iniciando creacion de equipo por capitan ID: {}", capitanId);
 
-        User capitan = userRepository.findById(capitanId)
-                .orElseThrow(() -> new ResourceNotFoundException("CapitÃ¡n no encontrado en el sistema"));
+        UserEntity capitan = userRepository.findById(capitanId)
+                .orElseThrow(() -> new ResourceNotFoundException("Capitan no encontrado"));
 
         if (equipoRepository.existsByNombre(request.getNombreEquipo())) {
-            log.warn("ViolaciÃ³n TH-01: El nombre de equipo '{}' estÃ¡ registrado", request.getNombreEquipo());
             throw new BusinessRuleException("Ya existe un equipo con ese nombre en el torneo");
         }
 
-        List<User> integracionFinal = new ArrayList<>();
+        List<UserEntity> integracionFinal = new ArrayList<>();
         List<String> notificaciones = new ArrayList<>();
 
         for (Long invitadoId : request.getJugadoresInvitadosIds()) {
-            User invitado = userRepository.findById(invitadoId).orElse(null);
+            UserEntity invitado = userRepository.findById(invitadoId).orElse(null);
             if (invitado != null) {
                 integracionFinal.add(invitado);
-                notificaciones.add("Se enviarÃ¡ invitaciÃ³n correctamente al jugador " + invitado.getName());
-
+                notificaciones.add("Invitacion enviada a " + invitado.getName());
             } else {
-                notificaciones
-                        .add("Advertencia: No se hallÃ³ en base de datos al jugador con identificador " + invitadoId);
+                notificaciones.add("Jugador con ID " + invitadoId + " no encontrado");
             }
         }
 
         integracionFinal.add(capitan);
 
         if (integracionFinal.size() < 7) {
-            log.error("ViolaciÃ³n TH-03 en validaciÃ³n de mÃ­nimo: total vÃ¡lidos es {}", integracionFinal.size());
-            throw new BusinessRuleException("error de validaciÃ³n de composiciÃ³n del equipo");
+            throw new BusinessRuleException("error de validacion de composicion del equipo");
         }
 
-        long conteoCarrerasFoco = 0;
         List<String> carrerasAdmitidas = Arrays.asList("sistemas", "ia", "ciberseguridad", "estadistica");
-
-        for (User integrante : integracionFinal) {
-            if (integrante.getAcademicProgram() != null) {
-                if (carrerasAdmitidas.contains(integrante.getAcademicProgram().toLowerCase())) {
-                    conteoCarrerasFoco++;
-                }
-            }
-        }
+        long conteoCarrerasFoco = integracionFinal.stream()
+                .filter(u -> u.getAcademicProgram() != null &&
+                        carrerasAdmitidas.contains(u.getAcademicProgram().toLowerCase()))
+                .count();
 
         double indiceValido = (double) conteoCarrerasFoco / integracionFinal.size();
         if (indiceValido <= 0.5) {
-            log.error("ViolaciÃ³n TH-03 en composiciÃ³n de carreras: {} validos de {} integrantes necesarios",
-                    conteoCarrerasFoco, integracionFinal.size());
-            throw new BusinessRuleException("error de validaciÃ³n de composiciÃ³n del equipo");
+            throw new BusinessRuleException("error de validacion de composicion del equipo");
         }
 
-        Equipo equipoArmado = Equipo.builder()
+        EquipoEntity equipoEntity = EquipoEntity.builder()
                 .nombre(request.getNombreEquipo())
                 .escudoUrl(request.getEscudo())
                 .colorUniformeLocal(request.getColoresUniforme())
                 .capitan(jugadorRepository.findById(capitanId).orElse(null))
                 .build();
 
-        equipoRepository.save(equipoArmado);
-        userRepository.save(capitan);
+        equipoRepository.save(equipoEntity);
 
-        for (User integrante : integracionFinal) {
+        for (UserEntity integrante : integracionFinal) {
             if (!integrante.getId().equals(capitan.getId())) {
-                Invitacion inv = Invitacion.builder()
-                        .equipo(equipoArmado)
+                InvitacionEntity inv = InvitacionEntity.builder()
+                        .equipo(equipoEntity)
                         .jugador(jugadorRepository.findById(integrante.getId()).orElse(null))
                         .estado("PENDIENTE")
                         .fechaEnvio(LocalDateTime.now())
@@ -105,8 +98,8 @@ public class EquipoServiceImpl implements EquipoService {
             }
         }
 
-        log.info("CreaciÃ³n existosa completada en el sistema para el equipo '{}'", equipoArmado.getNombre());
+        log.info("Equipo '{}' creado exitosamente", equipoEntity.getNombre());
         return equipoMapper.toCrearEquipoResponseDTO(
-                "El equipo ha sido registrado exitosamente tras superar las reglas del torneo", notificaciones);
+                "El equipo ha sido registrado exitosamente", notificaciones);
     }
 }
