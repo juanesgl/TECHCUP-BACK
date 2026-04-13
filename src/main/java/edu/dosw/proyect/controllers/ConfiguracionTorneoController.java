@@ -28,4 +28,3 @@ public class ConfiguracionTorneoController {
         return ResponseEntity.ok(response);
     }
 }
-
