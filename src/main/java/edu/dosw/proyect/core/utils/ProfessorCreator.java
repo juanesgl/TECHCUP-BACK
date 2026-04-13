@@ -3,7 +3,7 @@ package edu.dosw.proyect.core.utils;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.Professor;
 import edu.dosw.proyect.core.models.SportProfile;
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 
 public class ProfessorCreator extends UserCreator {
     public ProfessorCreator() {

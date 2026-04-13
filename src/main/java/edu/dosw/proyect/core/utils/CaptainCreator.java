@@ -1,7 +1,7 @@
 package edu.dosw.proyect.core.utils;
 
 import edu.dosw.proyect.core.models.User;
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 
 public class CaptainCreator extends UserCreator {
     public CaptainCreator() {

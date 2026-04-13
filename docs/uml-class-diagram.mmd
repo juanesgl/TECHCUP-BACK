@@ -1,0 +1,422 @@
+classDiagram
+  direction TB
+
+  %% --- External / JDK (for inheritance only) ---
+  class RuntimeException {
+    <<Java SE>>
+  }
+  class OncePerRequestFilter {
+    <<Spring>>
+  }
+
+  %% --- Persistence entities ---
+  class UserEntity
+  class JugadorEntity
+  class EquipoEntity
+  class EquipoJugadorEntity
+  class TournamentEntity
+  class ConfiguracionTorneoEntity
+  class CanchaEntity
+  class PartidoEntity
+  class AlineacionEntity
+  class AlineacionJugadorEntity
+  class InvitacionEntity
+  class EventoPartidoEntity
+  class LlaveEliminatoriaEntity
+  class EstadisticasEquipoEntity
+  class PagoEntity
+  class PaymentEntity
+  class TeamLineupEntity
+  class StarterEntryEntity
+
+  %% --- Domain models ---
+  class User
+  class Student
+  class Professor
+  class Graduate
+  class FamilyMember
+  class Admin
+  class Organizer
+  class Referee
+  class Jugador
+  class Equipo
+  class EquipoJugador
+  class Tournament
+  class Cancha
+  class Partido
+  class Alineacion
+  class AlineacionJugador
+  class Invitacion
+  class EventoPartido
+  class LlaveEliminatoria
+  class EstadisticaEquipo
+  class Pago
+  class Payment
+  class ConfiguracionTorneo
+  class TeamLineup
+  class StarterEntry
+  class SportProfile
+
+  %% --- Enumerations ---
+  class MatchStatus <<enumeration>>
+  class TournamentsStatus <<enumeration>>
+  class TipoEvento <<enumeration>>
+  class PaymentStatus <<enumeration>>
+  class TacticalFormation <<enumeration>>
+  class FieldPosition <<enumeration>>
+  class LineupStatus <<enumeration>>
+  class Gender <<enumeration>>
+  class UserRole <<enumeration>>
+  class EstadoPartido <<enumeration>>
+  class EstadoInvitacion <<enumeration>>
+  class RespuestaInvitacion <<enumeration>>
+  class FormacionTecnica <<enumeration>>
+
+  %% --- Registration / utils ---
+  class AuthStrategy <<interface>>
+  class InstitutionalMailStrategy
+  class AnyMailStrategy
+  class GmailStrategy
+  class UserCreator <<abstract>>
+  class StudentCreator
+  class ProfessorCreator
+  class GraduateCreator
+  class FamilyCreator
+  class AdminCreator
+  class CaptainCreator
+  class OrganizerCreator
+  class RefereeCreator
+  class PlayerCreator
+  class IdGenerator
+  class DisponibilidadMapper
+
+  %% --- Exceptions & handler ---
+  class BusinessException
+  class BusinessRuleException
+  class ResourceNotFoundException
+  class DisponibilidadException
+  class TournamentException
+  class GlobalExceptionHandler
+
+  %% --- REST controllers ---
+  class AuthController
+  class UserController
+  class PlayerController
+  class JugadorController
+  class EquipoController
+  class TournamentController
+  class PartidoController
+  class JugadorPartidoController
+  class AlineacionController
+  class InvitacionController
+  class MatchRegistrationController
+  class KnockoutBracketController
+  class StandingsTableController
+  class EstadisticasController
+  class ConfiguracionTorneoController
+  class PaymentController
+  class TeamLineupController
+  class DebugController
+  class CapitanInvitacionesController
+
+  %% --- Service interfaces ---
+  class AuthService <<interface>>
+  class UserService <<interface>>
+  class EquipoService <<interface>>
+  class TournamentService <<interface>>
+  class PartidoService <<interface>>
+  class AlineacionService <<interface>>
+  class InvitacionService <<interface>>
+  class MatchRegistrationService <<interface>>
+  class KnockoutBracketService <<interface>>
+  class StandingsTableService <<interface>>
+  class PaymentService <<interface>>
+  class TeamLineupService <<interface>>
+  class FileStorageService <<interface>>
+
+  %% --- Service implementations ---
+  class AuthServiceImpl
+  class UserServiceImpl
+  class EquipoServiceImpl
+  class TournamentServiceImpl
+  class PartidoServiceImpl
+  class AlineacionServiceImpl
+  class InvitacionServiceImpl
+  class MatchRegistrationServiceImpl
+  class KnockoutBracketServiceImpl
+  class StandingsTableServiceImpl
+  class PaymentServiceImpl
+  class TeamLineupServiceImpl
+  class FileStorageServiceImpl
+
+  %% --- Concrete @Service classes (no separate *Impl) ---
+  class JugadorService
+  class PlayerService
+  class EstadisticasService
+  class ConfiguracionTorneoService
+
+  %% --- Spring Data repositories ---
+  class UserRepository
+  class JugadorRepository
+  class EquipoRepository
+  class EquipoJugadorRepository
+  class TournamentRepository
+  class PartidoRepository
+  class CanchaRepository
+  class AlineacionRepository
+  class AlineacionJugadorRepository
+  class InvitacionRepository
+  class EventoPartidoRepository
+  class LlaveEliminatoriaRepository
+  class EstadisticaEquipoRepository
+  class PagoRepository
+  class PaymentRepository
+  class ConfiguracionTorneoRepository
+  class TeamLineupJpaRepository
+
+  %% --- Mappers ---
+  class UserPersistenceMapper
+  class JugadorPersistenceMapper
+  class EquipoPersistenceMapper
+  class TournamentPersistenceMapper
+  class PartidoPersistenceMapper
+  class CanchaPersistenceMapper
+  class AlineacionPersistenceMapper
+  class InvitacionPersistenceMapper
+  class TeamLineupPersistenceMapper
+  class EquipoMapper
+  class AlineacionMapper
+  class PartidoMapper
+  class InvitacionMapper
+  class StandingsTableMapper
+  class TeamLineupMapper
+
+  %% --- Bootstrap & cross-cutting ---
+  class TechcupFutbolApplication
+  class SecurityConfig
+  class SwaggerConfig
+  class JwtProvider
+  class JwtAuthFilter
+  class OAuth2SuccessHandler
+  class AuthorizationValidator
+
+  namespace api_request {
+    class ActualizarEquipoRequestDTO
+    class CanchaDTO
+    class ConfiguracionTorneoRequestDTO
+    class CrearEquipoRequestDTO
+    class DisponibilidadRequestDTO
+    class LoginRequestDTO
+    class MatchEventRequestDTO
+    class PartidoFiltroRequestDTO
+    class PaymentStatusRequest
+    class PaymentUploadRequest
+    class PlayerFilterRequest
+    class RegisterMatchRequestDTO
+    class RegisterMatchResultRequestDTO
+    class RegisterRequestDTO
+    class RespuestaInvitacionRequestDTO
+    class SaveLineupRequestDTO
+    class StarterEntryRequestDTO
+    class TournamentRequest
+    class UpdateUserRequestDTO
+  }
+
+  namespace api_response {
+    class AlineacionRivalResponseDTO
+    class BracketMatchDTO
+    class ConfiguracionTorneoResponseDTO
+    class CrearEquipoResponseDTO
+    class DisponibilidadResponseDTO
+    class EquipoResponseDTO
+    class EstadisticasEquipoDTO
+    class EstadisticasJugadorDTO
+    class EstadisticasTorneoDTO
+    class InvitacionResponseDTO
+    class LoginResponseDTO
+    class PartidoResponseDTO
+    class PaymentResponse
+    class PlayerResponse
+    class RegisterMatchResponseDTO
+    class RegisterMatchResultResponseDTO
+    class RegisterResponseDTO
+    class StandingsTableResponseDTO
+    class StarterEntryResponseDTO
+    class TeamLineupResponseDTO
+    class TeamStandingDTO
+    class TournamentBracketResponseDTO
+    class TournamentResponse
+    class UserResponseDTO
+  }
+
+  %% --- JPA associations ---
+  JugadorEntity "1" --> "1" UserEntity : usuario
+  EquipoEntity "n" --> "0..1" JugadorEntity : capitan
+  EquipoEntity "n" --> "1" TournamentEntity : torneo
+  EquipoEntity "1" *-- "0..*" EquipoJugadorEntity : equipoJugadores
+  EquipoJugadorEntity "n" --> "1" EquipoEntity : equipo
+  EquipoJugadorEntity "n" --> "1" JugadorEntity : jugador
+  TournamentEntity "n" --> "0..1" UserEntity : organizador
+  ConfiguracionTorneoEntity "1" --> "1" TournamentEntity : torneo
+  CanchaEntity "n" --> "1" TournamentEntity : torneo
+  PartidoEntity "n" --> "1" TournamentEntity : torneo
+  PartidoEntity "n" --> "1" EquipoEntity : equipoLocal
+  PartidoEntity "n" --> "1" EquipoEntity : equipoVisitante
+  PartidoEntity "n" --> "0..1" CanchaEntity : cancha
+  PartidoEntity "n" --> "0..1" UserEntity : arbitro
+  AlineacionEntity "n" --> "1" PartidoEntity : partido
+  AlineacionEntity "n" --> "1" EquipoEntity : equipo
+  AlineacionEntity "1" *-- "0..*" AlineacionJugadorEntity : jugadores
+  AlineacionJugadorEntity "n" --> "1" AlineacionEntity : alineacion
+  AlineacionJugadorEntity "n" --> "1" JugadorEntity : jugador
+  InvitacionEntity "n" --> "1" EquipoEntity : equipo
+  InvitacionEntity "n" --> "1" JugadorEntity : jugador
+  EventoPartidoEntity "n" --> "1" PartidoEntity : partido
+  EventoPartidoEntity "n" --> "1" JugadorEntity : jugador
+  LlaveEliminatoriaEntity "n" --> "1" TournamentEntity : torneo
+  LlaveEliminatoriaEntity "n" --> "0..1" EquipoEntity : equipo1
+  LlaveEliminatoriaEntity "n" --> "0..1" EquipoEntity : equipo2
+  LlaveEliminatoriaEntity "0..1" --> "0..1" PartidoEntity : partido
+  LlaveEliminatoriaEntity "n" --> "0..1" EquipoEntity : ganador
+  EstadisticasEquipoEntity "n" --> "1" EquipoEntity : equipo
+  EstadisticasEquipoEntity "n" --> "1" TournamentEntity : torneo
+  PagoEntity "n" --> "1" EquipoEntity : equipo
+  PagoEntity "n" --> "1" TournamentEntity : torneo
+  PagoEntity "n" --> "0..1" UserEntity : revisadoPor
+  TeamLineupEntity "1" *-- "0..*" StarterEntryEntity : starters
+  StarterEntryEntity "n" --> "1" TeamLineupEntity : lineup
+
+  %% --- Entity / domain usage of enums ---
+  PartidoEntity ..> MatchStatus
+  TournamentEntity ..> TournamentsStatus
+  EventoPartidoEntity ..> TipoEvento
+  PaymentEntity ..> PaymentStatus
+  AlineacionEntity ..> TacticalFormation
+  TeamLineupEntity ..> TacticalFormation
+  TeamLineupEntity ..> LineupStatus
+  StarterEntryEntity ..> FieldPosition
+
+  %% --- Domain model associations ---
+  User <|-- Student
+  User <|-- Professor
+  User <|-- Graduate
+  User <|-- FamilyMember
+  User <|-- Admin
+  User <|-- Organizer
+  User <|-- Referee
+  Jugador --> User : usuario
+  Equipo --> Jugador : capitan
+  Equipo --> Tournament : torneo
+  Equipo *-- EquipoJugador : equipoJugadores
+  EquipoJugador --> Equipo
+  EquipoJugador --> Jugador
+  Cancha --> Tournament : torneo
+  Tournament o-- Cancha : canchas
+  Partido --> Tournament
+  Partido --> Equipo : equipoLocal
+  Partido --> Equipo : equipoVisitante
+  Partido --> Cancha
+  Partido --> User : arbitro
+  Partido ..> MatchStatus
+  Tournament ..> TournamentsStatus
+  Alineacion --> Partido
+  Alineacion --> Equipo
+  Alineacion *-- AlineacionJugador
+  AlineacionJugador --> Jugador
+  Alineacion ..> TacticalFormation
+  Invitacion --> Equipo
+  Invitacion --> Jugador
+  EventoPartido --> Partido
+  EventoPartido --> Jugador
+  EventoPartido --> Equipo
+  EventoPartido ..> TipoEvento
+  LlaveEliminatoria --> Tournament
+  LlaveEliminatoria --> Equipo : equipo1
+  LlaveEliminatoria --> Equipo : equipo2
+  LlaveEliminatoria --> Partido
+  LlaveEliminatoria --> Equipo : ganador
+  EstadisticaEquipo --> Equipo
+  EstadisticaEquipo --> Tournament
+  Pago --> Equipo
+  Pago --> Tournament
+  Pago --> User : revisadoPor
+  Payment ..> PaymentStatus
+  ConfiguracionTorneo --> Tournament
+  TeamLineup *-- StarterEntry
+  TeamLineup ..> TacticalFormation
+  TeamLineup ..> LineupStatus
+  StarterEntry ..> FieldPosition
+  SportProfile --> Equipo : equipoActual
+  SportProfile ..> Gender
+
+  %% --- Utils: strategy + creators ---
+  AuthStrategy <|.. InstitutionalMailStrategy
+  AuthStrategy <|.. AnyMailStrategy
+  AuthStrategy <|.. GmailStrategy
+  UserCreator o-- AuthStrategy
+  UserCreator <|-- StudentCreator
+  UserCreator <|-- ProfessorCreator
+  UserCreator <|-- GraduateCreator
+  UserCreator <|-- FamilyCreator
+  UserCreator <|-- AdminCreator
+  UserCreator <|-- CaptainCreator
+  UserCreator <|-- OrganizerCreator
+  UserCreator <|-- RefereeCreator
+  UserCreator <|-- PlayerCreator
+  StudentCreator ..> RegisterRequestDTO : uses
+  UserCreator ..> RegisterRequestDTO : createUser
+
+  %% --- Exceptions ---
+  RuntimeException <|-- BusinessException
+  RuntimeException <|-- BusinessRuleException
+  RuntimeException <|-- ResourceNotFoundException
+  RuntimeException <|-- DisponibilidadException
+  RuntimeException <|-- TournamentException
+  GlobalExceptionHandler ..> BusinessException
+  GlobalExceptionHandler ..> BusinessRuleException
+  GlobalExceptionHandler ..> ResourceNotFoundException
+  GlobalExceptionHandler ..> DisponibilidadException
+  GlobalExceptionHandler ..> TournamentException
+
+  %% --- Security ---
+  OncePerRequestFilter <|-- JwtAuthFilter
+  JwtAuthFilter ..> JwtProvider
+  OAuth2SuccessHandler ..> JwtProvider
+  OAuth2SuccessHandler ..> UserRepository
+  SecurityConfig ..> JwtAuthFilter
+  SecurityConfig ..> OAuth2SuccessHandler
+
+  %% --- Controllers to services / repository ---
+  AuthController ..> AuthService
+  UserController ..> UserService
+  PlayerController ..> PlayerService
+  JugadorController ..> JugadorService
+  EquipoController ..> EquipoService
+  TournamentController ..> TournamentService
+  PartidoController ..> PartidoService
+  JugadorPartidoController ..> PartidoService
+  AlineacionController ..> AlineacionService
+  InvitacionController ..> InvitacionService
+  MatchRegistrationController ..> MatchRegistrationService
+  KnockoutBracketController ..> KnockoutBracketService
+  StandingsTableController ..> StandingsTableService
+  EstadisticasController ..> EstadisticasService
+  ConfiguracionTorneoController ..> ConfiguracionTorneoService
+  PaymentController ..> PaymentService
+  TeamLineupController ..> TeamLineupService
+  DebugController ..> UserRepository
+
+  %% --- Service interface realization ---
+  AuthService <|.. AuthServiceImpl
+  UserService <|.. UserServiceImpl
+  EquipoService <|.. EquipoServiceImpl
+  TournamentService <|.. TournamentServiceImpl
+  PartidoService <|.. PartidoServiceImpl
+  AlineacionService <|.. AlineacionServiceImpl
+  InvitacionService <|.. InvitacionServiceImpl
+  MatchRegistrationService <|.. MatchRegistrationServiceImpl
+  KnockoutBracketService <|.. KnockoutBracketServiceImpl
+  StandingsTableService <|.. StandingsTableServiceImpl
+  PaymentService <|.. PaymentServiceImpl
+  TeamLineupService <|.. TeamLineupServiceImpl
+  FileStorageService <|.. FileStorageServiceImpl

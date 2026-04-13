@@ -1,6 +1,6 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterResponseDTO;
 import edu.dosw.proyect.core.services.impl.UserServiceImpl;
 import edu.dosw.proyect.persistence.entity.UserEntity;

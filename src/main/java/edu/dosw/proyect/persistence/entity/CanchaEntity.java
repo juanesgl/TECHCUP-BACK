@@ -25,7 +25,7 @@ public class CanchaEntity {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(name = "direccion")
+    @Column(name = "dirección")
     private String direccion;
 
     @Column(name = "descripcion")

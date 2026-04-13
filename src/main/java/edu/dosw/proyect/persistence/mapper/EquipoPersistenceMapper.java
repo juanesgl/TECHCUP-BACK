@@ -2,41 +2,39 @@ package edu.dosw.proyect.persistence.mapper;
 
 import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.persistence.entity.EquipoEntity;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-@RequiredArgsConstructor
-public class EquipoPersistenceMapper {
+/**
+ * MapStruct mapper.
+ * Objeto origen: EquipoEntity (persistencia) → Equipo (dominio).
+ * Usa TournamentPersistenceMapper y JugadorPersistenceMapper para objetos anidados.
+ */
+@Mapper(componentModel = "spring",
+        uses = { TournamentPersistenceMapper.class, JugadorPersistenceMapper.class })
+public interface EquipoPersistenceMapper {
 
-    private final TournamentPersistenceMapper tournamentMapper;
-    private final JugadorPersistenceMapper jugadorMapper;
+    @Mapping(target = "nombre",              source = "nombre")
+    @Mapping(target = "escudoUrl",           source = "escudoUrl")
+    @Mapping(target = "colorUniformeLocal",  source = "colorUniformeLocal")
+    @Mapping(target = "colorUniformeVisita", source = "colorUniformeVisita")
+    @Mapping(target = "estadoInscripcion",   source = "estadoInscripcion")
+    @Mapping(target = "torneo",              source = "torneo")
+    @Mapping(target = "capitan",             source = "capitan")
+    @Mapping(target = "equipoJugadores",     ignore = true)
+    EquipoEntity toEntity(Equipo domain);
 
-    public EquipoEntity toEntity(Equipo domain) {
-        if (domain == null) return null;
-        return EquipoEntity.builder()
-                .id(domain.getId())
-                .nombre(domain.getNombre())
-                .escudoUrl(domain.getEscudoUrl())
-                .colorUniformeLocal(domain.getColorUniformeLocal())
-                .colorUniformeVisita(domain.getColorUniformeVisita())
-                .estadoInscripcion(domain.getEstadoInscripcion())
-                .torneo(tournamentMapper.toEntity(domain.getTorneo()))
-                .capitan(jugadorMapper.toEntity(domain.getCapitan()))
-                .build();
-    }
-
-    public Equipo toDomain(EquipoEntity entity) {
-        if (entity == null) return null;
-        Equipo e = new Equipo();
-        e.setId(entity.getId());
-        e.setNombre(entity.getNombre());
-        e.setEscudoUrl(entity.getEscudoUrl());
-        e.setColorUniformeLocal(entity.getColorUniformeLocal());
-        e.setColorUniformeVisita(entity.getColorUniformeVisita());
-        e.setEstadoInscripcion(entity.getEstadoInscripcion());
-        e.setTorneo(tournamentMapper.toDomain(entity.getTorneo()));
-        e.setCapitan(jugadorMapper.toDomain(entity.getCapitan()));
-        return e;
-    }
+    @Mapping(target = "nombre",              source = "nombre")
+    @Mapping(target = "escudoUrl",           source = "escudoUrl")
+    @Mapping(target = "colorUniformeLocal",  source = "colorUniformeLocal")
+    @Mapping(target = "colorUniformeVisita", source = "colorUniformeVisita")
+    @Mapping(target = "estadoInscripcion",   source = "estadoInscripcion")
+    @Mapping(target = "torneo",              source = "torneo")
+    @Mapping(target = "capitan",             source = "capitan")
+    @Mapping(target = "equipoJugadores",     ignore = true)
+    @Mapping(target = "escudo",              ignore = true)
+    @Mapping(target = "coloresUniforme",     ignore = true)
+    @Mapping(target = "capitanLegacy",       ignore = true)
+    @Mapping(target = "jugadores",           ignore = true)
+    Equipo toDomain(EquipoEntity entity);
 }

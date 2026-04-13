@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tournaments")
-@Tag(name = "Organizador - Torneos", description = "Endpoints para la creacion, inicio y finalizacion de los Torneos TechCup")
+@Tag(name = "03 Organizador Torneos")
 public class TournamentController {
 
     private final TournamentService tournamentService;

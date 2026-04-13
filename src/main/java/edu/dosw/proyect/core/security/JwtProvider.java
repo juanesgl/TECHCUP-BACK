@@ -64,7 +64,7 @@ public class JwtProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            log.warn("Token JWT invÃ¡lido: {}", e.getMessage());
+            log.warn("Token JWT inválido: {}", e.getMessage());
             return false;
         }
     }
@@ -128,7 +128,7 @@ public class JwtProvider {
                     getExpirationDateFromToken(token)
             );
         } catch (Exception e) {
-            return "Token invÃ¡lido: " + e.getMessage();
+            return "Token inválido: " + e.getMessage();
         }
     }
 }

@@ -1,8 +1,7 @@
 package edu.dosw.proyect.core.services.impl;
 
-import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.LoginRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.LoginResponseDTO;
-import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.persistence.entity.UserEntity;
 import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.UserRepository;

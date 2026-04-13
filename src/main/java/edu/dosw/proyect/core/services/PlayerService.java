@@ -1,7 +1,7 @@
 package edu.dosw.proyect.core.services;
 
-import edu.dosw.proyect.controllers.dtos.PlayerFilterRequest;
-import edu.dosw.proyect.controllers.dtos.PlayerResponse;
+import edu.dosw.proyect.controllers.dtos.request.PlayerFilterRequest;
+import edu.dosw.proyect.controllers.dtos.response.PlayerResponse;
 import edu.dosw.proyect.core.exceptions.BusinessException;
 import edu.dosw.proyect.persistence.entity.JugadorEntity;
 import edu.dosw.proyect.persistence.repository.JugadorRepository;
@@ -32,7 +32,7 @@ public class PlayerService {
                 request.getSemester(), request.getAvailable(), request.getAge());
 
         if (results.isEmpty()) {
-            throw new BusinessException("No se encontraron jugadores con los filtros indicados");
+            throw new BusinessException("No se encontrarón jugadores con los filtros indicados");
         }
 
         return results.stream()
