@@ -26,57 +26,37 @@ class AuthControllerTest {
     @Test
     void loginUser_HappyPath_RetornaOk() {
         LoginRequestDTO request = new LoginRequestDTO(
-                "user@mail.com", "pass123");
+                "user@mail.escuelaing.edu.co", "password1");
         LoginResponseDTO response = new LoginResponseDTO(
-                "Login exitoso", true, "token123");
+                "Bienvenido Juan", true, "token123");
 
         when(authService.loginUser(request)).thenReturn(response);
 
-        ResponseEntity<?> result = authController.loginUser(request);
+        ResponseEntity<LoginResponseDTO> result = authController.loginUser(request);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertNotNull(result.getBody());
+        assertTrue(result.getBody().isSuccess());
+        assertEquals("token123", result.getBody().getToken());
         verify(authService, times(1)).loginUser(request);
     }
 
     @Test
     void loginUser_CredencialesInvalidas_RetornaUnauthorized() {
         LoginRequestDTO request = new LoginRequestDTO(
-                "user@mail.com", "wrongpass");
+                "user@mail.escuelaing.edu.co", "wrongpass1");
         LoginResponseDTO response = new LoginResponseDTO(
-                "Credenciales invalidas", false, null);
+                "Correo o contraseña incorrectos", false, null);
 
         when(authService.loginUser(request)).thenReturn(response);
 
-        ResponseEntity<?> result = authController.loginUser(request);
+        ResponseEntity<LoginResponseDTO> result = authController.loginUser(request);
 
         assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
-        assertEquals("Credenciales invalidas", result.getBody());
-    }
-
-    @Test
-    void loginUser_IllegalArgument_RetornaBadRequest() {
-        LoginRequestDTO request = new LoginRequestDTO(null, null);
-
-        when(authService.loginUser(request))
-                .thenThrow(new IllegalArgumentException("Email requerido"));
-
-        ResponseEntity<?> result = authController.loginUser(request);
-
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertEquals("Email requerido", result.getBody());
-    }
-
-    @Test
-    void loginUser_ExcepcionGenerica_RetornaInternalServerError() {
-        LoginRequestDTO request = new LoginRequestDTO(
-                "user@mail.com", "pass123");
-
-        when(authService.loginUser(request))
-                .thenThrow(new RuntimeException("Error inesperado"));
-
-        ResponseEntity<?> result = authController.loginUser(request);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Error interno en el servidor", result.getBody());
+        LoginResponseDTO body = result.getBody();
+        assertNotNull(body);
+        assertEquals("Correo o contraseña incorrectos", body.getMessage());
+        assertFalse(body.isSuccess());
+        assertNull(body.getToken());
     }
 }

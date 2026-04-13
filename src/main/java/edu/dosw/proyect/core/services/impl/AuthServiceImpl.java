@@ -23,24 +23,22 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserPersistenceMapper userMapper;
 
+    private static final String FAIL_MESSAGE = "Correo o contraseña incorrectos";
+
     @Override
     public LoginResponseDTO loginUser(LoginRequestDTO request) {
-        if (request.getEmail() == null || request.getPassword() == null) {
-            log.warn("Intento de login sin email o password");
-            throw new IllegalArgumentException("Email y password son requeridos");
-        }
-
         UserEntity entity = userRepository.findByEmail(request.getEmail()).orElse(null);
 
         if (entity == null || !passwordEncoder.matches(request.getPassword(), entity.getPassword())) {
             log.warn("Intento fallido de login para: {}", request.getEmail());
-            return new LoginResponseDTO("Credenciales invalidas", false, null);
+            return new LoginResponseDTO(FAIL_MESSAGE, false, null);
         }
 
         String jwtToken = jwtProvider.generateToken(
                 entity.getEmail(), entity.getRole(), entity.getId());
 
+        String welcome = "Bienvenido " + entity.getName();
         log.info("Login exitoso para usuario: {} con rol: {}", entity.getEmail(), entity.getRole());
-        return new LoginResponseDTO("Inicio de sesion exitoso", true, jwtToken);
+        return new LoginResponseDTO(welcome, true, jwtToken);
     }
 }
