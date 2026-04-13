@@ -11,7 +11,11 @@ public class OrganizerCreator extends UserCreator {
 
     @Override
     public User createUser(RegisterRequestDTO request) {
-        return new Organizer(request.getName(), request.getEmail(), request.getPassword());
+        Organizer organizer = new Organizer();
+        organizer.setName(request.getName());
+        organizer.setEmail(request.getEmail());
+        organizer.setPassword(request.getPassword());
+        organizer.setRole("ORGANIZER");
+        return organizer;
     }
 }
-
