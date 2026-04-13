@@ -1,7 +1,7 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.controllers.dtos.PlayerFilterRequest;
-import edu.dosw.proyect.controllers.dtos.PlayerResponse;
+import edu.dosw.proyect.controllers.dtos.request.PlayerFilterRequest;
+import edu.dosw.proyect.controllers.dtos.response.PlayerResponse;
 import edu.dosw.proyect.core.exceptions.BusinessException;
 import edu.dosw.proyect.persistence.entity.JugadorEntity;
 import edu.dosw.proyect.persistence.entity.UserEntity;

@@ -1,7 +1,7 @@
 package edu.dosw.proyect.core.utils;
 
 import edu.dosw.proyect.core.models.User;
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 
 public class PlayerCreator extends UserCreator {
     public PlayerCreator() {

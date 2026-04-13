@@ -38,7 +38,7 @@ public class JugadorEntity {
     @Column(name = "genero")
     private String genero;
 
-    @Column(name = "identificacion")
+    @Column(name = "identificación")
     private String identificacion;
 
     @Column(name = "edad")

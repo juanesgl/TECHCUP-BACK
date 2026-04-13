@@ -2,37 +2,31 @@ package edu.dosw.proyect.persistence.mapper;
 
 import edu.dosw.proyect.core.models.Invitacion;
 import edu.dosw.proyect.persistence.entity.InvitacionEntity;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-@RequiredArgsConstructor
-public class InvitacionPersistenceMapper {
+/**
+ * MapStruct mapper.
+ * Objeto origen: InvitacionEntity (persistencia) → Invitacion (dominio).
+ * Usa EquipoPersistenceMapper y JugadorPersistenceMapper para objetos anidados.
+ */
+@Mapper(componentModel = "spring", uses = {
+        EquipoPersistenceMapper.class,
+        JugadorPersistenceMapper.class
+})
+public interface InvitacionPersistenceMapper {
 
-    private final EquipoPersistenceMapper equipoMapper;
-    private final JugadorPersistenceMapper jugadorMapper;
+    @Mapping(target = "equipo",         source = "equipo")
+    @Mapping(target = "jugador",        source = "jugador")
+    @Mapping(target = "estado",         source = "estado")
+    @Mapping(target = "fechaEnvio",     source = "fechaEnvio")
+    @Mapping(target = "fechaRespuesta", source = "fechaRespuesta")
+    InvitacionEntity toEntity(Invitacion domain);
 
-    public InvitacionEntity toEntity(Invitacion domain) {
-        if (domain == null) return null;
-        return InvitacionEntity.builder()
-                .id(domain.getId())
-                .equipo(equipoMapper.toEntity(domain.getEquipo()))
-                .jugador(jugadorMapper.toEntity(domain.getJugador()))
-                .estado(domain.getEstado())
-                .fechaEnvio(domain.getFechaEnvio())
-                .fechaRespuesta(domain.getFechaRespuesta())
-                .build();
-    }
-
-    public Invitacion toDomain(InvitacionEntity entity) {
-        if (entity == null) return null;
-        return Invitacion.builder()
-                .id(entity.getId())
-                .equipo(equipoMapper.toDomain(entity.getEquipo()))
-                .jugador(jugadorMapper.toDomain(entity.getJugador()))
-                .estado(entity.getEstado())
-                .fechaEnvio(entity.getFechaEnvio())
-                .fechaRespuesta(entity.getFechaRespuesta())
-                .build();
-    }
+    @Mapping(target = "equipo",         source = "equipo")
+    @Mapping(target = "jugador",        source = "jugador")
+    @Mapping(target = "estado",         source = "estado")
+    @Mapping(target = "fechaEnvio",     source = "fechaEnvio")
+    @Mapping(target = "fechaRespuesta", source = "fechaRespuesta")
+    Invitacion toDomain(InvitacionEntity entity);
 }

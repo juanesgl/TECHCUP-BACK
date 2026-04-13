@@ -1,6 +1,6 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.controllers.dtos.RegisterMatchResultRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterMatchResultRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterMatchResultResponseDTO;
 import edu.dosw.proyect.controllers.dtos.response.StandingsTableResponseDTO;
 import edu.dosw.proyect.controllers.dtos.response.TeamStandingDTO;

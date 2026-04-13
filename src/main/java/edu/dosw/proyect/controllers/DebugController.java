@@ -4,14 +4,22 @@ import edu.dosw.proyect.persistence.entity.UserEntity;
 import edu.dosw.proyect.persistence.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Debug endpoints — only available when app.debug.enabled=true.
+ * Never enable this in production.
+ * Add to your .env for local development:
+ *   app.debug.enabled=true
+ */
 @Hidden
 @RestController
 @RequestMapping("/api/debug")
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "app.debug.enabled", havingValue = "true", matchIfMissing = false)
 public class DebugController {
 
     private final UserRepository userRepository;

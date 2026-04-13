@@ -1,6 +1,6 @@
 package edu.dosw.proyect.core.services.impl;
 
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.request.UpdateUserRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterResponseDTO;
 import edu.dosw.proyect.controllers.dtos.response.UserResponseDTO;

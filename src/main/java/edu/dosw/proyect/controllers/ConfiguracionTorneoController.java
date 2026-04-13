@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/torneos")
 @RequiredArgsConstructor
-@Tag(name = "Organizador - Configuracion", description = "Gestion de reglas, canchas y fechas del torneo")
+@Tag(name = "04 Organizador Configuracion")
 public class ConfiguracionTorneoController {
 
     private final ConfiguracionTorneoService configuracionService;
 
     @PutMapping("/{tournId}/configuracion")
-    @Operation(summary = "Configurar parÃ¡metros del torneo", description = "Permite al organizador definir canchas, cierre de inscripciones, reglas y fechas importantes.")
+    @Operation(summary = "Configurar parámetros del torneo", description = "Permite al organizador definir canchas, cierre de inscripciones, reglas y fechas importantes.")
     public ResponseEntity<ConfiguracionTorneoResponseDTO> configurarTorneo(
             @PathVariable String tournId,
             @Valid @RequestBody ConfiguracionTorneoRequestDTO configDto) {

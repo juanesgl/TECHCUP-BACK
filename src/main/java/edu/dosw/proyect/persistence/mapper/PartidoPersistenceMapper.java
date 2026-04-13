@@ -2,49 +2,50 @@ package edu.dosw.proyect.persistence.mapper;
 
 import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.persistence.entity.PartidoEntity;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-@RequiredArgsConstructor
-public class PartidoPersistenceMapper {
+/**
+ * MapStruct mapper.
+ * Objeto origen: PartidoEntity (persistencia) → Partido (dominio).
+ * Usa múltiples mappers para objetos anidados.
+ */
+@Mapper(componentModel = "spring", uses = {
+        TournamentPersistenceMapper.class,
+        EquipoPersistenceMapper.class,
+        CanchaPersistenceMapper.class,
+        UserPersistenceMapper.class
+})
+public interface PartidoPersistenceMapper {
 
-    private final TournamentPersistenceMapper tournamentMapper;
-    private final EquipoPersistenceMapper equipoMapper;
-    private final CanchaPersistenceMapper canchaMapper;
-    private final UserPersistenceMapper userMapper;
+    @Mapping(target = "torneo",          source = "torneo")
+    @Mapping(target = "equipoLocal",     source = "equipoLocal")
+    @Mapping(target = "equipoVisitante", source = "equipoVisitante")
+    @Mapping(target = "cancha",          source = "cancha")
+    @Mapping(target = "arbitro",         source = "arbitro")
+    @Mapping(target = "fechaHora",       source = "fechaHora")
+    @Mapping(target = "golesLocal",      source = "golesLocal")
+    @Mapping(target = "golesVisitante",  source = "golesVisitante")
+    @Mapping(target = "fase",            source = "fase")
+    @Mapping(target = "estado",          source = "estado")
+    PartidoEntity toEntity(Partido domain);
 
-    public PartidoEntity toEntity(Partido domain) {
-        if (domain == null) return null;
-        return PartidoEntity.builder()
-                .id(domain.getId())
-                .torneo(tournamentMapper.toEntity(domain.getTorneo()))
-                .equipoLocal(equipoMapper.toEntity(domain.getEquipoLocal()))
-                .equipoVisitante(equipoMapper.toEntity(domain.getEquipoVisitante()))
-                .cancha(canchaMapper.toEntity(domain.getCancha()))
-                .arbitro(userMapper.toEntity(domain.getArbitro()))
-                .fechaHora(domain.getFechaHora())
-                .golesLocal(domain.getGolesLocal())
-                .golesVisitante(domain.getGolesVisitante())
-                .fase(domain.getFase())
-                .estado(domain.getEstado())
-                .build();
-    }
-
-    public Partido toDomain(PartidoEntity entity) {
-        if (entity == null) return null;
-        Partido p = new Partido();
-        p.setId(entity.getId());
-        p.setTorneo(tournamentMapper.toDomain(entity.getTorneo()));
-        p.setEquipoLocal(equipoMapper.toDomain(entity.getEquipoLocal()));
-        p.setEquipoVisitante(equipoMapper.toDomain(entity.getEquipoVisitante()));
-        p.setCancha(canchaMapper.toDomain(entity.getCancha()));
-        p.setArbitro(userMapper.toDomain(entity.getArbitro()));
-        p.setFechaHora(entity.getFechaHora());
-        p.setGolesLocal(entity.getGolesLocal());
-        p.setGolesVisitante(entity.getGolesVisitante());
-        p.setFase(entity.getFase());
-        p.setEstado(entity.getEstado());
-        return p;
-    }
+    @Mapping(target = "torneo",               source = "torneo")
+    @Mapping(target = "equipoLocal",          source = "equipoLocal")
+    @Mapping(target = "equipoVisitante",      source = "equipoVisitante")
+    @Mapping(target = "cancha",               source = "cancha")
+    @Mapping(target = "arbitro",              source = "arbitro")
+    @Mapping(target = "fechaHora",            source = "fechaHora")
+    @Mapping(target = "golesLocal",           source = "golesLocal")
+    @Mapping(target = "golesVisitante",       source = "golesVisitante")
+    @Mapping(target = "fase",                 source = "fase")
+    @Mapping(target = "estado",               source = "estado")
+    @Mapping(target = "nombreEquipoLocal",    source = "equipoLocal.nombre")
+    @Mapping(target = "nombreEquipoVisitante",source = "equipoVisitante.nombre")
+    @Mapping(target = "fecha",                source = "fechaHora",
+            dateFormat = "yyyy-MM-dd")
+    @Mapping(target = "hora",                 ignore = true)
+    @Mapping(target = "canchaLegacy",         ignore = true)
+    @Mapping(target = "arbitroLegacy",        ignore = true)
+    Partido toDomain(PartidoEntity entity);
 }

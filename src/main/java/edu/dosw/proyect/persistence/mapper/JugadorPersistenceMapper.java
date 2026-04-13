@@ -2,48 +2,42 @@ package edu.dosw.proyect.persistence.mapper;
 
 import edu.dosw.proyect.core.models.Jugador;
 import edu.dosw.proyect.persistence.entity.JugadorEntity;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-@RequiredArgsConstructor
-public class JugadorPersistenceMapper {
+/**
+ * MapStruct mapper.
+ * Objeto origen: JugadorEntity (persistencia) → Jugador (dominio).
+ * Nota: el campo "nombre" solo existe en Jugador (dominio), no en JugadorEntity.
+ * Se deriva de usuario.name al mapear a dominio.
+ */
+@Mapper(componentModel = "spring", uses = { UserPersistenceMapper.class })
+public interface JugadorPersistenceMapper {
 
-    private final UserPersistenceMapper userMapper;
+    @Mapping(target = "usuario",        source = "usuario")
+    @Mapping(target = "fotoUrl",        source = "fotoUrl")
+    @Mapping(target = "posiciones",     source = "posiciones")
+    @Mapping(target = "dorsal",         source = "dorsal")
+    @Mapping(target = "disponible",     source = "disponible")
+    @Mapping(target = "semestre",       source = "semestre")
+    @Mapping(target = "genero",         source = "genero")
+    @Mapping(target = "identificacion", source = "identificacion")
+    @Mapping(target = "edad",           source = "edad")
+    @Mapping(target = "perfilCompleto", source = "perfilCompleto")
+    @Mapping(target = "tieneEquipo",    source = "tieneEquipo")
+    JugadorEntity toEntity(Jugador domain);
 
-    public JugadorEntity toEntity(Jugador domain) {
-        if (domain == null) return null;
-        JugadorEntity e = new JugadorEntity();
-        e.setId(domain.getId());
-        e.setUsuario(userMapper.toEntity(domain.getUsuario()));
-        e.setFotoUrl(domain.getFotoUrl());
-        e.setPosiciones(domain.getPosiciones());
-        e.setDorsal(domain.getDorsal());
-        e.setDisponible(domain.isDisponible());
-        e.setSemestre(domain.getSemestre());
-        e.setGenero(domain.getGenero());
-        e.setIdentificacion(domain.getIdentificacion());
-        e.setEdad(domain.getEdad());
-        e.setPerfilCompleto(domain.isPerfilCompleto());
-        e.setTieneEquipo(domain.isTieneEquipo());
-        return e;
-    }
-
-    public Jugador toDomain(JugadorEntity entity) {
-        if (entity == null) return null;
-        Jugador j = new Jugador();
-        j.setId(entity.getId());
-        j.setUsuario(userMapper.toDomain(entity.getUsuario()));
-        j.setFotoUrl(entity.getFotoUrl());
-        j.setPosiciones(entity.getPosiciones());
-        j.setDorsal(entity.getDorsal());
-        j.setDisponible(entity.isDisponible());
-        j.setSemestre(entity.getSemestre());
-        j.setGenero(entity.getGenero());
-        j.setIdentificacion(entity.getIdentificacion());
-        j.setEdad(entity.getEdad());
-        j.setPerfilCompleto(entity.isPerfilCompleto());
-        j.setTieneEquipo(entity.isTieneEquipo());
-        return j;
-    }
+    @Mapping(target = "usuario",        source = "usuario")
+    @Mapping(target = "fotoUrl",        source = "fotoUrl")
+    @Mapping(target = "posiciones",     source = "posiciones")
+    @Mapping(target = "dorsal",         source = "dorsal")
+    @Mapping(target = "disponible",     source = "disponible")
+    @Mapping(target = "semestre",       source = "semestre")
+    @Mapping(target = "genero",         source = "genero")
+    @Mapping(target = "identificacion", source = "identificacion")
+    @Mapping(target = "edad",           source = "edad")
+    @Mapping(target = "perfilCompleto", source = "perfilCompleto")
+    @Mapping(target = "tieneEquipo",    source = "tieneEquipo")
+    @Mapping(target = "nombre",         source = "usuario.name")
+    Jugador toDomain(JugadorEntity entity);
 }

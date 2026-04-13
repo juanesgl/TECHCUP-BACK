@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/capitan/invitaciones")
 @RequiredArgsConstructor
-@Tag(name = "Capitan - Invitaciones")
+@Tag(name = "10 Capitan Invitaciones")
 public class CapitanInvitacionesController {
 
     @Operation(summary = "Enviar invitacion a jugador disponible",
-            description = "Las invitaciones se envian automaticamente al crear el equipo. " +
+            description = "Las invitaciones se envian automáticamente al crear el equipo. " +
                     "Ver endpoint Crear Equipo en Capitan - Equipos.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Invitaciones enviadas al crear el equipo")
@@ -24,7 +24,7 @@ public class CapitanInvitacionesController {
     @GetMapping("/info")
     public ResponseEntity<String> info() {
         return ResponseEntity.ok(
-                "Las invitaciones se gestionan automaticamente al crear el equipo. " +
+                "Las invitaciones se gestionan automáticamente al crear el equipo. " +
                         "Use POST /api/equipos/crear para crear el equipo e invitar jugadores.");
     }
 }
