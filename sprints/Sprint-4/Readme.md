@@ -24,3 +24,8 @@ Resolver la deuda técnica del Sprint #3, avanzar en la implementación del pipe
 ### Diagrama De Despliegue
 
 ![Diagrama.png](../../docs/uml/Diagrama.png)
+el diagrama muestra el camino que sigue el código desde la PC del programador hasta que llega al usuario final en la nube:
+Local: El desarrollador escribe el código en Spring Boot 3 y lo prueba con una base de datos local en Docker.
+GitHub (CI/CD): Al subir el código (git push), GitHub Actions toma el relevo. Compila el proyecto con Maven, analiza la calidad con SonarCloud y genera el archivo ejecutable (.jar).
+Azure: Si el código es de la rama de desarrollo, se despliega en el entorno de QA; si es la rama principal, se va directo a Producción. Ambos usan bases de datos PostgreSQL hospedadas en Azure.
+Es un flujo automatizado para asegurar que nada se rompa antes de publicar.
