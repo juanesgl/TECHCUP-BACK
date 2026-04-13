@@ -19,7 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    @Value("${jwt.secret:techcup-super-secret-key}")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Value("${jwt.expiration:86400000}")
