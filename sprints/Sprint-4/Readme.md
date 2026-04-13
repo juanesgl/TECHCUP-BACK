@@ -19,3 +19,8 @@ Resolver la deuda técnica del Sprint #3, avanzar en la implementación del pipe
 
 - TC - 17: Registro de partidos
 - TC - 20: llaves eliminatorias
+
+
+### Diagrama De Despliegue
+
+![Diagrama de Despliegue](evidencias/DiagramaDeDespliegue.jpeg)
