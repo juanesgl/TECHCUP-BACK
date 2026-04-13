@@ -146,7 +146,7 @@ class CreatorsTest {
         User user = creator.createUser(request);
 
         assertEquals("Juan Test", user.getName());
-        assertEquals("PLAYER", user.getRole());
+        assertEquals("FAMILY_MEMBER", user.getRole());
     }
 
     @Test

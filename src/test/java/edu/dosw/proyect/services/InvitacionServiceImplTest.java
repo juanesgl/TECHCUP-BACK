@@ -13,6 +13,7 @@ import edu.dosw.proyect.persistence.entity.InvitacionEntity;
 import edu.dosw.proyect.persistence.entity.JugadorEntity;
 import edu.dosw.proyect.persistence.mapper.InvitacionPersistenceMapper;
 import edu.dosw.proyect.persistence.mapper.JugadorPersistenceMapper;
+import edu.dosw.proyect.persistence.repository.EquipoJugadorRepository;
 import edu.dosw.proyect.persistence.repository.InvitacionRepository;
 import edu.dosw.proyect.persistence.repository.JugadorRepository;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +36,8 @@ class InvitacionServiceImplTest {
 
     @Mock
     private JugadorRepository jugadorRepository;
+    @Mock
+    private EquipoJugadorRepository equipoJugadorRepository;
 
     @Mock
     private InvitacionMapper invitacionMapper;
@@ -79,6 +83,7 @@ class InvitacionServiceImplTest {
 
         when(jugadorRepository.findById(1L)).thenReturn(Optional.of(jugador));
         when(invitacionRepository.findById(1L)).thenReturn(Optional.of(invitacion));
+        when(equipoJugadorRepository.findByEquipoId(any())).thenReturn(List.of());
         when(invitacionPersistenceMapper.toDomain(any())).thenReturn(invitacionDomain);
         when(invitacionMapper.toResponseDTO(any(), any())).thenReturn(dto);
 

@@ -4,6 +4,7 @@ import edu.dosw.proyect.controllers.dtos.response.PartidoResponseDTO;
 import edu.dosw.proyect.core.models.*;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PartidoMapperTest {
 
-    private final PartidoMapper mapper = new PartidoMapper();
+    private final PartidoMapper mapper = Mappers.getMapper(PartidoMapper.class);
 
     private Partido buildPartido() {
         Tournament torneo = new Tournament();

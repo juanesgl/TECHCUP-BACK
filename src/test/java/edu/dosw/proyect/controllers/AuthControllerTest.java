@@ -28,16 +28,17 @@ class AuthControllerTest {
         LoginRequestDTO request = new LoginRequestDTO(
                 "user@mail.escuelaing.edu.co", "password1");
         LoginResponseDTO response = new LoginResponseDTO(
-                "Bienvenido Juan", true, "token123");
+                "Bienvenido Juan", true, "token123", 1L, "Juan", "PLAYER");
 
         when(authService.loginUser(request)).thenReturn(response);
 
-        ResponseEntity<LoginResponseDTO> result = authController.loginUser(request);
+        ResponseEntity<?> result = authController.loginUser(request);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
-        assertTrue(result.getBody().isSuccess());
-        assertEquals("token123", result.getBody().getToken());
+        LoginResponseDTO body = (LoginResponseDTO) result.getBody();
+        assertTrue(body.isSuccess());
+        assertEquals("token123", body.getToken());
         verify(authService, times(1)).loginUser(request);
     }
 
@@ -46,17 +47,13 @@ class AuthControllerTest {
         LoginRequestDTO request = new LoginRequestDTO(
                 "user@mail.escuelaing.edu.co", "wrongpass1");
         LoginResponseDTO response = new LoginResponseDTO(
-                "Correo o contraseña incorrectos", false, null);
+                "Correo o contraseña incorrectos", false, null, null, null, null);
 
         when(authService.loginUser(request)).thenReturn(response);
 
-        ResponseEntity<LoginResponseDTO> result = authController.loginUser(request);
+        ResponseEntity<?> result = authController.loginUser(request);
 
         assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
-        LoginResponseDTO body = result.getBody();
-        assertNotNull(body);
-        assertEquals("Correo o contraseña incorrectos", body.getMessage());
-        assertFalse(body.isSuccess());
-        assertNull(body.getToken());
+        assertEquals("Correo o contraseña incorrectos", result.getBody());
     }
 }

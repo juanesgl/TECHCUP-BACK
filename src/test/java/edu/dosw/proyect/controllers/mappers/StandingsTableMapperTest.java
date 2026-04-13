@@ -7,6 +7,7 @@ import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StandingsTableMapperTest {
 
-    private final StandingsTableMapper mapper = new StandingsTableMapper();
+    private final StandingsTableMapper mapper = Mappers.getMapper(StandingsTableMapper.class);
 
 
     @Test

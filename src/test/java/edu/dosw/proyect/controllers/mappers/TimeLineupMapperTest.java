@@ -10,6 +10,7 @@ import edu.dosw.proyect.core.models.enums.FieldPosition;
 import edu.dosw.proyect.core.models.enums.LineupStatus;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TeamLineupMapperTest {
 
-    private final TeamLineupMapper mapper = new TeamLineupMapper();
+    private final TeamLineupMapper mapper = Mappers.getMapper(TeamLineupMapper.class);
 
     private SaveLineupRequestDTO buildRequest() {
         StarterEntryRequestDTO starter = new StarterEntryRequestDTO(
