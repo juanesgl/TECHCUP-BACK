@@ -21,7 +21,7 @@ public class BracketMatchDTO {
     private String team1Name;
     private Long   team2Id;
     private String team2Name;
-    private Long   matchId;         // null until the match is scheduled
+    private Long   matchId;
     private Long   winnerId;
     private String winnerName;
     private String matchStatus;     // PROGRAMADO / FINALIZADO / PENDIENTE

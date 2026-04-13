@@ -1,6 +1,6 @@
 package edu.dosw.proyect.utils;
 
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.utils.*;
 import org.junit.jupiter.api.Test;

@@ -20,32 +20,32 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/lineups")
 @RequiredArgsConstructor
-@Tag(name = "Capitan - Alineaciones")
+@Tag(name = "11 Capitan Alineaciones")
 public class TeamLineupController {
 
     private final TeamLineupService teamLineupService;
 
-    @Operation(summary = "Guardar alineacion del equipo")
+    @Operation(summary = "Guardar alineación del equipo")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Alineacion guardada exitosamente"),
+            @ApiResponse(responseCode = "201", description = "Alineación guardada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos invalidos"),
             @ApiResponse(responseCode = "404", description = "Equipo o partido no encontrado"),
-            @ApiResponse(responseCode = "409", description = "Alineacion ya existe o partido no programado")
+            @ApiResponse(responseCode = "409", description = "Alineación ya existe o partido no programado")
     })
     @PostMapping
     public ResponseEntity<TeamLineupResponseDTO> saveLineup(
             @RequestHeader("X-Captain-ID") Long captainId,
             @Valid @RequestBody SaveLineupRequestDTO request) {
-        log.info("Guardando alineacion — capitan: {}, equipo: {}, partido: {}",
+        log.info("Guardando alineación — capitan: {}, equipo: {}, partido: {}",
                 captainId, request.getTeamId(), request.getMatchId());
         TeamLineupResponseDTO response = teamLineupService.saveLineup(captainId, request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Actualizar alineacion del equipo")
+    @Operation(summary = "Actualizar alineación del equipo")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Alineacion actualizada exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Alineacion no encontrada"),
+            @ApiResponse(responseCode = "200", description = "Alineación actualizada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Alineación no encontrada"),
             @ApiResponse(responseCode = "409", description = "Partido ya comenzo")
     })
     @PutMapping("/{lineupId}")
@@ -53,22 +53,22 @@ public class TeamLineupController {
             @RequestHeader("X-Captain-ID") Long captainId,
             @PathVariable Long lineupId,
             @Valid @RequestBody SaveLineupRequestDTO request) {
-        log.info("Actualizando alineacion — capitan: {}, alineacionId: {}", captainId, lineupId);
+        log.info("Actualizando alineación — capitán: {}, alineacionId: {}", captainId, lineupId);
         TeamLineupResponseDTO response = teamLineupService.updateLineup(captainId, lineupId, request);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Consultar alineacion por partido")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Alineacion retornada exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Alineacion no encontrada")
+            @ApiResponse(responseCode = "200", description = "Alineación retornada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Alineación no encontrada")
     })
     @GetMapping("/team/{teamId}/match/{matchId}")
     public ResponseEntity<TeamLineupResponseDTO> getLineup(
             @RequestHeader("X-Captain-ID") Long captainId,
             @PathVariable Long teamId,
             @PathVariable Long matchId) {
-        log.info("Consultando alineacion — capitan: {}, equipo: {}, partido: {}",
+        log.info("Consultando alineación — capitan: {}, equipo: {}, partido: {}",
                 captainId, teamId, matchId);
         TeamLineupResponseDTO response = teamLineupService.getLineup(captainId, teamId, matchId);
         return ResponseEntity.ok(response);

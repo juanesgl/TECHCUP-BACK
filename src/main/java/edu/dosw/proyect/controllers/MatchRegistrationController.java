@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/matches")
 @RequiredArgsConstructor
-@Tag(name = "Arbitro - Resultados",
-        description = "Registro completo de resultados: marcador, goleadores y tarjetas")
+@Tag(name = "08 Arbitro Resultados")
 public class MatchRegistrationController {
 
     private final MatchRegistrationService matchRegistrationService;

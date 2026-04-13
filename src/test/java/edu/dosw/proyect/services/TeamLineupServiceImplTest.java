@@ -25,7 +25,6 @@ import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
 import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.EquipoRepository;
 import edu.dosw.proyect.persistence.repository.PartidoRepository;
-import edu.dosw.proyect.persistence.repository.TeamLineupRepository;
 import edu.dosw.proyect.persistence.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

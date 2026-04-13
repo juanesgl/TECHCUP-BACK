@@ -1,19 +1,20 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.LoginRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.LoginResponseDTO;
 import edu.dosw.proyect.core.services.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "1. Autenticacion")
+@Tag(name = "1. Autenticacion", description = "Login con email y contraseña. Retorna JWT.")
 public class AuthController {
 
     private final AuthService authService;
@@ -29,7 +30,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Solicitud malformada")
     })
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequestDTO request) {
         try {
             LoginResponseDTO response = authService.loginUser(request);
             if (response.isSuccess()) {

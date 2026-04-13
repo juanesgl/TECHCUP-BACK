@@ -18,8 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tournaments/{tournamentId}/bracket")
 @RequiredArgsConstructor
-@Tag(name = "Organizador - Torneos",
-        description = "Knockout bracket generation and consultation")
+@Tag(name = "03 Organizador Torneos")
 public class KnockoutBracketController {
 
     private final KnockoutBracketService bracketService;
@@ -52,7 +51,6 @@ public class KnockoutBracketController {
         return ResponseEntity.ok(bracketService.generateBracket(tournamentId));
     }
 
-    // -----------------------------------------------------------------------
 
     @Operation(
             summary = "Consultar bracket completo del torneo",
@@ -94,7 +92,6 @@ public class KnockoutBracketController {
         return ResponseEntity.ok(bracketService.getPhase(tournamentId, phase));
     }
 
-    // -----------------------------------------------------------------------
 
     @Operation(
             summary = "Avanzar bracket tras resultado de un partido",

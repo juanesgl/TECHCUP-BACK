@@ -1,4 +1,4 @@
-package edu.dosw.proyect.controllers.dtos;
+package edu.dosw.proyect.controllers.dtos.request;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

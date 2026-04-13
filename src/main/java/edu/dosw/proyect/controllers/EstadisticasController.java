@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/estadisticas")
 @RequiredArgsConstructor
-@Tag(name = "Organizador - Estadisticas", description = "Endpoints para consultar las estadisticas del torneo, equipos y jugadores")
+@Tag(name = "06 Organizador Estadisticas")
 public class EstadisticasController {
 
     private final EstadisticasService estadisticasService;
 
-    @Operation(summary = "Obtener todas las estadisticas de un torneo", description = "Devuelve la tabla de posiciones, goleadores y sanciones. Segun el criterio de aceptacion, si totalPartidosJugados es 0, el FrontEnd debe mostrar un mensaje informativo.")
+    @Operation(summary = "Obtener todas las estadísticas de un torneo", description = "Devuelve la tabla de posiciones," +
+            " goleadores y sanciones. Segun el criterio de aceptacion, si totalPartidosJugados es 0, el FrontEnd debe mostrar un mensaje informativo.")
     @GetMapping("/torneo/{tournId}")
     public ResponseEntity<EstadisticasTorneoDTO> obtenerEstadisticasTorneo(@PathVariable String tournId) {
 

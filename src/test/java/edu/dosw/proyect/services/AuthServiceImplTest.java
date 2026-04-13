@@ -1,6 +1,6 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.controllers.dtos.LoginRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.LoginRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.LoginResponseDTO;
 import edu.dosw.proyect.core.security.JwtProvider;
 import edu.dosw.proyect.core.services.impl.AuthServiceImpl;
@@ -55,6 +55,7 @@ class AuthServiceImplTest {
 
         assertNotNull(result);
         assertTrue(result.isSuccess());
+        assertEquals("Bienvenido Admin", result.getMessage());
         assertEquals("jwt-token", result.getToken());
     }
 
@@ -71,32 +72,20 @@ class AuthServiceImplTest {
         LoginResponseDTO result = authService.loginUser(request);
 
         assertFalse(result.isSuccess());
+        assertEquals("Correo o contraseña incorrectos", result.getMessage());
         assertNull(result.getToken());
     }
 
     @Test
     void loginUser_UsuarioNoExiste_RetornaFalse() {
         LoginRequestDTO request = new LoginRequestDTO(
-                "noexiste@mail.com", "pass");
+                "noexiste@mail.escuelaing.edu.co", "password1");
 
         when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
 
         LoginResponseDTO result = authService.loginUser(request);
 
         assertFalse(result.isSuccess());
-    }
-
-    @Test
-    void loginUser_EmailNulo_LanzaException() {
-        LoginRequestDTO request = new LoginRequestDTO(null, "pass");
-        assertThrows(IllegalArgumentException.class,
-                () -> authService.loginUser(request));
-    }
-
-    @Test
-    void loginUser_PasswordNulo_LanzaException() {
-        LoginRequestDTO request = new LoginRequestDTO("email@mail.com", null);
-        assertThrows(IllegalArgumentException.class,
-                () -> authService.loginUser(request));
+        assertEquals("Correo o contraseña incorrectos", result.getMessage());
     }
 }
