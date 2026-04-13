@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "1. Autenticacion", description = "Login con email y contraseña. Retorna JWT.")
+@Tag(name = "01 Autenticacion")
 public class AuthController {
 
     private final AuthService authService;

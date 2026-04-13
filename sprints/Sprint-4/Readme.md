@@ -20,10 +20,16 @@ Resolver la deuda técnica del Sprint #3, avanzar en la implementación del pipe
 - TC - 17: Registro de partidos
 - TC - 20: llaves eliminatorias
 
+### Diagrama clases actualizado
+
+![DiagramaClases.png](evidencias/DiagramaClases.png)
+
+El diagrama representa el modelo de dominio del sistema, donde se definen las entidades principales y sus relaciones para gestionar torneos de fútbol, equipos, jugadores y partidos.”
 
 ### Diagrama De Despliegue
 
 ![Diagrama.png](../../docs/uml/Diagrama.png)
+
 el diagrama muestra el camino que sigue el código desde la PC del programador hasta que llega al usuario final en la nube:
 Local: El desarrollador escribe el código en Spring Boot 3 y lo prueba con una base de datos local en Docker.
 GitHub (CI/CD): Al subir el código (git push), GitHub Actions toma el relevo. Compila el proyecto con Maven, analiza la calidad con SonarCloud y genera el archivo ejecutable (.jar).
