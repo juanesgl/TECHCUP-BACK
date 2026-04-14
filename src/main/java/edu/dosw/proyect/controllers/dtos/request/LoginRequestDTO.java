@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class LoginRequestDTO {
 
     @NotBlank(message = "El correo es obligatorio")
-    @InstitutionalEmail
+    @InstitutionalEmail(message = "Debe ser un correo válido (@mail.escuelaing.edu.co o @gmail.com)")
     private String email;
 
     @NotBlank(message = "La contraseña es obligatoria")
