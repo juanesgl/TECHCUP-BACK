@@ -3,6 +3,7 @@ package edu.dosw.proyect.controllers;
 import edu.dosw.proyect.controllers.dtos.request.DisponibilidadRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.DisponibilidadResponseDTO;
 import edu.dosw.proyect.core.services.JugadorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class JugadorController {
     @PutMapping("/{id}/disponibilidad")
     public ResponseEntity<DisponibilidadResponseDTO> actualizarDisponibilidad(
             @PathVariable Long id,
-            @RequestBody DisponibilidadRequestDTO request) {
+            @Valid @RequestBody DisponibilidadRequestDTO request) {
         
         DisponibilidadResponseDTO response = jugadorService.actualizarDisponibilidad(id, request);
         return ResponseEntity.ok(response);

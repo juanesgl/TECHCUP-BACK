@@ -189,7 +189,7 @@ class RequestDTOsTest {
                 LocalDate.now(),
                 LocalDate.now().plusMonths(2),
                 8,
-                50000,
+                50000.0,
                 "Reglamento general");
 
         assertEquals("TechCup 2026", request.name());
@@ -335,7 +335,7 @@ class RequestDTOsTest {
         assertNull(dto.getName());
         assertNull(dto.getEmail());
         assertNull(dto.getRole());
-        assertEquals(0, dto.getSkillLevel());
+        assertNull(dto.getSkillLevel());
     }
 
     @Test

@@ -47,7 +47,7 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
                 List<EquipoEntity> teams = teamRepository.findByTorneoId(tournament.getId())
                                 .stream()
                                 .filter(t -> "APROBADO".equalsIgnoreCase(t.getEstadoInscripcion()))
-                                .toList();
+                                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
                 if (teams.size() < 4) {
                         throw new BusinessRuleException(
