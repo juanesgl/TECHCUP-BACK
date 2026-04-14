@@ -185,9 +185,9 @@
                                 <exclude>edu/dosw/proyect/persistence/mapper/**</exclude>
                                 <exclude>edu/dosw/proyect/controllers/mappers/**</exclude>
                                 <exclude>**/config/**</exclude>
-    <exclude>**/persistence/entity/**</exclude>
-    <exclude>**/controllers/dtos/**</exclude>
-    <exclude>**/core/models/**</exclude>
+                                <exclude>**/persistence/entity/**</exclude>
+                                <exclude>**/controllers/dtos/**</exclude>
+                                <exclude>**/core/models/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
