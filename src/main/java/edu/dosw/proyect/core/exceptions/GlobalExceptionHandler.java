@@ -89,9 +89,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(buildBody(status, error, message));
     }
 
-    private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String error) {
-        return ResponseEntity.status(status).body(buildBody(status, error));
-    }
 
     private Map<String, Object> buildBody(HttpStatus status, String error, String message) {
         Map<String, Object> body = buildBody(status, error);

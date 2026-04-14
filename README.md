@@ -34,5 +34,3 @@
 | Sprint 3 | Deuda técnica Sprint-2, persistencia, seguridad API (JWT + OAuth2 + Roles + SSL/TLS), diagrama Entidad-relacion | [Ver Sprint 3](sprints/Sprint-3/README.md) |
 | Sprint 4 | Resolver la deuda técnica del Sprint #3, avanzar en la implementación del pipeline CI/CD con GitHub Actions y Azure, e iniciar la implementación de pantallas frontend con conectividad al backend mediante Axios.| [Ver Sprint 4](sprints/Sprint-4/Readme.md) |
 
----
-

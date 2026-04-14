@@ -8,7 +8,6 @@ import edu.dosw.proyect.core.models.Tournament;
 import edu.dosw.proyect.core.models.enums.TournamentsStatus;
 import edu.dosw.proyect.persistence.entity.CanchaEntity;
 import edu.dosw.proyect.persistence.entity.TournamentEntity;
-import edu.dosw.proyect.persistence.mapper.TournamentPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.CanchaRepository;
 import edu.dosw.proyect.persistence.repository.TournamentRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ public class ConfiguracionTorneoService {
 
     private final TournamentService tournamentService;
     private final TournamentRepository tournamentRepository;
-    private final TournamentPersistenceMapper tournamentMapper;
     private final CanchaRepository canchaRepository;
 
     public ConfiguracionTorneoResponseDTO configurarTorneo(String tournId,

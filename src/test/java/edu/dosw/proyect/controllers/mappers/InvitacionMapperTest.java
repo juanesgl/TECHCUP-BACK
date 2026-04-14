@@ -5,12 +5,13 @@ import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.Invitacion;
 import edu.dosw.proyect.core.models.Jugador;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InvitacionMapperTest {
 
-    private final InvitacionMapper mapper = new InvitacionMapper();
+    private final InvitacionMapper mapper = Mappers.getMapper(InvitacionMapper.class);
 
     @Test
     void toResponseDTO_HappyPath_MapeaCorrectamente() {

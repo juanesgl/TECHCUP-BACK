@@ -13,11 +13,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AdditionalTest {
 
-
     @Test
     void admin_Constructor_ConstruyeCorrectamente() {
-        Admin admin = new Admin(
-                "Admin Test", "admin@mail.com", "pass", null);
+        Admin admin = new Admin();
+        admin.setName("Admin Test");
+        admin.setEmail("admin@mail.com");
+        admin.setPassword("pass");
+        admin.setRole("ADMINISTRATOR");
 
         assertEquals("Admin Test", admin.getName());
         assertEquals("admin@mail.com", admin.getEmail());
@@ -30,11 +32,13 @@ class AdditionalTest {
         assertNull(admin.getName());
     }
 
-
     @Test
     void graduate_Constructor_ConstruyeCorrectamente() {
-        Graduate g = new Graduate(
-                "Grad Test", "grad@gmail.com", "pass", null);
+        Graduate g = new Graduate();
+        g.setName("Grad Test");
+        g.setEmail("grad@gmail.com");
+        g.setPassword("pass");
+        g.setRole("PLAYER");
 
         assertEquals("Grad Test", g.getName());
         assertEquals("PLAYER", g.getRole());
@@ -46,11 +50,13 @@ class AdditionalTest {
         assertNull(g.getName());
     }
 
-
     @Test
     void organizer_Constructor_ConstruyeCorrectamente() {
-        Organizer o = new Organizer(
-                "Org Test", "org@mail.com", "pass");
+        Organizer o = new Organizer();
+        o.setName("Org Test");
+        o.setEmail("org@mail.com");
+        o.setPassword("pass");
+        o.setRole("ORGANIZER");
 
         assertEquals("Org Test", o.getName());
         assertEquals("ORGANIZER", o.getRole());
@@ -61,7 +67,6 @@ class AdditionalTest {
         Organizer o = new Organizer();
         assertNull(o.getName());
     }
-
 
     @Test
     void starterEntry_Builder_ConstruyeCorrectamente() {
@@ -82,7 +87,6 @@ class AdditionalTest {
         assertNull(entry.getPlayerId());
         assertNull(entry.getPlayerName());
     }
-
 
     @Test
     void teamLineup_Builder_ConstruyeCorrectamente() {

@@ -7,7 +7,7 @@ import edu.dosw.proyect.controllers.dtos.response.EquipoResponseDTO;
 import edu.dosw.proyect.controllers.mappers.EquipoMapper;
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
-import edu.dosw.proyect.core.models.Equipo;
+
 import edu.dosw.proyect.core.services.EquipoService;
 import edu.dosw.proyect.persistence.entity.EquipoEntity;
 import edu.dosw.proyect.persistence.entity.EquipoJugadorEntity;

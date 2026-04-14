@@ -9,8 +9,11 @@ class RefereeTest {
 
     @Test
     void referee_Constructor_ConstruyeCorrectamente() {
-        Referee r = new Referee(
-                "Arbitro Test", "arbitro@mail.com", "pass");
+        Referee r = new Referee();
+        r.setName("Arbitro Test");
+        r.setEmail("arbitro@mail.com");
+        r.setPassword("pass");
+        r.setRole("REFEREE");
 
         assertEquals("Arbitro Test", r.getName());
         assertEquals("arbitro@mail.com", r.getEmail());

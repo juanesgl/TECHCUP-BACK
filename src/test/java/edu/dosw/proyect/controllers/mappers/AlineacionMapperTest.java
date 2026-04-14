@@ -7,14 +7,15 @@ import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.Jugador;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AlineacionMapperTest {
+class AlineacionMapperTest {
 
-    private final AlineacionMapper mapper = new AlineacionMapper();
+    private final AlineacionMapper mapper = Mappers.getMapper(AlineacionMapper.class);
 
     private Jugador buildJugador(String nombre) {
         Jugador j = new Jugador();
@@ -46,8 +47,7 @@ public class AlineacionMapperTest {
                 buildAlineacionJugador("J6", "TITULAR"),
                 buildAlineacionJugador("J7", "TITULAR"),
                 buildAlineacionJugador("J8", "RESERVA"),
-                buildAlineacionJugador("J9", "RESERVA")
-        ));
+                buildAlineacionJugador("J9", "RESERVA")));
         return a;
     }
 
@@ -100,8 +100,7 @@ public class AlineacionMapperTest {
                 buildAlineacionJugador("J4", "TITULAR"),
                 buildAlineacionJugador("J5", "TITULAR"),
                 buildAlineacionJugador("J6", "TITULAR"),
-                buildAlineacionJugador("J7", "TITULAR")
-        ));
+                buildAlineacionJugador("J7", "TITULAR")));
 
         AlineacionRivalResponseDTO dto = mapper.toRivalResponseDTO(alineacion, 3L);
 

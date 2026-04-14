@@ -6,18 +6,17 @@ import edu.dosw.proyect.core.exceptions.BusinessException;
 import edu.dosw.proyect.persistence.entity.JugadorEntity;
 import edu.dosw.proyect.persistence.repository.JugadorRepository;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PlayerService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PlayerService.class);
     private final JugadorRepository jugadorRepository;
 
     public List<PlayerResponse> filterPlayers(PlayerFilterRequest request) {

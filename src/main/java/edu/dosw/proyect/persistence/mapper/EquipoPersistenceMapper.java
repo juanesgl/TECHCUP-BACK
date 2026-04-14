@@ -5,36 +5,30 @@ import edu.dosw.proyect.persistence.entity.EquipoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/**
- * MapStruct mapper.
- * Objeto origen: EquipoEntity (persistencia) → Equipo (dominio).
- * Usa TournamentPersistenceMapper y JugadorPersistenceMapper para objetos anidados.
- */
-@Mapper(componentModel = "spring",
-        uses = { TournamentPersistenceMapper.class, JugadorPersistenceMapper.class })
+@Mapper(componentModel = "spring", uses = { TournamentPersistenceMapper.class, JugadorPersistenceMapper.class })
 public interface EquipoPersistenceMapper {
 
-    @Mapping(target = "nombre",              source = "nombre")
-    @Mapping(target = "escudoUrl",           source = "escudoUrl")
-    @Mapping(target = "colorUniformeLocal",  source = "colorUniformeLocal")
+    @Mapping(target = "nombre", source = "nombre")
+    @Mapping(target = "escudoUrl", source = "escudoUrl")
+    @Mapping(target = "colorUniformeLocal", source = "colorUniformeLocal")
     @Mapping(target = "colorUniformeVisita", source = "colorUniformeVisita")
-    @Mapping(target = "estadoInscripcion",   source = "estadoInscripcion")
-    @Mapping(target = "torneo",              source = "torneo")
-    @Mapping(target = "capitan",             source = "capitan")
-    @Mapping(target = "equipoJugadores",     ignore = true)
+    @Mapping(target = "estadoInscripcion", source = "estadoInscripcion")
+    @Mapping(target = "torneo", source = "torneo")
+    @Mapping(target = "capitan", source = "capitan")
+    @Mapping(target = "equipoJugadores", ignore = true)
     EquipoEntity toEntity(Equipo domain);
 
-    @Mapping(target = "nombre",              source = "nombre")
-    @Mapping(target = "escudoUrl",           source = "escudoUrl")
-    @Mapping(target = "colorUniformeLocal",  source = "colorUniformeLocal")
+    @Mapping(target = "nombre", source = "nombre")
+    @Mapping(target = "escudoUrl", source = "escudoUrl")
+    @Mapping(target = "colorUniformeLocal", source = "colorUniformeLocal")
     @Mapping(target = "colorUniformeVisita", source = "colorUniformeVisita")
-    @Mapping(target = "estadoInscripcion",   source = "estadoInscripcion")
-    @Mapping(target = "torneo",              source = "torneo")
-    @Mapping(target = "capitan",             source = "capitan")
-    @Mapping(target = "equipoJugadores",     ignore = true)
-    @Mapping(target = "escudo",              ignore = true)
-    @Mapping(target = "coloresUniforme",     ignore = true)
-    @Mapping(target = "capitanLegacy",       ignore = true)
-    @Mapping(target = "jugadores",           ignore = true)
+    @Mapping(target = "estadoInscripcion", source = "estadoInscripcion")
+    @Mapping(target = "torneo", source = "torneo")
+    @Mapping(target = "capitan", source = "capitan")
+    @Mapping(target = "equipoJugadores", ignore = true)
+    @Mapping(target = "escudo", ignore = true)
+    @Mapping(target = "coloresUniforme", ignore = true)
+    @Mapping(target = "capitanLegacy", ignore = true)
+    @Mapping(target = "jugadores", ignore = true)
     Equipo toDomain(EquipoEntity entity);
 }

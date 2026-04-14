@@ -3,7 +3,7 @@ package edu.dosw.proyect.core.services.impl;
 import edu.dosw.proyect.controllers.dtos.request.LoginRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.LoginResponseDTO;
 import edu.dosw.proyect.persistence.entity.UserEntity;
-import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
+
 import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.AuthService;
 import edu.dosw.proyect.core.security.JwtProvider;
@@ -20,7 +20,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
-    private final UserPersistenceMapper userMapper;
+
 
     @Override
     public LoginResponseDTO loginUser(LoginRequestDTO request) {

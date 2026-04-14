@@ -1,6 +1,6 @@
 package edu.dosw.proyect.controllers.dtos.response;
 
-import edu.dosw.proyect.core.models.enums.FormacionTecnica;
+
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

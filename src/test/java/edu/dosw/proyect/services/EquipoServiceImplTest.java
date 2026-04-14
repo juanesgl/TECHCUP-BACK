@@ -65,8 +65,9 @@ class EquipoServiceImplTest {
         UserEntity j5 = buildUserEntity(5L, "ia");
         UserEntity j6 = buildUserEntity(6L, "ciberseguridad");
         UserEntity j7 = buildUserEntity(7L, "sistemas");
+        UserEntity j8 = buildUserEntity(8L, "ia");
 
-        CrearEquipoRequestDTO request = buildRequest(List.of(2L, 3L, 4L, 5L, 6L, 7L));
+        CrearEquipoRequestDTO request = buildRequest(List.of(2L, 3L, 4L, 5L, 6L, 7L, 8L));
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(capitan));
         when(equipoRepository.existsByNombre("Alpha FC")).thenReturn(false);
@@ -76,6 +77,7 @@ class EquipoServiceImplTest {
         when(userRepository.findById(5L)).thenReturn(Optional.of(j5));
         when(userRepository.findById(6L)).thenReturn(Optional.of(j6));
         when(userRepository.findById(7L)).thenReturn(Optional.of(j7));
+        when(userRepository.findById(8L)).thenReturn(Optional.of(j8));
         when(equipoRepository.save(any())).thenReturn(new EquipoEntity());
         when(equipoMapper.toCrearEquipoResponseDTO(any(), any()))
                 .thenReturn(CrearEquipoResponseDTO.builder()

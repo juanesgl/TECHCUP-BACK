@@ -2,6 +2,7 @@ package edu.dosw.proyect.controllers.mappers;
 
 import edu.dosw.proyect.controllers.dtos.response.CrearEquipoResponseDTO;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EquipoMapperTest {
 
-    private final EquipoMapper mapper = new EquipoMapper();
+    private final EquipoMapper mapper = Mappers.getMapper(EquipoMapper.class);
 
     @Test
     void toCrearEquipoResponseDTO_HappyPath_MapeaCorrectamente() {
