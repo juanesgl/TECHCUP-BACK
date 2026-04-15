@@ -67,7 +67,15 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn sonar:sonar -Dsonar.projectKey=techcup-futbol -Dsonar.host.url=${{ env.SONAR_HOST_URL }} -Dsonar.token=${{ env.SONAR_TOKEN }} -B
+          SONAR_ORG_KEY: ${{ secrets.SONAR_ORG_KEY }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        run: >
+          mvn sonar:sonar 
+          -Dsonar.organization=${{ env.SONAR_ORG_KEY }} 
+          -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} 
+          -Dsonar.host.url=${{ env.SONAR_HOST_URL }} 
+          -Dsonar.token=${{ env.SONAR_TOKEN }} 
+          -B
 
       # 7. Configurar generación de artefactos y publicación de resultados
       - name: Build Application Package
