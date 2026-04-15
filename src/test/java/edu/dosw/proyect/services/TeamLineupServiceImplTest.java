@@ -6,26 +6,23 @@ import edu.dosw.proyect.controllers.dtos.response.TeamLineupResponseDTO;
 import edu.dosw.proyect.controllers.mappers.TeamLineupMapper;
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
-import edu.dosw.proyect.core.models.Equipo;
-import edu.dosw.proyect.core.models.Jugador;
-import edu.dosw.proyect.core.models.Partido;
-import edu.dosw.proyect.core.models.TeamLineup;
-import edu.dosw.proyect.core.models.User;
+import edu.dosw.proyect.core.models.*;
+import edu.dosw.proyect.core.models.Player;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import edu.dosw.proyect.core.models.enums.FieldPosition;
 import edu.dosw.proyect.core.services.authorization.AuthorizationValidator;
 import edu.dosw.proyect.core.services.impl.TeamLineupServiceImpl;
-import edu.dosw.proyect.persistence.entity.EquipoEntity;
-import edu.dosw.proyect.persistence.entity.PartidoEntity;
+import edu.dosw.proyect.persistence.entity.MatchEntity;
+import edu.dosw.proyect.persistence.entity.TeamEntity;
 import edu.dosw.proyect.persistence.entity.TeamLineupEntity;
 import edu.dosw.proyect.persistence.entity.UserEntity;
-import edu.dosw.proyect.persistence.mapper.EquipoPersistenceMapper;
-import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
+import edu.dosw.proyect.persistence.mapper.TeamPersistenceMapper;
+import edu.dosw.proyect.persistence.mapper.MatchPersistenceMapper;
 import edu.dosw.proyect.persistence.mapper.TeamLineupPersistenceMapper;
 import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
-import edu.dosw.proyect.persistence.repository.EquipoRepository;
-import edu.dosw.proyect.persistence.repository.PartidoRepository;
+import edu.dosw.proyect.persistence.repository.TeamRepository;
+import edu.dosw.proyect.persistence.repository.MatchRepository;
 import edu.dosw.proyect.persistence.repository.TeamLineupJpaRepository;
 import edu.dosw.proyect.persistence.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,9 +46,9 @@ class TeamLineupServiceImplTest {
     @Mock
     private TeamLineupJpaRepository lineupRepository;
     @Mock
-    private EquipoRepository equipoRepository;
+    private TeamRepository teamRepository;
     @Mock
-    private PartidoRepository matchRepository;
+    private MatchRepository matchRepository;
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -61,9 +58,9 @@ class TeamLineupServiceImplTest {
     @Mock
     private AuthorizationValidator authorizationValidator;
     @Mock
-    private PartidoPersistenceMapper partidoMapper;
+    private MatchPersistenceMapper partidoMapper;
     @Mock
-    private EquipoPersistenceMapper equipoMapper;
+    private TeamPersistenceMapper equipoMapper;
     @Mock
     private UserPersistenceMapper userMapper;
 
@@ -72,10 +69,10 @@ class TeamLineupServiceImplTest {
 
     private UserEntity captainEntity;
     private User captainUser;
-    private Jugador captainJugador;
-    private EquipoEntity equipoEntity;
-    private Equipo equipo;
-    private PartidoEntity partidoEntity;
+    private Player captainJugador;
+    private TeamEntity teamEntity;
+    private Team team;
+    private MatchEntity matchEntity;
     private Partido partido;
 
     @BeforeEach
@@ -84,21 +81,21 @@ class TeamLineupServiceImplTest {
         captainEntity.setId(1L);
         captainUser = new User();
         captainUser.setId(1L);
-        captainJugador = new Jugador();
+        captainJugador = new Player();
         captainJugador.setId(1L);
 
-        equipoEntity = new EquipoEntity();
-        equipoEntity.setId(10L);
-        equipo = new Equipo();
-        equipo.setId(10L);
-        equipo.setCapitan(captainJugador);
-        equipo.setNombre("Los Leones");
+        teamEntity = new TeamEntity();
+        teamEntity.setId(10L);
+        team = new Team();
+        team.setId(10L);
+        team.setCapitan(captainJugador);
+        team.setNombre("Los Leones");
 
-        partidoEntity = new PartidoEntity();
-        partidoEntity.setId(100L);
+        matchEntity = new MatchEntity();
+        matchEntity.setId(100L);
         partido = new Partido();
         partido.setId(100L);
-        partido.setEquipoLocal(equipo);
+        partido.setTeamLocal(team);
         partido.setEstado(MatchStatus.PROGRAMADO);
     }
 
@@ -134,12 +131,12 @@ class TeamLineupServiceImplTest {
         when(userMapper.toDomain(captainEntity)).thenReturn(captainUser);
         doNothing().when(authorizationValidator).validatePermission(captainUser, "MANAGE_LINEUP");
 
-        equipo.setCapitan(new Jugador()); // Another valid Jugador
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(equipoEntity));
-        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        team.setCapitan(new Player()); // Another valid Jugador
+        when(teamRepository.findById(10L)).thenReturn(Optional.of(teamEntity));
+        when(equipoMapper.toDomain(teamEntity)).thenReturn(team);
 
-        when(matchRepository.findById(100L)).thenReturn(Optional.of(partidoEntity));
-        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+        when(matchRepository.findById(100L)).thenReturn(Optional.of(matchEntity));
+        when(partidoMapper.toDomain(matchEntity)).thenReturn(partido);
 
         SaveLineupRequestDTO request = buildValidRequest();
 
@@ -152,11 +149,11 @@ class TeamLineupServiceImplTest {
         when(userMapper.toDomain(captainEntity)).thenReturn(captainUser);
         doNothing().when(authorizationValidator).validatePermission(captainUser, "MANAGE_LINEUP");
 
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(equipoEntity));
-        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(teamRepository.findById(10L)).thenReturn(Optional.of(teamEntity));
+        when(equipoMapper.toDomain(teamEntity)).thenReturn(team);
 
-        when(matchRepository.findById(100L)).thenReturn(Optional.of(partidoEntity));
-        when(partidoMapper.toDomain(partidoEntity)).thenReturn(partido);
+        when(matchRepository.findById(100L)).thenReturn(Optional.of(matchEntity));
+        when(partidoMapper.toDomain(matchEntity)).thenReturn(partido);
 
         SaveLineupRequestDTO request = buildValidRequest();
         when(lineupRepository.findByTeamIdAndMatchId(10L, 100L)).thenReturn(Optional.empty());
@@ -184,8 +181,8 @@ class TeamLineupServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(captainEntity));
         when(userMapper.toDomain(captainEntity)).thenReturn(captainUser);
 
-        when(equipoRepository.findById(10L)).thenReturn(Optional.of(equipoEntity));
-        when(equipoMapper.toDomain(equipoEntity)).thenReturn(equipo);
+        when(teamRepository.findById(10L)).thenReturn(Optional.of(teamEntity));
+        when(equipoMapper.toDomain(teamEntity)).thenReturn(team);
 
         TeamLineupEntity lineupEntity = new TeamLineupEntity();
         when(lineupRepository.findByTeamIdAndMatchId(10L, 100L)).thenReturn(Optional.of(lineupEntity));

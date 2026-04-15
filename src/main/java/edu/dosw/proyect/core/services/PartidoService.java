@@ -1,13 +1,13 @@
 package edu.dosw.proyect.core.services;
 
-import edu.dosw.proyect.controllers.dtos.request.PartidoFiltroRequestDTO;
-import edu.dosw.proyect.controllers.dtos.response.PartidoResponseDTO;
+import edu.dosw.proyect.controllers.dtos.request.MatchFilterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.response.MatchResponseDTO;
 
 import java.util.List;
 
 public interface PartidoService {
 
-    List<PartidoResponseDTO> consultarPartidos(PartidoFiltroRequestDTO filtro);
+    List<MatchResponseDTO> consultarPartidos(MatchFilterRequestDTO filtro);
 
-    PartidoResponseDTO consultarPartidoPorId(Long partidoId);
+    MatchResponseDTO consultarPartidoPorId(Long partidoId);
 }

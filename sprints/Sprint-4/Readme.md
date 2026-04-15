@@ -24,7 +24,7 @@ Resolver la deuda técnica del Sprint #3, avanzar en la implementación del pipe
 
 ![DiagramaClases.png](evidencias/DiagramaClases.png)
 
-El diagrama representa el modelo de dominio del sistema, donde se definen las entidades principales y sus relaciones para gestionar torneos de fútbol, equipos, jugadores y partidos.”
+El diagrama representa el modelo de dominio del sistema, donde se definen las entidades principales y sus relaciones para gestionar torneos de fútbol, teams, jugadores y partidos.”
 
 ### Diagrama De Despliegue
 

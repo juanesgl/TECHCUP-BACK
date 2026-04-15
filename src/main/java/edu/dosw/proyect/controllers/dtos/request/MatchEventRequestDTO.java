@@ -1,6 +1,6 @@
 package edu.dosw.proyect.controllers.dtos.request;
 
-import edu.dosw.proyect.core.models.enums.TipoEvento;
+import edu.dosw.proyect.core.models.enums.EventType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class MatchEventRequestDTO {
 
     @NotNull(message = "El tipo de evento es obligatorio")
-    private TipoEvento eventType;
+    private EventType eventType;
 
     @NotNull(message = "El ID del jugador es obligatorio")
     private Long playerId;

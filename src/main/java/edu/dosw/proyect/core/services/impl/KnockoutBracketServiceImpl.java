@@ -25,9 +25,9 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
         private static final String TOURNAMENT_NOT_FOUND = "Torneo no encontrado: ";
 
         private final TournamentRepository tournamentRepository;
-        private final EquipoRepository teamRepository;
-        private final LlaveEliminatoriaRepository bracketRepository;
-        private final PartidoRepository matchRepository;
+        private final TeamRepository teamRepository;
+        private final KnockoutBracketRepository bracketRepository;
+        private final MatchRepository matchRepository;
 
         @Override
         @Transactional
@@ -38,13 +38,13 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 TOURNAMENT_NOT_FOUND + tournamentId));
 
-                List<LlaveEliminatoriaEntity> existing = bracketRepository.findByTorneoId(tournament.getId());
+                List<KnockoutBracketEntity> existing = bracketRepository.findByTorneoId(tournament.getId());
                 if (!existing.isEmpty()) {
                         throw new BusinessRuleException(
                                         "El bracket ya fue generado para este torneo.");
                 }
 
-                List<EquipoEntity> teams = teamRepository.findByTorneoId(tournament.getId())
+                List<TeamEntity> teams = teamRepository.findByTorneoId(tournament.getId())
                                 .stream()
                                 .filter(t -> "APROBADO".equalsIgnoreCase(t.getEstadoInscripcion()))
                                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
@@ -57,11 +57,11 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
 
                 Collections.shuffle(teams);
 
-                List<LlaveEliminatoriaEntity> matchups = new ArrayList<>();
+                List<KnockoutBracketEntity> matchups = new ArrayList<>();
 
                 if (teams.size() >= 8) {
 
-                        List<EquipoEntity> top8 = teams.subList(0, 8);
+                        List<TeamEntity> top8 = teams.subList(0, 8);
                         for (int i = 0; i < 4; i++) {
                                 matchups.add(buildMatchup(tournament, QUARTERFINALS, i + 1,
                                                 top8.get(i * 2), top8.get(i * 2 + 1)));
@@ -72,7 +72,7 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
                         }
                 } else {
 
-                        List<EquipoEntity> top4 = teams.subList(0, 4);
+                        List<TeamEntity> top4 = teams.subList(0, 4);
                         for (int i = 0; i < 2; i++) {
                                 matchups.add(buildMatchup(tournament, SEMIFINALS, i + 1,
                                                 top4.get(i * 2), top4.get(i * 2 + 1)));
@@ -95,7 +95,7 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 TOURNAMENT_NOT_FOUND + tournamentId));
 
-                List<LlaveEliminatoriaEntity> matchups = bracketRepository.findByTorneoId(tournament.getId());
+                List<KnockoutBracketEntity> matchups = bracketRepository.findByTorneoId(tournament.getId());
                 if (matchups.isEmpty()) {
                         throw new ResourceNotFoundException(
                                         "El bracket aún no ha sido generado para el torneo: " + tournamentId);
@@ -109,7 +109,7 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
         public void advanceBracket(Long matchId) {
                 log.info("Avanzando bracket tras partido ID: {}", matchId);
 
-                PartidoEntity match = matchRepository.findById(matchId)
+                MatchEntity match = matchRepository.findById(matchId)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Partido no encontrado: " + matchId));
 
@@ -121,9 +121,9 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
                 if (match.getTorneo() == null)
                         return;
 
-                List<LlaveEliminatoriaEntity> allMatchups = bracketRepository.findByTorneoId(match.getTorneo().getId());
+                List<KnockoutBracketEntity> allMatchups = bracketRepository.findByTorneoId(match.getTorneo().getId());
 
-                LlaveEliminatoriaEntity currentMatchup = allMatchups.stream()
+                KnockoutBracketEntity currentMatchup = allMatchups.stream()
                                 .filter(m -> m.getPartido() != null
                                                 && m.getPartido().getId().equals(matchId))
                                 .findFirst()
@@ -134,7 +134,7 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
                         return;
                 }
 
-                EquipoEntity winner = match.getGolesLocal() >= match.getGolesVisitante()
+                TeamEntity winner = match.getGolesLocal() >= match.getGolesVisitante()
                                 ? match.getEquipoLocal()
                                 : match.getEquipoVisitante();
 
@@ -158,10 +158,10 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
                                 .toList();
         }
 
-        private LlaveEliminatoriaEntity buildMatchup(TournamentEntity tournament,
-                        String phase, int number,
-                        EquipoEntity team1, EquipoEntity team2) {
-                LlaveEliminatoriaEntity matchup = new LlaveEliminatoriaEntity();
+        private KnockoutBracketEntity buildMatchup(TournamentEntity tournament,
+                                                   String phase, int number,
+                                                   TeamEntity team1, TeamEntity team2) {
+                KnockoutBracketEntity matchup = new KnockoutBracketEntity();
                 matchup.setTorneo(tournament);
                 matchup.setFase(phase);
                 matchup.setNumeroLlave(number);
@@ -170,9 +170,9 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
                 return matchup;
         }
 
-        private void promoteWinner(LlaveEliminatoriaEntity current,
-                        EquipoEntity winner,
-                        List<LlaveEliminatoriaEntity> allMatchups) {
+        private void promoteWinner(KnockoutBracketEntity current,
+                                   TeamEntity winner,
+                                   List<KnockoutBracketEntity> allMatchups) {
 
                 if (FINAL.equals(current.getFase())) {
                         log.info("El ganador del torneo es : {}\"", winner.getNombre());
@@ -182,7 +182,7 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
                 String nextPhase = QUARTERFINALS.equals(current.getFase()) ? SEMIFINALS : FINAL;
                 int targetSlot = (int) Math.ceil(current.getNumeroLlave() / 2.0);
 
-                LlaveEliminatoriaEntity target = allMatchups.stream()
+                KnockoutBracketEntity target = allMatchups.stream()
                                 .filter(m -> nextPhase.equals(m.getFase())
                                                 && m.getNumeroLlave() == targetSlot)
                                 .findFirst()
@@ -204,17 +204,17 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
 
         private TournamentBracketResponseDTO buildBracketResponse(
                         TournamentEntity tournament,
-                        List<LlaveEliminatoriaEntity> matchups) {
+                        List<KnockoutBracketEntity> matchups) {
 
                 List<BracketMatchDTO> quarters = matchups.stream()
                                 .filter(m -> QUARTERFINALS.equals(m.getFase()))
-                                .sorted(Comparator.comparingInt(LlaveEliminatoriaEntity::getNumeroLlave))
+                                .sorted(Comparator.comparingInt(KnockoutBracketEntity::getNumeroLlave))
                                 .map(this::toDTO)
                                 .toList();
 
                 List<BracketMatchDTO> semis = matchups.stream()
                                 .filter(m -> SEMIFINALS.equals(m.getFase()))
-                                .sorted(Comparator.comparingInt(LlaveEliminatoriaEntity::getNumeroLlave))
+                                .sorted(Comparator.comparingInt(KnockoutBracketEntity::getNumeroLlave))
                                 .map(this::toDTO)
                                 .toList();
 
@@ -241,7 +241,7 @@ public class KnockoutBracketServiceImpl implements KnockoutBracketService {
                                 .build();
         }
 
-        private BracketMatchDTO toDTO(LlaveEliminatoriaEntity entity) {
+        private BracketMatchDTO toDTO(KnockoutBracketEntity entity) {
                 return BracketMatchDTO.builder()
                                 .bracketMatchId(entity.getId())
                                 .phase(entity.getFase())

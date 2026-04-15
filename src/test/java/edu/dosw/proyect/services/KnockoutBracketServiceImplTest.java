@@ -27,9 +27,9 @@ import static org.mockito.Mockito.*;
 class KnockoutBracketServiceImplTest {
 
     @Mock private TournamentRepository tournamentRepository;
-    @Mock private EquipoRepository teamRepository;
-    @Mock private LlaveEliminatoriaRepository bracketRepository;
-    @Mock private PartidoRepository matchRepository;
+    @Mock private TeamRepository teamRepository;
+    @Mock private KnockoutBracketRepository bracketRepository;
+    @Mock private MatchRepository matchRepository;
 
     @InjectMocks
     private KnockoutBracketServiceImpl knockoutBracketService;
@@ -48,7 +48,7 @@ class KnockoutBracketServiceImplTest {
         TournamentEntity tournament = new TournamentEntity();
         tournament.setId(100L);
         when(tournamentRepository.findByTournId("tourn-id")).thenReturn(Optional.of(tournament));
-        when(bracketRepository.findByTorneoId(100L)).thenReturn(List.of(new LlaveEliminatoriaEntity()));
+        when(bracketRepository.findByTorneoId(100L)).thenReturn(List.of(new KnockoutBracketEntity()));
 
         assertThrows(BusinessRuleException.class, () -> 
             knockoutBracketService.generateBracket("tourn-id")
@@ -62,7 +62,7 @@ class KnockoutBracketServiceImplTest {
         when(tournamentRepository.findByTournId("tourn-id")).thenReturn(Optional.of(tournament));
         when(bracketRepository.findByTorneoId(100L)).thenReturn(new ArrayList<>());
         
-        EquipoEntity t1 = new EquipoEntity(); t1.setEstadoInscripcion("APROBADO");
+        TeamEntity t1 = new TeamEntity(); t1.setEstadoInscripcion("APROBADO");
         when(teamRepository.findByTorneoId(100L)).thenReturn(List.of(t1));
 
         assertThrows(BusinessRuleException.class, () -> 
@@ -79,9 +79,9 @@ class KnockoutBracketServiceImplTest {
         when(tournamentRepository.findByTournId("tourn-id")).thenReturn(Optional.of(tournament));
         when(bracketRepository.findByTorneoId(100L)).thenReturn(new ArrayList<>());
 
-        List<EquipoEntity> teams = new ArrayList<>();
+        List<TeamEntity> teams = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
-            EquipoEntity t = new EquipoEntity();
+            TeamEntity t = new TeamEntity();
             t.setId((long) i);
             t.setEstadoInscripcion("APROBADO");
             teams.add(t);
@@ -104,9 +104,9 @@ class KnockoutBracketServiceImplTest {
         when(tournamentRepository.findByTournId("tourn-id")).thenReturn(Optional.of(tournament));
         when(bracketRepository.findByTorneoId(100L)).thenReturn(new ArrayList<>());
 
-        List<EquipoEntity> teams = new ArrayList<>();
+        List<TeamEntity> teams = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            EquipoEntity t = new EquipoEntity();
+            TeamEntity t = new TeamEntity();
             t.setId((long) i);
             t.setEstadoInscripcion("APROBADO");
             teams.add(t);
@@ -147,7 +147,7 @@ class KnockoutBracketServiceImplTest {
         tournament.setTournId("tourn-id");
         when(tournamentRepository.findByTournId("tourn-id")).thenReturn(Optional.of(tournament));
 
-        LlaveEliminatoriaEntity key = new LlaveEliminatoriaEntity();
+        KnockoutBracketEntity key = new KnockoutBracketEntity();
         key.setFase("CUARTOS");
         key.setNumeroLlave(1);
         when(bracketRepository.findByTorneoId(100L)).thenReturn(List.of(key));
@@ -166,7 +166,7 @@ class KnockoutBracketServiceImplTest {
 
     @Test
     void advanceBracket_MatchNotFinalized() {
-        PartidoEntity match = new PartidoEntity();
+        MatchEntity match = new MatchEntity();
         match.setEstado(MatchStatus.PROGRAMADO);
         when(matchRepository.findById(1L)).thenReturn(Optional.of(match));
         
@@ -178,14 +178,14 @@ class KnockoutBracketServiceImplTest {
 
     @Test
     void advanceBracket_Success_Promoted() {
-        PartidoEntity match = new PartidoEntity();
+        MatchEntity match = new MatchEntity();
         match.setId(1L);
         match.setEstado(MatchStatus.FINALIZADO);
         match.setGolesLocal(2);
         match.setGolesVisitante(1);
         
-        EquipoEntity home = new EquipoEntity(); home.setId(10L); home.setNombre("A");
-        EquipoEntity away = new EquipoEntity(); away.setId(20L); away.setNombre("B");
+        TeamEntity home = new TeamEntity(); home.setId(10L); home.setNombre("A");
+        TeamEntity away = new TeamEntity(); away.setId(20L); away.setNombre("B");
         match.setEquipoLocal(home);
         match.setEquipoVisitante(away);
         
@@ -195,13 +195,13 @@ class KnockoutBracketServiceImplTest {
 
         when(matchRepository.findById(1L)).thenReturn(Optional.of(match));
 
-        LlaveEliminatoriaEntity currentKey = new LlaveEliminatoriaEntity();
+        KnockoutBracketEntity currentKey = new KnockoutBracketEntity();
         currentKey.setId(100L);
         currentKey.setPartido(match);
         currentKey.setFase("CUARTOS");
         currentKey.setNumeroLlave(1);
 
-        LlaveEliminatoriaEntity targetKey = new LlaveEliminatoriaEntity();
+        KnockoutBracketEntity targetKey = new KnockoutBracketEntity();
         targetKey.setId(101L);
         targetKey.setFase("SEMIFINAL");
         targetKey.setNumeroLlave(1);
@@ -211,7 +211,7 @@ class KnockoutBracketServiceImplTest {
         knockoutBracketService.advanceBracket(1L);
 
         assertEquals(home, currentKey.getGanador());
-        verify(bracketRepository, times(2)).save(any(LlaveEliminatoriaEntity.class));
+        verify(bracketRepository, times(2)).save(any(KnockoutBracketEntity.class));
     }
 
     @Test
@@ -226,7 +226,7 @@ class KnockoutBracketServiceImplTest {
         tournament.setId(100L);
         when(tournamentRepository.findByTournId("tourn-id")).thenReturn(Optional.of(tournament));
         
-        LlaveEliminatoriaEntity key = new LlaveEliminatoriaEntity();
+        KnockoutBracketEntity key = new KnockoutBracketEntity();
         key.setFase("FINAL");
         key.setNumeroLlave(1);
         

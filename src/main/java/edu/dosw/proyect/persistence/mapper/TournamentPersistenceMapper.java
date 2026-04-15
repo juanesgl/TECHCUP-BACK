@@ -33,6 +33,6 @@ public interface TournamentPersistenceMapper {
     @Mapping(target = "matchSchedules", ignore = true)
     @Mapping(target = "sanctions", ignore = true)
     @Mapping(target = "regulation", ignore = true)
-    @Mapping(target = "canchas", ignore = true)
+    @Mapping(target = "soccerField", ignore = true)
     Tournament toDomain(TournamentEntity entity);
 }

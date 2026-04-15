@@ -11,8 +11,8 @@ class PagoTest {
 
     @Test
     void pago_AllArgsConstructor_ConstruyeCorrectamente() {
-        Equipo equipo = new Equipo();
-        equipo.setNombre("Alpha");
+        Team team = new Team();
+        team.setNombre("Alpha");
 
         Tournament torneo = new Tournament();
         torneo.setTournId("TOURN-1");
@@ -27,13 +27,13 @@ class PagoTest {
         LocalDateTime ahora = LocalDateTime.now();
 
         Pago pago = new Pago(
-                1L, equipo, torneo,
+                1L, team, torneo,
                 "comprobante.pdf", "PENDIENTE",
                 ahora, ahora, revisador
         );
 
         assertEquals(1L, pago.getId());
-        assertEquals("Alpha", pago.getEquipo().getNombre());
+        assertEquals("Alpha", pago.getTeam().getNombre());
         assertEquals("TOURN-1", pago.getTorneo().getTournId());
         assertEquals("comprobante.pdf", pago.getComprobanteUrl());
         assertEquals("PENDIENTE", pago.getEstado());

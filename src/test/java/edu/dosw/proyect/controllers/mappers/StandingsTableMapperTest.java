@@ -3,7 +3,7 @@ package edu.dosw.proyect.controllers.mappers;
 import edu.dosw.proyect.controllers.dtos.response.RegisterMatchResultResponseDTO;
 import edu.dosw.proyect.controllers.dtos.response.StandingsTableResponseDTO;
 import edu.dosw.proyect.controllers.dtos.response.TeamStandingDTO;
-import edu.dosw.proyect.core.models.Equipo;
+import edu.dosw.proyect.core.models.Team;
 import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import org.junit.jupiter.api.Test;
@@ -76,15 +76,15 @@ class StandingsTableMapperTest {
 
     @Test
     void toRegisterMatchResultResponseDTO_LocalGana_OutcomeHome() {
-        Equipo local = new Equipo();
+        Team local = new Team();
         local.setNombre("Alpha");
-        Equipo visitante = new Equipo();
+        Team visitante = new Team();
         visitante.setNombre("Beta");
 
         Partido partido = new Partido();
         partido.setId(1L);
-        partido.setEquipoLocal(local);
-        partido.setEquipoVisitante(visitante);
+        partido.setTeamLocal(local);
+        partido.setTeamVisitante(visitante);
         partido.setGolesLocal(3);
         partido.setGolesVisitante(1);
 
@@ -100,15 +100,15 @@ class StandingsTableMapperTest {
 
     @Test
     void toRegisterMatchResultResponseDTO_VisitanteGana_OutcomeAway() {
-        Equipo local = new Equipo();
+        Team local = new Team();
         local.setNombre("Alpha");
-        Equipo visitante = new Equipo();
+        Team visitante = new Team();
         visitante.setNombre("Beta");
 
         Partido partido = new Partido();
         partido.setId(1L);
-        partido.setEquipoLocal(local);
-        partido.setEquipoVisitante(visitante);
+        partido.setTeamLocal(local);
+        partido.setTeamVisitante(visitante);
         partido.setGolesLocal(0);
         partido.setGolesVisitante(2);
 
@@ -120,15 +120,15 @@ class StandingsTableMapperTest {
 
     @Test
     void toRegisterMatchResultResponseDTO_Empate_OutcomeDraw() {
-        Equipo local = new Equipo();
+        Team local = new Team();
         local.setNombre("Alpha");
-        Equipo visitante = new Equipo();
+        Team visitante = new Team();
         visitante.setNombre("Beta");
 
         Partido partido = new Partido();
         partido.setId(1L);
-        partido.setEquipoLocal(local);
-        partido.setEquipoVisitante(visitante);
+        partido.setTeamLocal(local);
+        partido.setTeamVisitante(visitante);
         partido.setGolesLocal(1);
         partido.setGolesVisitante(1);
 

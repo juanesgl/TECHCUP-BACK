@@ -1,6 +1,6 @@
 package edu.dosw.proyect.controllers.mappers;
 
-import edu.dosw.proyect.controllers.dtos.response.PartidoResponseDTO;
+import edu.dosw.proyect.controllers.dtos.response.MatchResponseDTO;
 import edu.dosw.proyect.core.models.*;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import org.junit.jupiter.api.Test;
@@ -19,24 +19,24 @@ class PartidoMapperTest {
         Tournament torneo = new Tournament();
         torneo.setTournId("TOURN-1");
 
-        Equipo equipoLocal = new Equipo();
-        equipoLocal.setNombre("Alpha");
+        Team teamLocal = new Team();
+        teamLocal.setNombre("Alpha");
 
-        Equipo equipoVisitante = new Equipo();
-        equipoVisitante.setNombre("Beta");
+        Team teamVisitante = new Team();
+        teamVisitante.setNombre("Beta");
 
-        Cancha cancha = new Cancha();
-        cancha.setNombre("Cancha Principal");
+        SoccerField soccerField = new SoccerField();
+        soccerField.setNombre("Cancha Principal");
 
         Student arbitro = new Student();
         arbitro.setName("Carlos Medina");
 
         Partido p = new Partido();
         p.setId(1L);
-        p.setEquipoLocal(equipoLocal);
-        p.setEquipoVisitante(equipoVisitante);
+        p.setTeamLocal(teamLocal);
+        p.setTeamVisitante(teamVisitante);
         p.setFechaHora(LocalDateTime.now());
-        p.setCancha(cancha);
+        p.setSoccerField(soccerField);
         p.setArbitro(arbitro);
         p.setEstado(MatchStatus.PROGRAMADO);
         p.setTorneo(torneo);
@@ -47,7 +47,7 @@ class PartidoMapperTest {
     void toResponseDTO_HappyPath_Mapea_Correctamente() {
         Partido partido = buildPartido();
 
-        PartidoResponseDTO dto = mapper.toResponseDTO(partido);
+        MatchResponseDTO dto = mapper.toResponseDTO(partido);
 
         assertNotNull(dto);
         assertEquals(1L, dto.getId());
@@ -67,7 +67,7 @@ class PartidoMapperTest {
         partido.setId(1L);
         partido.setEstado(MatchStatus.PROGRAMADO);
 
-        PartidoResponseDTO dto = mapper.toResponseDTO(partido);
+        MatchResponseDTO dto = mapper.toResponseDTO(partido);
 
         assertNotNull(dto);
         assertEquals("TBD", dto.getEquipoLocal());
@@ -83,7 +83,7 @@ class PartidoMapperTest {
     void toResponseDTOList_HappyPath_MapeaLista() {
         List<Partido> partidos = List.of(buildPartido(), buildPartido());
 
-        List<PartidoResponseDTO> dtos = mapper.toResponseDTOList(partidos);
+        List<MatchResponseDTO> dtos = mapper.toResponseDTOList(partidos);
 
         assertNotNull(dtos);
         assertEquals(2, dtos.size());
@@ -91,7 +91,7 @@ class PartidoMapperTest {
 
     @Test
     void toResponseDTOList_ListaVacia_RetornaListaVacia() {
-        List<PartidoResponseDTO> dtos = mapper.toResponseDTOList(List.of());
+        List<MatchResponseDTO> dtos = mapper.toResponseDTOList(List.of());
 
         assertNotNull(dtos);
         assertTrue(dtos.isEmpty());

@@ -2,7 +2,7 @@ package edu.dosw.proyect.persistence.entitys;
 
 import edu.dosw.proyect.core.models.enums.PaymentStatus;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
-import edu.dosw.proyect.core.models.enums.TipoEvento;
+import edu.dosw.proyect.core.models.enums.EventType;
 import edu.dosw.proyect.persistence.entity.*;
 import org.junit.jupiter.api.Test;
 
@@ -31,27 +31,27 @@ class PersistenceEntitiesTest {
         assertEquals(t1, t2);
         assertNotNull(t1.toString());
 
-        JugadorEntity j1 = new JugadorEntity();
+        PlayerEntity j1 = new PlayerEntity();
         j1.setId(1L);
-        JugadorEntity j2 = new JugadorEntity();
+        PlayerEntity j2 = new PlayerEntity();
         j2.setId(1L);
 
         assertEquals(j1, j2);
         assertNotNull(j1.toString());
 
-        EquipoEntity e1 = new EquipoEntity();
+        TeamEntity e1 = new TeamEntity();
         e1.setId(1L);
         e1.setNombre("Alpha");
-        EquipoEntity e2 = new EquipoEntity();
+        TeamEntity e2 = new TeamEntity();
         e2.setId(1L);
         e2.setNombre("Alpha");
 
         assertEquals(e1, e2);
         assertNotNull(e1.toString());
 
-        PartidoEntity p1 = new PartidoEntity();
+        MatchEntity p1 = new MatchEntity();
         p1.setId(1L);
-        PartidoEntity p2 = new PartidoEntity();
+        MatchEntity p2 = new MatchEntity();
         p2.setId(1L);
 
         assertEquals(p1, p2);
@@ -63,24 +63,24 @@ class PersistenceEntitiesTest {
         assertEquals(pay1, pay2);
         assertNotNull(pay1.toString());
 
-        InvitacionEntity inv1 = InvitacionEntity.builder().id(1L).estado("PENDIENTE").build();
-        InvitacionEntity inv2 = InvitacionEntity.builder().id(1L).estado("PENDIENTE").build();
+        InvitationEntity inv1 = InvitationEntity.builder().id(1L).estado("PENDIENTE").build();
+        InvitationEntity inv2 = InvitationEntity.builder().id(1L).estado("PENDIENTE").build();
 
         assertEquals(inv1, inv2);
         assertNotNull(inv1.toString());
 
-        AlineacionEntity a1 = new AlineacionEntity();
+        LineupEntity a1 = new LineupEntity();
         a1.setId(1L);
-        AlineacionEntity a2 = new AlineacionEntity();
+        LineupEntity a2 = new LineupEntity();
         a2.setId(1L);
 
         assertEquals(a1, a2);
         assertNotNull(a1.toString());
 
-        CanchaEntity c1 = new CanchaEntity();
+        SoccerFieldEntity c1 = new SoccerFieldEntity();
         c1.setId(1L);
         c1.setNombre("Cancha 1");
-        CanchaEntity c2 = new CanchaEntity();
+        SoccerFieldEntity c2 = new SoccerFieldEntity();
         c2.setId(1L);
         c2.setNombre("Cancha 1");
 
@@ -95,29 +95,29 @@ class PersistenceEntitiesTest {
         assertEquals(pago1, pago2);
         assertNotNull(pago1.toString());
 
-        EventoPartidoEntity ep1 = new EventoPartidoEntity();
+        MatchEventEntity ep1 = new MatchEventEntity();
         ep1.setId(1L);
-        EventoPartidoEntity ep2 = new EventoPartidoEntity();
+        MatchEventEntity ep2 = new MatchEventEntity();
         ep2.setId(1L);
 
         assertEquals(ep1, ep2);
         assertNotNull(ep1.toString());
 
-        LlaveEliminatoriaEntity l1 = new LlaveEliminatoriaEntity();
+        KnockoutBracketEntity l1 = new KnockoutBracketEntity();
         l1.setId(1L);
-        LlaveEliminatoriaEntity l2 = new LlaveEliminatoriaEntity();
+        KnockoutBracketEntity l2 = new KnockoutBracketEntity();
         l2.setId(1L);
 
         assertEquals(l1, l2);
         assertNotNull(l1.toString());
 
         // AlineacionJugadorEntity
-        AlineacionJugadorEntity aj1 = new AlineacionJugadorEntity();
+        LineupPlayerEntity aj1 = new LineupPlayerEntity();
         aj1.setId(1L);
         aj1.setRol("TITULAR");
         aj1.setPosicionEnCancha("Delantero");
         aj1.setNumeroCamiseta(9);
-        AlineacionJugadorEntity aj2 = new AlineacionJugadorEntity();
+        LineupPlayerEntity aj2 = new LineupPlayerEntity();
         aj2.setId(1L);
         aj2.setRol("TITULAR");
         aj2.setPosicionEnCancha("Delantero");
@@ -128,10 +128,10 @@ class PersistenceEntitiesTest {
         assertNotNull(aj1.toString());
 
         // EquipoJugadorEntity
-        EquipoJugadorEntity ej1 = new EquipoJugadorEntity();
+        TeamPlayerEntity ej1 = new TeamPlayerEntity();
         ej1.setId(1L);
         ej1.setActivo(true);
-        EquipoJugadorEntity ej2 = new EquipoJugadorEntity();
+        TeamPlayerEntity ej2 = new TeamPlayerEntity();
         ej2.setId(1L);
         ej2.setActivo(true);
 
@@ -140,11 +140,11 @@ class PersistenceEntitiesTest {
         assertNotNull(ej1.toString());
 
         // ConfiguracionTorneoEntity
-        ConfiguracionTorneoEntity d1 = new ConfiguracionTorneoEntity();
+        TournamentConfigurationEntity d1 = new TournamentConfigurationEntity();
         d1.setId(1L);
         d1.setReglamento("Reglamento");
         d1.setSanciones("Sanciones");
-        ConfiguracionTorneoEntity d2 = new ConfiguracionTorneoEntity();
+        TournamentConfigurationEntity d2 = new TournamentConfigurationEntity();
         d2.setId(1L);
         d2.setReglamento("Reglamento");
         d2.setSanciones("Sanciones");
@@ -154,7 +154,7 @@ class PersistenceEntitiesTest {
         assertNotNull(c1.toString());
 
         // EstadisticaEquipoEntity
-        EstadisticasEquipoEntity est1 = new EstadisticasEquipoEntity();
+        TeamStatisticsEntity est1 = new TeamStatisticsEntity();
         est1.setId(1L);
         est1.setPuntos(9);
         est1.setPartidosJugados(3);
@@ -164,7 +164,7 @@ class PersistenceEntitiesTest {
         est1.setGolesFavor(6);
         est1.setGolesContra(1);
         est1.setDiferenciaGol(5);
-        EstadisticasEquipoEntity est2 = new EstadisticasEquipoEntity();
+        TeamStatisticsEntity est2 = new TeamStatisticsEntity();
         est2.setId(1L);
         est2.setPuntos(9);
         est2.setPartidosJugados(3);
@@ -185,14 +185,14 @@ class PersistenceEntitiesTest {
         TournamentEntity torneo = new TournamentEntity();
         torneo.setId(1L);
 
-        ConfiguracionTorneoEntity c1 = new ConfiguracionTorneoEntity();
+        TournamentConfigurationEntity c1 = new TournamentConfigurationEntity();
         c1.setId(1L);
         c1.setTorneo(torneo);
         c1.setReglamento("Reglamento");
         c1.setSanciones("Sanciones");
         c1.setFechasImportantes("Fechas");
 
-        ConfiguracionTorneoEntity c2 = new ConfiguracionTorneoEntity();
+        TournamentConfigurationEntity c2 = new TournamentConfigurationEntity();
         c2.setId(1L);
         c2.setTorneo(torneo);
         c2.setReglamento("Reglamento");
@@ -202,21 +202,21 @@ class PersistenceEntitiesTest {
         assertEquals(c1, c2);
         assertEquals(c1.hashCode(), c2.hashCode());
         assertNotNull(c1.toString());
-        assertNotEquals(c1, new ConfiguracionTorneoEntity());
+        assertNotEquals(c1, new TournamentConfigurationEntity());
         assertEquals(c1, c1);
         assertNotEquals(c1, null);
     }
 
     @Test
     void jugadorEntity_EqualsHashCodeToString_FuncionanCorrectamente() {
-        JugadorEntity j1 = new JugadorEntity();
+        PlayerEntity j1 = new PlayerEntity();
         j1.setId(1L);
         j1.setPosiciones("Delantero");
         j1.setEdad(22);
         j1.setDisponible(true);
         j1.setPerfilCompleto(true);
 
-        JugadorEntity j2 = new JugadorEntity();
+        PlayerEntity j2 = new PlayerEntity();
         j2.setId(1L);
         j2.setPosiciones("Delantero");
         j2.setEdad(22);
@@ -226,20 +226,20 @@ class PersistenceEntitiesTest {
         assertEquals(j1, j2);
         assertEquals(j1.hashCode(), j2.hashCode());
         assertNotNull(j1.toString());
-        assertNotEquals(j1, new JugadorEntity());
+        assertNotEquals(j1, new PlayerEntity());
         assertEquals(j1, j1);
         assertNotEquals(j1, null);
     }
 
     @Test
     void equipoEntity_EqualsHashCodeToString_FuncionanCorrectamente() {
-        EquipoEntity e1 = new EquipoEntity();
+        TeamEntity e1 = new TeamEntity();
         e1.setId(1L);
         e1.setNombre("Alpha FC");
         e1.setColorUniformeLocal("Rojo");
         e1.setEstadoInscripcion("APROBADO");
 
-        EquipoEntity e2 = new EquipoEntity();
+        TeamEntity e2 = new TeamEntity();
         e2.setId(1L);
         e2.setNombre("Alpha FC");
         e2.setColorUniformeLocal("Rojo");
@@ -248,7 +248,7 @@ class PersistenceEntitiesTest {
         assertEquals(e1, e2);
         assertEquals(e1.hashCode(), e2.hashCode());
         assertNotNull(e1.toString());
-        assertNotEquals(e1, new EquipoEntity());
+        assertNotEquals(e1, new TeamEntity());
         assertEquals(e1, e1);
         assertNotEquals(e1, null);
     }
@@ -275,12 +275,12 @@ class PersistenceEntitiesTest {
 
     @Test
     void llaveEliminatoriaEntity_EqualsHashCodeToString_FuncionanCorrectamente() {
-        LlaveEliminatoriaEntity l1 = new LlaveEliminatoriaEntity();
+        KnockoutBracketEntity l1 = new KnockoutBracketEntity();
         l1.setId(1L);
         l1.setFase("Semifinal");
         l1.setNumeroLlave(1);
 
-        LlaveEliminatoriaEntity l2 = new LlaveEliminatoriaEntity();
+        KnockoutBracketEntity l2 = new KnockoutBracketEntity();
         l2.setId(1L);
         l2.setFase("Semifinal");
         l2.setNumeroLlave(1);
@@ -288,7 +288,7 @@ class PersistenceEntitiesTest {
         assertEquals(l1, l2);
         assertEquals(l1.hashCode(), l2.hashCode());
         assertNotNull(l1.toString());
-        assertNotEquals(l1, new LlaveEliminatoriaEntity());
+        assertNotEquals(l1, new KnockoutBracketEntity());
         assertEquals(l1, l1);
         assertNotEquals(l1, null);
     }
@@ -308,28 +308,28 @@ class PersistenceEntitiesTest {
 
     @Test
     void invitacionEntity_EqualsHashCodeToString_FuncionanCorrectamente() {
-        InvitacionEntity i1 = InvitacionEntity.builder()
+        InvitationEntity i1 = InvitationEntity.builder()
                 .id(1L).estado("PENDIENTE").build();
-        InvitacionEntity i2 = InvitacionEntity.builder()
+        InvitationEntity i2 = InvitationEntity.builder()
                 .id(1L).estado("PENDIENTE").build();
 
         assertEquals(i1, i2);
         assertEquals(i1.hashCode(), i2.hashCode());
         assertNotNull(i1.toString());
-        assertNotEquals(i1, new InvitacionEntity());
+        assertNotEquals(i1, new InvitationEntity());
         assertEquals(i1, i1);
         assertNotEquals(i1, null);
     }
 
     @Test
     void partidoEntity_EqualsHashCodeToString_FuncionanCorrectamente() {
-        PartidoEntity p1 = new PartidoEntity();
+        MatchEntity p1 = new MatchEntity();
         p1.setId(1L);
         p1.setGolesLocal(2);
         p1.setGolesVisitante(1);
         p1.setFase("Grupos");
 
-        PartidoEntity p2 = new PartidoEntity();
+        MatchEntity p2 = new MatchEntity();
         p2.setId(1L);
         p2.setGolesLocal(2);
         p2.setGolesVisitante(1);
@@ -338,47 +338,47 @@ class PersistenceEntitiesTest {
         assertEquals(p1, p2);
         assertEquals(p1.hashCode(), p2.hashCode());
         assertNotNull(p1.toString());
-        assertNotEquals(p1, new PartidoEntity());
+        assertNotEquals(p1, new MatchEntity());
         assertEquals(p1, p1);
         assertNotEquals(p1, null);
     }
 
     @Test
     void alineacionEntity_EqualsHashCodeToString_FuncionanCorrectamente() {
-        AlineacionEntity a1 = new AlineacionEntity();
+        LineupEntity a1 = new LineupEntity();
         a1.setId(1L);
         a1.setFormacion(TacticalFormation.F_1_2_3_1);
 
-        AlineacionEntity a2 = new AlineacionEntity();
+        LineupEntity a2 = new LineupEntity();
         a2.setId(1L);
         a2.setFormacion(TacticalFormation.F_1_2_3_1);
 
         assertEquals(a1, a2);
         assertEquals(a1.hashCode(), a2.hashCode());
         assertNotNull(a1.toString());
-        assertNotEquals(a1, new AlineacionEntity());
+        assertNotEquals(a1, new LineupEntity());
         assertEquals(a1, a1);
         assertNotEquals(a1, null);
     }
 
     @Test
     void eventoPartidoEntity_EqualsHashCodeToString_FuncionanCorrectamente() {
-        EventoPartidoEntity ep1 = new EventoPartidoEntity();
+        MatchEventEntity ep1 = new MatchEventEntity();
         ep1.setId(1L);
-        ep1.setTipoEvento(TipoEvento.GOL);
+        ep1.setEventType(EventType.GOL);
         ep1.setMinuto(45);
         ep1.setDescripcion("Gol de cabeza");
 
-        EventoPartidoEntity ep2 = new EventoPartidoEntity();
+        MatchEventEntity ep2 = new MatchEventEntity();
         ep2.setId(1L);
-        ep2.setTipoEvento(TipoEvento.GOL);
+        ep2.setEventType(EventType.GOL);
         ep2.setMinuto(45);
         ep2.setDescripcion("Gol de cabeza");
 
         assertEquals(ep1, ep2);
         assertEquals(ep1.hashCode(), ep2.hashCode());
         assertNotNull(ep1.toString());
-        assertNotEquals(ep1, new EventoPartidoEntity());
+        assertNotEquals(ep1, new MatchEventEntity());
         assertEquals(ep1, ep1);
         assertNotEquals(ep1, null);
     }
@@ -406,13 +406,13 @@ class PersistenceEntitiesTest {
 
     @Test
     void alineacionJugadorEntity_EqualsHashCodeToString_FuncionanCorrectamente() {
-        AlineacionJugadorEntity aj1 = new AlineacionJugadorEntity();
+        LineupPlayerEntity aj1 = new LineupPlayerEntity();
         aj1.setId(1L);
         aj1.setRol("TITULAR");
         aj1.setPosicionEnCancha("Delantero");
         aj1.setNumeroCamiseta(9);
 
-        AlineacionJugadorEntity aj2 = new AlineacionJugadorEntity();
+        LineupPlayerEntity aj2 = new LineupPlayerEntity();
         aj2.setId(1L);
         aj2.setRol("TITULAR");
         aj2.setPosicionEnCancha("Delantero");
@@ -421,20 +421,20 @@ class PersistenceEntitiesTest {
         assertEquals(aj1, aj2);
         assertEquals(aj1.hashCode(), aj2.hashCode());
         assertNotNull(aj1.toString());
-        assertNotEquals(aj1, new AlineacionJugadorEntity());
+        assertNotEquals(aj1, new LineupPlayerEntity());
         assertEquals(aj1, aj1);
         assertNotEquals(aj1, null);
     }
 
     @Test
     void canchaEntity_EqualsHashCodeToString_FuncionanCorrectamente() {
-        CanchaEntity c1 = new CanchaEntity();
+        SoccerFieldEntity c1 = new SoccerFieldEntity();
         c1.setId(1L);
         c1.setNombre("Cancha 1");
         c1.setDireccion("Calle 100");
         c1.setDescripcion("Principal");
 
-        CanchaEntity c2 = new CanchaEntity();
+        SoccerFieldEntity c2 = new SoccerFieldEntity();
         c2.setId(1L);
         c2.setNombre("Cancha 1");
         c2.setDireccion("Calle 100");
@@ -443,7 +443,7 @@ class PersistenceEntitiesTest {
         assertEquals(c1, c2);
         assertEquals(c1.hashCode(), c2.hashCode());
         assertNotNull(c1.toString());
-        assertNotEquals(c1, new CanchaEntity());
+        assertNotEquals(c1, new SoccerFieldEntity());
         assertEquals(c1, c1);
         assertNotEquals(c1, null);
     }

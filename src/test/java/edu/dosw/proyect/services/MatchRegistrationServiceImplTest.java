@@ -6,7 +6,7 @@ import edu.dosw.proyect.controllers.dtos.response.RegisterMatchResponseDTO;
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
-import edu.dosw.proyect.core.models.enums.TipoEvento;
+import edu.dosw.proyect.core.models.enums.EventType;
 import edu.dosw.proyect.core.services.impl.MatchRegistrationServiceImpl;
 import edu.dosw.proyect.persistence.entity.*;
 import edu.dosw.proyect.persistence.repository.*;
@@ -27,18 +27,18 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class MatchRegistrationServiceImplTest {
 
-    @Mock private PartidoRepository matchRepository;
-    @Mock private JugadorRepository playerRepository;
-    @Mock private EquipoRepository teamRepository;
-    @Mock private EventoPartidoRepository eventRepository;
-    @Mock private EstadisticaEquipoRepository statsRepository;
+    @Mock private MatchRepository matchRepository;
+    @Mock private PlayerRepository playerRepository;
+    @Mock private TeamRepository teamRepository;
+    @Mock private MatchEventRepository eventRepository;
+    @Mock private TeamStatisticsRepository statsRepository;
 
     @InjectMocks
     private MatchRegistrationServiceImpl matchRegistrationService;
 
-    private PartidoEntity matchEntity;
-    private EquipoEntity localTeam;
-    private EquipoEntity awayTeam;
+    private MatchEntity matchEntity;
+    private TeamEntity localTeam;
+    private TeamEntity awayTeam;
     private TournamentEntity tournament;
 
     @BeforeEach
@@ -46,15 +46,15 @@ class MatchRegistrationServiceImplTest {
         tournament = new TournamentEntity();
         tournament.setId(5L); // Es Long
 
-        localTeam = new EquipoEntity();
+        localTeam = new TeamEntity();
         localTeam.setId(10L);
         localTeam.setNombre("Local FC");
 
-        awayTeam = new EquipoEntity();
+        awayTeam = new TeamEntity();
         awayTeam.setId(20L);
         awayTeam.setNombre("Away FC");
 
-        matchEntity = new PartidoEntity();
+        matchEntity = new MatchEntity();
         matchEntity.setId(100L);
         matchEntity.setEquipoLocal(localTeam);
         matchEntity.setEquipoVisitante(awayTeam);
@@ -97,21 +97,21 @@ class MatchRegistrationServiceImplTest {
         request.setAwayGoals(1);
 
         MatchEventRequestDTO goalEvent = new MatchEventRequestDTO();
-        goalEvent.setEventType(TipoEvento.GOL);
+        goalEvent.setEventType(EventType.GOL);
         goalEvent.setPlayerId(1L);
         goalEvent.setTeamId(10L);
         goalEvent.setMinute(45);
 
         MatchEventRequestDTO yellowEvent = new MatchEventRequestDTO();
-        yellowEvent.setEventType(TipoEvento.TARJETA_AMARILLA);
+        yellowEvent.setEventType(EventType.TARJETA_AMARILLA);
         yellowEvent.setPlayerId(2L);
         yellowEvent.setTeamId(20L);
         yellowEvent.setMinute(60);
 
         request.setEvents(List.of(goalEvent, yellowEvent));
 
-        JugadorEntity player1 = new JugadorEntity(); player1.setId(1L);
-        JugadorEntity player2 = new JugadorEntity(); player2.setId(2L);
+        PlayerEntity player1 = new PlayerEntity(); player1.setId(1L);
+        PlayerEntity player2 = new PlayerEntity(); player2.setId(2L);
         
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player1));
         when(playerRepository.findById(2L)).thenReturn(Optional.of(player2));
@@ -200,10 +200,10 @@ class MatchRegistrationServiceImplTest {
         event.setTeamId(99L);
         request.setEvents(List.of(event));
 
-        JugadorEntity player = new JugadorEntity(); player.setId(1L);
+        PlayerEntity player = new PlayerEntity(); player.setId(1L);
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
         
-        EquipoEntity otherTeam = new EquipoEntity(); otherTeam.setId(99L);
+        TeamEntity otherTeam = new TeamEntity(); otherTeam.setId(99L);
         when(teamRepository.findById(99L)).thenReturn(Optional.of(otherTeam));
 
         assertThrows(BusinessRuleException.class, () -> matchRegistrationService.registerMatch(100L, request));
