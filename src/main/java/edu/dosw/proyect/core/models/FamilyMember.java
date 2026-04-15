@@ -14,7 +14,7 @@ public class FamilyMember extends User {
         this.setName(name);
         this.setEmail(email);
         this.setPassword(password);
-        this.setRole("PLAYER");
+        this.setRole("FAMILY_MEMBER");
     }
 }
 

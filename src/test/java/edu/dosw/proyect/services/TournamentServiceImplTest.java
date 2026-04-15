@@ -58,7 +58,7 @@ class TournamentServiceImplTest {
     void createTournament_HappyPath_RetornaTournamentResponse() {
         TournamentRequest request = new TournamentRequest(
                 "TechCup 2026", LocalDate.now(),
-                LocalDate.now().plusMonths(3), 8, 150000, "Reglamento");
+                LocalDate.now().plusMonths(3), 8, 150000.0, "Reglamento");
 
         TournamentEntity entity = buildEntity("TOURN-1", TournamentsStatus.DRAFT);
         Tournament domain = buildDomain("TOURN-1", TournamentsStatus.DRAFT);

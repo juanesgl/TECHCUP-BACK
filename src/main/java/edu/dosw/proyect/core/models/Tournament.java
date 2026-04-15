@@ -34,7 +34,7 @@ public class Tournament {
     private String sanctions;
 
     @Builder.Default
-    private List<Cancha> canchas = new ArrayList<>();
+    private List<SoccerField> soccerFields = new ArrayList<>();
 
     public Tournament(String tournId, String name, LocalDate startDate,
                       LocalDate endDate, int maxTeams, double costPerTeam,

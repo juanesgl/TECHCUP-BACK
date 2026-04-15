@@ -46,4 +46,12 @@ public class TournamentEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizador_id")
     private UserEntity organizador;
+
+    /**
+     * Fecha límite de pago de inscripción.
+     * Según las reglas del torneo: Jueves 26 de Marzo.
+     * Se configura al crear/configurar el torneo.
+     */
+    @Column(name = "fecha_cierre_inscripciones")
+    private LocalDate registrationCloseDate;
 }

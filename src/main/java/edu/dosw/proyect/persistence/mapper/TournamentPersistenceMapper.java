@@ -2,42 +2,37 @@ package edu.dosw.proyect.persistence.mapper;
 
 import edu.dosw.proyect.core.models.Tournament;
 import edu.dosw.proyect.persistence.entity.TournamentEntity;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-@RequiredArgsConstructor
-public class TournamentPersistenceMapper {
+@Mapper(componentModel = "spring", uses = { UserPersistenceMapper.class })
+public interface TournamentPersistenceMapper {
 
-    private final UserPersistenceMapper userMapper;
+    @Mapping(target = "tournId", source = "tournId")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "startDate", source = "startDate")
+    @Mapping(target = "endDate", source = "endDate")
+    @Mapping(target = "maxTeams", source = "maxTeams")
+    @Mapping(target = "costPerTeam", source = "costPerTeam")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "organizador", source = "organizador")
+    @Mapping(target = "registrationCloseDate", source = "registrationCloseDate")
+    TournamentEntity toEntity(Tournament domain);
 
-    public TournamentEntity toEntity(Tournament domain) {
-        if (domain == null) return null;
-        return TournamentEntity.builder()
-                .id(domain.getId())
-                .tournId(domain.getTournId())
-                .name(domain.getName())
-                .startDate(domain.getStartDate())
-                .endDate(domain.getEndDate())
-                .maxTeams(domain.getMaxTeams())
-                .costPerTeam(domain.getCostPerTeam())
-                .status(domain.getStatus())
-                .organizador(userMapper.toEntity(domain.getOrganizador()))
-                .build();
-    }
-
-    public Tournament toDomain(TournamentEntity entity) {
-        if (entity == null) return null;
-        Tournament t = new Tournament();
-        t.setId(entity.getId());
-        t.setTournId(entity.getTournId());
-        t.setName(entity.getName());
-        t.setStartDate(entity.getStartDate());
-        t.setEndDate(entity.getEndDate());
-        t.setMaxTeams(entity.getMaxTeams());
-        t.setCostPerTeam(entity.getCostPerTeam());
-        t.setStatus(entity.getStatus());
-        t.setOrganizador(userMapper.toDomain(entity.getOrganizador()));
-        return t;
-    }
+    @Mapping(target = "tournId", source = "tournId")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "startDate", source = "startDate")
+    @Mapping(target = "endDate", source = "endDate")
+    @Mapping(target = "maxTeams", source = "maxTeams")
+    @Mapping(target = "costPerTeam", source = "costPerTeam")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "organizador", source = "organizador")
+    @Mapping(target = "registrationCloseDate", source = "registrationCloseDate")
+    @Mapping(target = "organizerId", ignore = true)
+    @Mapping(target = "importantDates", ignore = true)
+    @Mapping(target = "matchSchedules", ignore = true)
+    @Mapping(target = "sanctions", ignore = true)
+    @Mapping(target = "regulation", ignore = true)
+    @Mapping(target = "soccerFields", ignore = true)
+    Tournament toDomain(TournamentEntity entity);
 }

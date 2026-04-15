@@ -2,7 +2,7 @@ package edu.dosw.proyect.core.utils;
 
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.Organizer;
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 
 public class OrganizerCreator extends UserCreator {
     public OrganizerCreator() {
@@ -11,7 +11,11 @@ public class OrganizerCreator extends UserCreator {
 
     @Override
     public User createUser(RegisterRequestDTO request) {
-        return new Organizer(request.getName(), request.getEmail(), request.getPassword());
+        Organizer organizer = new Organizer();
+        organizer.setName(request.getName());
+        organizer.setEmail(request.getEmail());
+        organizer.setPassword(request.getPassword());
+        organizer.setRole("ORGANIZER");
+        return organizer;
     }
 }
-

@@ -2,7 +2,7 @@ package edu.dosw.proyect.core.utils;
 
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.Referee;
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 
 public class RefereeCreator extends UserCreator {
     public RefereeCreator() {
@@ -11,7 +11,11 @@ public class RefereeCreator extends UserCreator {
 
     @Override
     public User createUser(RegisterRequestDTO request) {
-        return new Referee(request.getName(), request.getEmail(), request.getPassword());
+        Referee referee = new Referee();
+        referee.setName(request.getName());
+        referee.setEmail(request.getEmail());
+        referee.setPassword(request.getPassword());
+        referee.setRole("REFEREE");
+        return referee;
     }
 }
-

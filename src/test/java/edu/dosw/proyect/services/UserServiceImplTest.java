@@ -1,6 +1,6 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.RegisterResponseDTO;
 import edu.dosw.proyect.core.services.impl.UserServiceImpl;
 import edu.dosw.proyect.persistence.entity.UserEntity;
@@ -82,7 +82,7 @@ class UserServiceImplTest {
     @Test
     void registerUser_CorreoInvalidoParaRol_LanzaException() {
         RegisterRequestDTO request = new RegisterRequestDTO(
-                "Test", "test@gmail.com", "pass", "STUDENT", null, 1);
+                "Test", "test@hotmail.com", "pass", "STUDENT", null, 1);
         assertThrows(IllegalArgumentException.class,
                 () -> userService.registerUser(request));
     }

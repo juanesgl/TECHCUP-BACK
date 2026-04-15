@@ -19,7 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    @Value("${jwt.secret:techcup-super-secret-key}")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Value("${jwt.expiration:86400000}")
@@ -64,7 +64,7 @@ public class JwtProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            log.warn("Token JWT invÃ¡lido: {}", e.getMessage());
+            log.warn("Token JWT inválido: {}", e.getMessage());
             return false;
         }
     }
@@ -85,8 +85,8 @@ public class JwtProvider {
     public Long getUserIdFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
         Object userId = claims.get("userId");
-        if (userId instanceof Integer) {
-            return ((Integer) userId).longValue();
+        if (userId instanceof Integer integer) {
+            return integer.longValue();
         }
         return (Long) userId;
     }
@@ -119,7 +119,6 @@ public class JwtProvider {
     
     public String getTokenInfo(String token) {
         try {
-            Claims claims = getAllClaimsFromToken(token);
             return String.format(
                     "Email: %s | Role: %s | UserId: %s | Expira: %s",
                     getEmailFromToken(token),
@@ -128,7 +127,7 @@ public class JwtProvider {
                     getExpirationDateFromToken(token)
             );
         } catch (Exception e) {
-            return "Token invÃ¡lido: " + e.getMessage();
+            return "Token inválido: " + e.getMessage();
         }
     }
 }

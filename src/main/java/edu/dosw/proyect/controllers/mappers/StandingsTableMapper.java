@@ -5,15 +5,17 @@ import edu.dosw.proyect.controllers.dtos.response.StandingsTableResponseDTO;
 import edu.dosw.proyect.controllers.dtos.response.TeamStandingDTO;
 import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Component
-public class StandingsTableMapper {
 
-    public TeamStandingDTO toTeamStandingDTO(int position, Long teamId, String teamName,
-                                             int mp, int w, int d, int l, int gf, int ga) {
+@Mapper(componentModel = "spring")
+public interface StandingsTableMapper {
+
+    default TeamStandingDTO toTeamStandingDTO(int position, Long teamId, String teamName,
+                                              int mp, int w, int d, int l,
+                                              int gf, int ga) {
         return TeamStandingDTO.builder()
                 .position(position)
                 .teamId(teamId)
@@ -29,10 +31,10 @@ public class StandingsTableMapper {
                 .build();
     }
 
-    public StandingsTableResponseDTO toStandingsTableResponseDTO(String tournamentId,
-                                                                 String tournamentName,
-                                                                 int totalMatchesPlayed,
-                                                                 List<TeamStandingDTO> standings) {
+    default StandingsTableResponseDTO toStandingsTableResponseDTO(String tournamentId,
+                                                                  String tournamentName,
+                                                                  int totalMatchesPlayed,
+                                                                  List<TeamStandingDTO> standings) {
         return StandingsTableResponseDTO.builder()
                 .tournamentId(tournamentId)
                 .tournamentName(tournamentName)
@@ -42,18 +44,16 @@ public class StandingsTableMapper {
                 .build();
     }
 
-    public RegisterMatchResultResponseDTO toRegisterMatchResultResponseDTO(Partido match) {
+    default RegisterMatchResultResponseDTO toRegisterMatchResultResponseDTO(Partido match) {
         String outcome;
-        if (match.getGolesLocal() > match.getGolesVisitante()) {
-            outcome = "HOME";
-        } else if (match.getGolesLocal() < match.getGolesVisitante()) {
-            outcome = "AWAY";
-        } else {
-            outcome = "DRAW";
-        }
+        if (match.getGolesLocal() > match.getGolesVisitante())       outcome = "HOME";
+        else if (match.getGolesLocal() < match.getGolesVisitante())  outcome = "AWAY";
+        else                                                          outcome = "DRAW";
 
-        String home = match.getEquipoLocal()     != null ? match.getEquipoLocal().getNombre()     : "Unknown";
-        String away = match.getEquipoVisitante() != null ? match.getEquipoVisitante().getNombre() : "Unknown";
+        String home = match.getTeamLocal()     != null
+                ? match.getTeamLocal().getNombre()     : "Unknown";
+        String away = match.getTeamVisitante() != null
+                ? match.getTeamVisitante().getNombre() : "Unknown";
 
         return RegisterMatchResultResponseDTO.builder()
                 .matchId(match.getId())
@@ -62,11 +62,11 @@ public class StandingsTableMapper {
                 .homeGoals(match.getGolesLocal())
                 .awayGoals(match.getGolesVisitante())
                 .outcome(outcome)
-                .message("Result registered successfully. The standings table has been updated.")
+                .message("Resultado registrado exitosamente. La tabla de posiciones ha sido actualizada.")
                 .build();
     }
 
-    public boolean isMatchCountable(Partido match) {
+    default boolean isMatchCountable(Partido match) {
         return match.getEstado() == MatchStatus.FINALIZADO
                 || match.getEstado() == MatchStatus.EN_JUEGO;
     }

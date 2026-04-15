@@ -1,0 +1,12 @@
+target/
+.git
+.idea
+.vscode
+*.iml
+.env
+.env.*
+!docs/env-examples/.env.example
+README.md
+sprints/
+docs/
+postgres_data/

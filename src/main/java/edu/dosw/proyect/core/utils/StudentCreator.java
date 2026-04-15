@@ -2,8 +2,7 @@ package edu.dosw.proyect.core.utils;
 
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.Student;
-import edu.dosw.proyect.core.models.SportProfile;
-import edu.dosw.proyect.controllers.dtos.RegisterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 
 public class StudentCreator extends UserCreator {
     public StudentCreator() {
@@ -12,8 +11,11 @@ public class StudentCreator extends UserCreator {
 
     @Override
     public User createUser(RegisterRequestDTO request) {
-        SportProfile profile = new SportProfile(request.getPreferredPosition(), request.getSkillLevel());
-        return new Student(request.getName(), request.getEmail(), request.getPassword(), profile);
+        Student student = new Student();
+        student.setName(request.getName());
+        student.setEmail(request.getEmail());
+        student.setPassword(request.getPassword());
+        student.setRole("STUDENT");
+        return student;
     }
 }
-

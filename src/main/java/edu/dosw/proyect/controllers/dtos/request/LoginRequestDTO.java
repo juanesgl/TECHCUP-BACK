@@ -1,0 +1,23 @@
+package edu.dosw.proyect.controllers.dtos.request;
+
+import edu.dosw.proyect.controllers.dtos.validation.InstitutionalEmail;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoginRequestDTO {
+
+    @NotBlank(message = "El correo es obligatorio")
+    @InstitutionalEmail(message = "Debe ser un correo válido (@mail.escuelaing.edu.co o @gmail.com)")
+    private String email;
+
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    private String password;
+}
+

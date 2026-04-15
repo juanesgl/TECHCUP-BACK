@@ -1,7 +1,7 @@
 package edu.dosw.proyect.controllers;
 
-import edu.dosw.proyect.controllers.dtos.request.PartidoFiltroRequestDTO;
-import edu.dosw.proyect.controllers.dtos.response.PartidoResponseDTO;
+import edu.dosw.proyect.controllers.dtos.request.MatchFilterRequestDTO;
+import edu.dosw.proyect.controllers.dtos.response.MatchResponseDTO;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
 import edu.dosw.proyect.core.services.PartidoService;
 import org.junit.jupiter.api.Test;
@@ -26,10 +26,10 @@ class PartidoControllerTest {
     private PartidoService partidoService;
 
     @InjectMocks
-    private PartidoController partidoController;
+    private MatchController matchController;
 
-    private PartidoResponseDTO buildDTO(Long id, String local, String visitante) {
-        return PartidoResponseDTO.builder()
+    private MatchResponseDTO buildDTO(Long id, String local, String visitante) {
+        return MatchResponseDTO.builder()
                 .id(id)
                 .equipoLocal(local)
                 .equipoVisitante(visitante)
@@ -44,16 +44,16 @@ class PartidoControllerTest {
 
     @Test
     void consultarPartidos_HappyPath_RetornaLista() {
-        List<PartidoResponseDTO> dtos = List.of(
+        List<MatchResponseDTO> dtos = List.of(
                 buildDTO(1L, "Alpha", "Beta"),
                 buildDTO(2L, "Gamma", "Delta")
         );
-        PartidoFiltroRequestDTO filtro = new PartidoFiltroRequestDTO();
+        MatchFilterRequestDTO filtro = new MatchFilterRequestDTO();
 
         when(partidoService.consultarPartidos(filtro)).thenReturn(dtos);
 
-        ResponseEntity<List<PartidoResponseDTO>> response =
-                partidoController.consultarPartidos(filtro);
+        ResponseEntity<List<MatchResponseDTO>> response =
+                matchController.consultarPartidos(filtro);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -63,14 +63,14 @@ class PartidoControllerTest {
 
     @Test
     void consultarPartidos_HappyPath_FiltroCancha() {
-        PartidoFiltroRequestDTO filtro = new PartidoFiltroRequestDTO();
+        MatchFilterRequestDTO filtro = new MatchFilterRequestDTO();
         filtro.setCancha("Cancha Principal");
 
-        List<PartidoResponseDTO> dtos = List.of(buildDTO(1L, "Alpha", "Beta"));
+        List<MatchResponseDTO> dtos = List.of(buildDTO(1L, "Alpha", "Beta"));
         when(partidoService.consultarPartidos(filtro)).thenReturn(dtos);
 
-        ResponseEntity<List<PartidoResponseDTO>> response =
-                partidoController.consultarPartidos(filtro);
+        ResponseEntity<List<MatchResponseDTO>> response =
+                matchController.consultarPartidos(filtro);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
@@ -78,11 +78,11 @@ class PartidoControllerTest {
 
     @Test
     void consultarPartidoPorId_HappyPath_RetornaDetalle() {
-        PartidoResponseDTO dto = buildDTO(1L, "Alpha", "Beta");
+        MatchResponseDTO dto = buildDTO(1L, "Alpha", "Beta");
         when(partidoService.consultarPartidoPorId(1L)).thenReturn(dto);
 
-        ResponseEntity<PartidoResponseDTO> response =
-                partidoController.consultarPartidoPorId(1L);
+        ResponseEntity<MatchResponseDTO> response =
+                matchController.consultarPartidoPorId(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -93,14 +93,14 @@ class PartidoControllerTest {
 
     @Test
     void consultarPartidos_Error_SinResultados() {
-        PartidoFiltroRequestDTO filtro = new PartidoFiltroRequestDTO();
+        MatchFilterRequestDTO filtro = new MatchFilterRequestDTO();
         filtro.setCancha("Cancha Inexistente");
 
         when(partidoService.consultarPartidos(filtro))
                 .thenThrow(new ResourceNotFoundException("No hay partidos"));
 
         assertThrows(ResourceNotFoundException.class,
-                () -> partidoController.consultarPartidos(filtro));
+                () -> matchController.consultarPartidos(filtro));
     }
 
     @Test
@@ -109,6 +109,6 @@ class PartidoControllerTest {
                 .thenThrow(new ResourceNotFoundException("Partido no encontrado"));
 
         assertThrows(ResourceNotFoundException.class,
-                () -> partidoController.consultarPartidoPorId(999L));
+                () -> matchController.consultarPartidoPorId(999L));
     }
 }

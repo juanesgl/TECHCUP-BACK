@@ -3,12 +3,13 @@ package edu.dosw.proyect.persistence.mapper;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.persistence.entity.UserEntity;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserPersistenceMapperTest {
 
-    private final UserPersistenceMapper mapper = new UserPersistenceMapper();
+    private final UserPersistenceMapper mapper = Mappers.getMapper(UserPersistenceMapper.class);
 
     private User buildUser() {
         return User.builder().id(1L).name("Juan").lastName("Perez")
