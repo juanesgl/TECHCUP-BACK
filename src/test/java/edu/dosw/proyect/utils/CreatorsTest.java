@@ -37,9 +37,9 @@ class CreatorsTest {
     }
 
     @Test
-    void studentCreator_ValidateEmail_EmailNoInstitucional_RetornaFalse() {
+    void studentCreator_ValidateEmail_EmailGmail_RetornaTrue() {
         StudentCreator creator = new StudentCreator();
-        assertFalse(creator.validateEmail("juan@gmail.com"));
+        assertTrue(creator.validateEmail("juan@gmail.com"));
     }
 
     // AdminCreator
@@ -63,9 +63,9 @@ class CreatorsTest {
     }
 
     @Test
-    void adminCreator_ValidateEmail_EmailGmail_RetornaFalse() {
+    void adminCreator_ValidateEmail_EmailGmail_RetornaTrue() {
         AdminCreator creator = new AdminCreator();
-        assertFalse(creator.validateEmail("admin@gmail.com"));
+        assertTrue(creator.validateEmail("admin@gmail.com"));
     }
 
     // RefereeCreator

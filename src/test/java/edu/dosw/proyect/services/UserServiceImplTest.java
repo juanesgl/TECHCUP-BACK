@@ -82,7 +82,7 @@ class UserServiceImplTest {
     @Test
     void registerUser_CorreoInvalidoParaRol_LanzaException() {
         RegisterRequestDTO request = new RegisterRequestDTO(
-                "Test", "test@gmail.com", "pass", "STUDENT", null, 1);
+                "Test", "test@hotmail.com", "pass", "STUDENT", null, 1);
         assertThrows(IllegalArgumentException.class,
                 () -> userService.registerUser(request));
     }

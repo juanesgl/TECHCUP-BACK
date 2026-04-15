@@ -5,6 +5,7 @@ import edu.dosw.proyect.core.models.Tournament;
 import edu.dosw.proyect.controllers.dtos.request.TournamentRequest;
 import edu.dosw.proyect.controllers.dtos.response.TournamentResponse;
 import edu.dosw.proyect.core.services.TournamentService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +29,7 @@ public class TournamentController {
     @Operation(summary = "Crear un nuevo torneo", description = "Instancia un torneo vacios con las reglas base requeridas")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Torneo creado exitosamente")})
     @PostMapping
-    public ResponseEntity<TournamentResponse> createTournament(@RequestBody TournamentRequest request) {
+    public ResponseEntity<TournamentResponse> createTournament(@Valid @RequestBody TournamentRequest request) {
         return ResponseEntity.ok(tournamentService.createTournament(request));
     }
 
