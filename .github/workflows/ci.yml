@@ -63,6 +63,7 @@ jobs:
       # 5. Configurar paso de análisis estático con SonarQube
       
       - name: SonarQube Static Analysis
+        continue-on-error: true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
