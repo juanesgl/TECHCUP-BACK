@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface LineupMapper {
 
     @Mapping(target = "partidoId",        source = "partido.id")
-    @Mapping(target = "nombreEquipoRival",source = "equipo.nombre")
+    @Mapping(target = "nombreEquipoRival",source = "team.nombre")
     @Mapping(target = "formacion",        source = "formacion")
     @Mapping(target = "titulares",        source = "titulares")
     @Mapping(target = "reservas",         source = "reservas")

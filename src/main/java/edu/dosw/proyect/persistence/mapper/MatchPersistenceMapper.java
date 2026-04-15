@@ -14,9 +14,9 @@ import org.mapstruct.Mapping;
 public interface MatchPersistenceMapper {
 
         @Mapping(target = "torneo", source = "torneo")
-        @Mapping(target = "equipoLocal", source = "equipoLocal")
-        @Mapping(target = "equipoVisitante", source = "equipoVisitante")
-        @Mapping(target = "cancha", source = "cancha")
+        @Mapping(target = "equipoLocal", source = "teamLocal")
+        @Mapping(target = "equipoVisitante", source = "teamVisitante")
+        @Mapping(target = "cancha", source = "soccerField")
         @Mapping(target = "arbitro", source = "arbitro")
         @Mapping(target = "fechaHora", source = "fechaHora")
         @Mapping(target = "golesLocal", source = "golesLocal")
@@ -26,9 +26,9 @@ public interface MatchPersistenceMapper {
         MatchEntity toEntity(Partido domain);
 
         @Mapping(target = "torneo", source = "torneo")
-        @Mapping(target = "equipoLocal", source = "equipoLocal")
-        @Mapping(target = "equipoVisitante", source = "equipoVisitante")
-        @Mapping(target = "cancha", source = "cancha")
+        @Mapping(target = "teamLocal", source = "equipoLocal")
+        @Mapping(target = "teamVisitante", source = "equipoVisitante")
+        @Mapping(target = "soccerField", source = "cancha")
         @Mapping(target = "arbitro", source = "arbitro")
         @Mapping(target = "fechaHora", source = "fechaHora")
         @Mapping(target = "golesLocal", source = "golesLocal")

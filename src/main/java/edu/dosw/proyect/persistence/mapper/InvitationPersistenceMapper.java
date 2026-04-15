@@ -11,14 +11,14 @@ import org.mapstruct.Mapping;
 })
 public interface InvitationPersistenceMapper {
 
-    @Mapping(target = "equipo", source = "equipo")
+    @Mapping(target = "equipo", source = "team")
     @Mapping(target = "jugador", source = "jugador")
     @Mapping(target = "estado", source = "estado")
     @Mapping(target = "fechaEnvio", source = "fechaEnvio")
     @Mapping(target = "fechaRespuesta", source = "fechaRespuesta")
     InvitationEntity toEntity(Invitation domain);
 
-    @Mapping(target = "team", source = "team")
+    @Mapping(target = "team", source = "equipo")
     @Mapping(target = "jugador", source = "jugador")
     @Mapping(target = "estado", source = "estado")
     @Mapping(target = "fechaEnvio", source = "fechaEnvio")

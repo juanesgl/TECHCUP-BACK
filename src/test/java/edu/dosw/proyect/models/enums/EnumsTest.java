@@ -17,15 +17,15 @@ class EnumsTest {
         assertEquals(3, InvitationStatus.values().length);
     }
 
-    // ─── EstadoPartido ────────────────────────────────────
+    // ─── MatchStatus ──────────────────────────────────────
 
     @Test
     void estadoPartido_ValoresExisten() {
-        assertNotNull(EstadoPartido.PROGRAMADO);
-        assertNotNull(EstadoPartido.EN_CURSO);
-        assertNotNull(EstadoPartido.FINALIZADO);
-        assertNotNull(EstadoPartido.CANCELADO);
-        assertEquals(4, EstadoPartido.values().length);
+        assertNotNull(MatchStatus.PROGRAMADO);
+        assertNotNull(MatchStatus.EN_JUEGO);
+        assertNotNull(MatchStatus.FINALIZADO);
+        assertNotNull(MatchStatus.CANCELADO);
+        assertEquals(4, MatchStatus.values().length);
     }
 
     // ─── FieldPosition ────────────────────────────────────

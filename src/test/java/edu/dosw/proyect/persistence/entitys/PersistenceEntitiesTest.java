@@ -87,9 +87,9 @@ class PersistenceEntitiesTest {
         assertEquals(c1, c2);
         assertNotNull(c1.toString());
 
-        PagoEntity pago1 = new PagoEntity();
+        PaymentEntity pago1 = new PaymentEntity();
         pago1.setId(1L);
-        PagoEntity pago2 = new PagoEntity();
+        PaymentEntity pago2 = new PaymentEntity();
         pago2.setId(1L);
 
         assertEquals(pago1, pago2);
@@ -255,20 +255,20 @@ class PersistenceEntitiesTest {
 
     @Test
     void pagoEntity_EqualsHashCodeToString_FuncionanCorrectamente() {
-        PagoEntity p1 = new PagoEntity();
+        PaymentEntity p1 = new PaymentEntity();
         p1.setId(1L);
-        p1.setEstado("PENDIENTE");
-        p1.setComprobanteUrl("http://url.pdf");
+        p1.setStatus(PaymentStatus.PENDING);
+        p1.setFileUrl("http://url.pdf");
 
-        PagoEntity p2 = new PagoEntity();
+        PaymentEntity p2 = new PaymentEntity();
         p2.setId(1L);
-        p2.setEstado("PENDIENTE");
-        p2.setComprobanteUrl("http://url.pdf");
+        p2.setStatus(PaymentStatus.PENDING);
+        p2.setFileUrl("http://url.pdf");
 
         assertEquals(p1, p2);
         assertEquals(p1.hashCode(), p2.hashCode());
         assertNotNull(p1.toString());
-        assertNotEquals(p1, new PagoEntity());
+        assertNotEquals(p1, new PaymentEntity());
         assertEquals(p1, p1);
         assertNotEquals(p1, null);
     }

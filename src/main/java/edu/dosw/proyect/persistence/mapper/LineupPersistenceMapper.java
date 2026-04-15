@@ -15,14 +15,14 @@ import org.mapstruct.Mapping;
 public interface LineupPersistenceMapper {
 
     @Mapping(target = "partido", source = "partido")
-    @Mapping(target = "equipo", source = "equipo")
+    @Mapping(target = "equipo", source = "team")
     @Mapping(target = "formacion", source = "formacion")
     @Mapping(target = "fechaRegistro", source = "fechaRegistro")
     @Mapping(target = "jugadores", source = "jugadores")
     LineupEntity toEntity(Lineup domain);
 
     @Mapping(target = "partido", source = "partido")
-    @Mapping(target = "equipo", source = "equipo")
+    @Mapping(target = "team", source = "equipo")
     @Mapping(target = "formacion", source = "formacion")
     @Mapping(target = "fechaRegistro", source = "fechaRegistro")
     @Mapping(target = "jugadores", source = "jugadores")
@@ -39,6 +39,6 @@ public interface LineupPersistenceMapper {
     @Mapping(target = "rol", source = "rol")
     @Mapping(target = "posicionEnCancha", source = "posicionEnCancha")
     @Mapping(target = "numeroCamiseta", source = "numeroCamiseta")
-    @Mapping(target = "alineacion", ignore = true)
+    @Mapping(target = "lineup", ignore = true)
     LineupPlayer toJugadorDomain(LineupPlayerEntity entity);
 }

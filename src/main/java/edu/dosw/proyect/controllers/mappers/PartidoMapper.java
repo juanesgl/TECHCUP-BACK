@@ -15,15 +15,15 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PartidoMapper {
 
-    @Mapping(target = "equipoLocal",     source = "equipoLocal.nombre",
+    @Mapping(target = "equipoLocal",     source = "teamLocal.nombre",
             defaultValue = "TBD")
-    @Mapping(target = "equipoVisitante", source = "equipoVisitante.nombre",
+    @Mapping(target = "equipoVisitante", source = "teamVisitante.nombre",
             defaultValue = "TBD")
     @Mapping(target = "fecha",           source = "fechaHora",
             qualifiedByName = "toLocalDate")
     @Mapping(target = "hora",            source = "fechaHora",
             qualifiedByName = "toLocalTime")
-    @Mapping(target = "cancha",          source = "cancha.nombre",
+    @Mapping(target = "cancha",          source = "soccerField.nombre",
             defaultValue = "TBD")
     @Mapping(target = "arbitro",         source = "arbitro.name",
             defaultValue = "TBD")
