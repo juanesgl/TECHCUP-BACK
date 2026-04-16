@@ -4,8 +4,7 @@ import edu.dosw.proyect.core.utils.InstitutionalMailStrategy;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class
-InstitutionalEmailValidator implements ConstraintValidator<InstitutionalEmail, String> {
+public class InstitutionalEmailValidator implements ConstraintValidator<InstitutionalEmail, String> {
 
     private final InstitutionalMailStrategy strategy = new InstitutionalMailStrategy();
 

@@ -15,7 +15,7 @@ class SwaggerConfigTest {
 
         assertNotNull(openAPI);
         assertNotNull(openAPI.getInfo());
-        assertEquals("TechCup Fútbol API", openAPI.getInfo().getTitle());
+        assertEquals("TechCup Futbol API", openAPI.getInfo().getTitle());
         assertEquals("1.0", openAPI.getInfo().getVersion());
         assertNotNull(openAPI.getComponents());
         assertNotNull(openAPI.getTags());
@@ -27,7 +27,7 @@ class SwaggerConfigTest {
         OpenAPI openAPI = swaggerConfig.customOpenAPI();
 
         assertNotNull(openAPI.getInfo().getContact());
-        assertEquals("TechCup — Equipo CVDS",
+        assertEquals("TechCup - Equipo CVDS",
                 openAPI.getInfo().getContact().getName());
         assertEquals("techcup@escuelaing.edu.co",
                 openAPI.getInfo().getContact().getEmail());

@@ -9,7 +9,11 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-
+/**
+ * MapStruct mapper.
+ * Objeto origen: Partido (dominio) → RegisterMatchResultResponseDTO / StandingsTableResponseDTO.
+ * Usa métodos default para lógica de negocio que MapStruct no puede inferir.
+ */
 @Mapper(componentModel = "spring")
 public interface StandingsTableMapper {
 
@@ -50,10 +54,10 @@ public interface StandingsTableMapper {
         else if (match.getGolesLocal() < match.getGolesVisitante())  outcome = "AWAY";
         else                                                          outcome = "DRAW";
 
-        String home = match.getTeamLocal()     != null
-                ? match.getTeamLocal().getNombre()     : "Unknown";
-        String away = match.getTeamVisitante() != null
-                ? match.getTeamVisitante().getNombre() : "Unknown";
+        String home = match.getEquipoLocal()     != null
+                ? match.getEquipoLocal().getNombre()     : "Unknown";
+        String away = match.getEquipoVisitante() != null
+                ? match.getEquipoVisitante().getNombre() : "Unknown";
 
         return RegisterMatchResultResponseDTO.builder()
                 .matchId(match.getId())

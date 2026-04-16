@@ -1,19 +1,15 @@
 package edu.dosw.proyect.config;
 
-import edu.dosw.proyect.core.security.JwtAuthFilter;
-import edu.dosw.proyect.core.security.OAuth2SuccessHandler;
+import io.swagger.v3.oas.models.OpenAPI;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class SecurityConfigTest {
 
-    private final SecurityConfig securityConfig = new SecurityConfig(
-            Mockito.mock(OAuth2SuccessHandler.class),
-            Mockito.mock(JwtAuthFilter.class)
-    );
+    private final SecurityConfig securityConfig = new SecurityConfig();
 
     @Test
     void passwordEncoder_RetornaBCrypt() {

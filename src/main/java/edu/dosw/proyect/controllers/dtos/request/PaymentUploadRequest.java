@@ -1,7 +1,6 @@
 package edu.dosw.proyect.controllers.dtos.request;
 
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -26,7 +25,6 @@ public class PaymentUploadRequest {
 
     @NotNull(message = "El monto del pago es obligatorio")
     @DecimalMin(value = "130000", message = "El monto debe ser exactamente $130.000")
-    @DecimalMax(value = "130000", message = "El monto debe ser exactamente $130.000")
     private BigDecimal monto;
 
     /**

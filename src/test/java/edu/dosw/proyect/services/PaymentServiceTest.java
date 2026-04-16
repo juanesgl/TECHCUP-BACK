@@ -3,21 +3,17 @@ package edu.dosw.proyect.services;
 import edu.dosw.proyect.controllers.dtos.request.PaymentStatusRequest;
 import edu.dosw.proyect.controllers.dtos.request.PaymentUploadRequest;
 import edu.dosw.proyect.controllers.dtos.response.PaymentResponse;
-import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
+import edu.dosw.proyect.core.exceptions.BusinessException;
 import edu.dosw.proyect.core.models.enums.PaymentStatus;
-import edu.dosw.proyect.core.services.impl.PaymentServiceImpl;
+import edu.dosw.proyect.core.services.PaymentService;
 import edu.dosw.proyect.persistence.entity.PaymentEntity;
-import edu.dosw.proyect.persistence.entity.TournamentEntity;
 import edu.dosw.proyect.persistence.repository.PaymentRepository;
-import edu.dosw.proyect.persistence.repository.TournamentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,30 +24,21 @@ class PaymentServiceTest {
 
     @Mock
     private PaymentRepository paymentRepository;
-    @Mock
-    private TournamentRepository tournamentRepository;
 
     @InjectMocks
-    private PaymentServiceImpl paymentService;
+    private PaymentService paymentService;
 
     @Test
     void uploadPayment_HappyPath_RetornaResponse() {
         PaymentUploadRequest request = new PaymentUploadRequest();
         request.setUserId(1);
         request.setTournamentId(1);
-        request.setFileName("comp.pdf");
         request.setFileUrl("http://url.com/file.pdf");
-        request.setMetodoPago("NEQUI");
-        request.setMonto(new BigDecimal("130000"));
 
         PaymentEntity saved = new PaymentEntity();
         saved.setId(1L);
         saved.setStatus(PaymentStatus.PENDING);
-        TournamentEntity tournament = new TournamentEntity();
-        tournament.setId(1L);
 
-        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
-        when(paymentRepository.findByUserId(1L)).thenReturn(java.util.List.of());
         when(paymentRepository.save(any())).thenReturn(saved);
 
         PaymentResponse response = paymentService.uploadPayment(request);
@@ -63,15 +50,7 @@ class PaymentServiceTest {
     @Test
     void uploadPayment_SinUserId_LanzaException() {
         PaymentUploadRequest request = new PaymentUploadRequest();
-        request.setTournamentId(1);
-        request.setFileName("comp.pdf");
-        request.setFileUrl("http://url.com/file.pdf");
-        request.setMetodoPago("NEQUI");
-        request.setMonto(new BigDecimal("130000"));
-        TournamentEntity tournament = new TournamentEntity();
-        tournament.setId(1L);
-        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
-        assertThrows(NullPointerException.class,
+        assertThrows(BusinessException.class,
                 () -> paymentService.uploadPayment(request));
     }
 
@@ -79,10 +58,7 @@ class PaymentServiceTest {
     void uploadPayment_SinFileUrl_LanzaException() {
         PaymentUploadRequest request = new PaymentUploadRequest();
         request.setUserId(1);
-        request.setTournamentId(1);
-        request.setMetodoPago("NEQUI");
-        request.setMonto(new BigDecimal("130000"));
-        assertThrows(ResourceNotFoundException.class,
+        assertThrows(BusinessException.class,
                 () -> paymentService.uploadPayment(request));
     }
 
@@ -108,7 +84,7 @@ class PaymentServiceTest {
     @Test
     void updatePaymentStatus_SinPaymentId_LanzaException() {
         PaymentStatusRequest request = new PaymentStatusRequest();
-        assertThrows(ResourceNotFoundException.class,
+        assertThrows(BusinessException.class,
                 () -> paymentService.updatePaymentStatus(request));
     }
 
@@ -117,11 +93,8 @@ class PaymentServiceTest {
         PaymentStatusRequest request = new PaymentStatusRequest();
         request.setPaymentId(1L);
         request.setStatus(PaymentStatus.PENDING);
-        PaymentEntity entity = new PaymentEntity();
-        entity.setId(1L);
-        entity.setStatus(PaymentStatus.PENDING);
-        when(paymentRepository.findById(1L)).thenReturn(Optional.of(entity));
-        assertDoesNotThrow(() -> paymentService.updatePaymentStatus(request));
+        assertThrows(BusinessException.class,
+                () -> paymentService.updatePaymentStatus(request));
     }
 
     @Test
@@ -131,89 +104,7 @@ class PaymentServiceTest {
         request.setStatus(PaymentStatus.APPROVED);
 
         when(paymentRepository.findById(99L)).thenReturn(Optional.empty());
-        assertThrows(RuntimeException.class,
-                () -> paymentService.updatePaymentStatus(request));
-    }
-
-    @Test
-    void uploadPayment_MetodoInvalido_LanzaBusinessRuleException() {
-        PaymentUploadRequest request = new PaymentUploadRequest();
-        request.setUserId(1);
-        request.setTournamentId(1);
-        request.setFileUrl("http://url.com/file.pdf");
-        request.setMetodoPago("EFECTIVO");
-        request.setMonto(new BigDecimal("130000"));
-
-        assertThrows(edu.dosw.proyect.core.exceptions.BusinessRuleException.class,
-                () -> paymentService.uploadPayment(request));
-    }
-
-    @Test
-    void uploadPayment_MontoInvalido_LanzaBusinessRuleException() {
-        PaymentUploadRequest request = new PaymentUploadRequest();
-        request.setUserId(1);
-        request.setTournamentId(1);
-        request.setFileUrl("http://url.com/file.pdf");
-        request.setMetodoPago("NEQUI");
-        request.setMonto(new BigDecimal("120000"));
-
-        assertThrows(edu.dosw.proyect.core.exceptions.BusinessRuleException.class,
-                () -> paymentService.uploadPayment(request));
-    }
-
-    @Test
-    void uploadPayment_ConPagoAprobadoPrevio_LanzaBusinessRuleException() {
-        PaymentUploadRequest request = new PaymentUploadRequest();
-        request.setUserId(1);
-        request.setTournamentId(1);
-        request.setFileUrl("http://url.com/file.pdf");
-        request.setMetodoPago("NEQUI");
-        request.setMonto(new BigDecimal("130000"));
-
-        TournamentEntity tournament = new TournamentEntity();
-        tournament.setId(1L);
-        PaymentEntity approved = new PaymentEntity();
-        approved.setTournamentId(1L);
-        approved.setStatus(PaymentStatus.APPROVED);
-
-        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
-        when(paymentRepository.findByUserId(1L)).thenReturn(java.util.List.of(approved));
-
-        assertThrows(edu.dosw.proyect.core.exceptions.BusinessRuleException.class,
-                () -> paymentService.uploadPayment(request));
-    }
-
-    @Test
-    void uploadPayment_FechaCierreVencida_LanzaBusinessRuleException() {
-        PaymentUploadRequest request = new PaymentUploadRequest();
-        request.setUserId(1);
-        request.setTournamentId(1);
-        request.setFileUrl("http://url.com/file.pdf");
-        request.setMetodoPago("NEQUI");
-        request.setMonto(new BigDecimal("130000"));
-
-        TournamentEntity tournament = new TournamentEntity();
-        tournament.setId(1L);
-        tournament.setRegistrationCloseDate(LocalDate.now().minusDays(1));
-
-        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
-
-        assertThrows(edu.dosw.proyect.core.exceptions.BusinessRuleException.class,
-                () -> paymentService.uploadPayment(request));
-    }
-
-    @Test
-    void updatePaymentStatus_PagoYaAprobado_LanzaBusinessRuleException() {
-        PaymentStatusRequest request = new PaymentStatusRequest();
-        request.setPaymentId(1L);
-        request.setStatus(PaymentStatus.REJECTED);
-
-        PaymentEntity entity = new PaymentEntity();
-        entity.setId(1L);
-        entity.setStatus(PaymentStatus.APPROVED);
-        when(paymentRepository.findById(1L)).thenReturn(Optional.of(entity));
-
-        assertThrows(edu.dosw.proyect.core.exceptions.BusinessRuleException.class,
+        assertThrows(BusinessException.class,
                 () -> paymentService.updatePaymentStatus(request));
     }
 }

@@ -9,11 +9,8 @@ class ProfessorTest {
 
     @Test
     void professor_Constructor_ConstruyeCorrectamente() {
-        Professor p = new Professor();
-        p.setName("Prof Test");
-        p.setEmail("prof@mail.com");
-        p.setPassword("pass");
-        p.setRole("PLAYER");
+        Professor p = new Professor(
+                "Prof Test", "prof@mail.com", "pass", null);
 
         assertEquals("Prof Test", p.getName());
         assertEquals("prof@mail.com", p.getEmail());

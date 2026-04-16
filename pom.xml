@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -23,20 +23,9 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <sonar.projectKey>techcup-backend</sonar.projectKey>
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.basedir}/target/site/jacoco/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
-        <sonar.exclusions>
-            target/generated-sources/**,
-            **/config/**,
-            **/persistence/entity/**,
-            **/controllers/dtos/**,
-            **/core/models/**
-        </sonar.exclusions>
-        <sonar.cpd.exclusions>
-            target/generated-sources/**
-        </sonar.cpd.exclusions>
     </properties>
 
     <dependencies>
@@ -180,16 +169,6 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>edu/dosw/proyect/persistence/mapper/**</exclude>
-                                <exclude>edu/dosw/proyect/controllers/mappers/**</exclude>
-                                <exclude>**/config/**</exclude>
-                                <exclude>**/persistence/entity/**</exclude>
-                                <exclude>**/controllers/dtos/**</exclude>
-                                <exclude>**/core/models/**</exclude>
-                            </excludes>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

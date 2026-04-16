@@ -15,7 +15,7 @@ class CreatorsTest {
                 "PLAYER", "Delantero", 8);
     }
 
-    // StudentCreator
+    //StudentCreator
 
     @Test
     void studentCreator_EmailValido_CreaUsuario() {
@@ -27,7 +27,7 @@ class CreatorsTest {
 
         assertEquals("Juan Test", user.getName());
         assertEquals("juan@mail.escuelaing.edu.co", user.getEmail());
-        assertEquals("STUDENT", user.getRole());
+        assertEquals("PLAYER", user.getRole());
     }
 
     @Test
@@ -37,9 +37,9 @@ class CreatorsTest {
     }
 
     @Test
-    void studentCreator_ValidateEmail_EmailGmail_RetornaTrue() {
+    void studentCreator_ValidateEmail_EmailNoInstitucional_RetornaFalse() {
         StudentCreator creator = new StudentCreator();
-        assertTrue(creator.validateEmail("juan@gmail.com"));
+        assertFalse(creator.validateEmail("juan@gmail.com"));
     }
 
     // AdminCreator
@@ -63,9 +63,9 @@ class CreatorsTest {
     }
 
     @Test
-    void adminCreator_ValidateEmail_EmailGmail_RetornaTrue() {
+    void adminCreator_ValidateEmail_EmailGmail_RetornaFalse() {
         AdminCreator creator = new AdminCreator();
-        assertTrue(creator.validateEmail("admin@gmail.com"));
+        assertFalse(creator.validateEmail("admin@gmail.com"));
     }
 
     // RefereeCreator
@@ -115,7 +115,7 @@ class CreatorsTest {
         assertTrue(creator.validateEmail("capitan@mail.escuelaing.edu.co"));
     }
 
-    // PlayerCreator
+    //PlayerCreator
 
     @Test
     void playerCreator_CualquierEmail_CreaUsuario() {
@@ -136,7 +136,7 @@ class CreatorsTest {
         assertTrue(creator.validateEmail("player@hotmail.com"));
     }
 
-    // FamilyCreator
+    //FamilyCreator
 
     @Test
     void familyCreator_EmailGmail_CreaUsuario() {
@@ -146,7 +146,7 @@ class CreatorsTest {
         User user = creator.createUser(request);
 
         assertEquals("Juan Test", user.getName());
-        assertEquals("FAMILY_MEMBER", user.getRole());
+        assertEquals("PLAYER", user.getRole());
     }
 
     @Test
@@ -161,7 +161,7 @@ class CreatorsTest {
         assertFalse(creator.validateEmail("familia@hotmail.com"));
     }
 
-    // GraduateCreator
+    //GraduateCreator
 
     @Test
     void graduateCreator_EmailGmail_CreaUsuario() {
@@ -171,7 +171,7 @@ class CreatorsTest {
         User user = creator.createUser(request);
 
         assertEquals("Juan Test", user.getName());
-        assertEquals("GRADUATE", user.getRole());
+        assertEquals("PLAYER", user.getRole());
     }
 
     @Test
@@ -184,43 +184,5 @@ class CreatorsTest {
     void graduateCreator_ValidateEmail_NoGmail_RetornaFalse() {
         GraduateCreator creator = new GraduateCreator();
         assertFalse(creator.validateEmail("graduado@hotmail.com"));
-    }
-
-    // OrganizerCreator
-
-    @Test
-    void organizerCreator_EmailInstitucional_CreaUsuario() {
-        OrganizerCreator creator = new OrganizerCreator();
-        RegisterRequestDTO request = buildRequest("orga@mail.escuelaing.edu.co");
-
-        User user = creator.createUser(request);
-
-        assertEquals("Juan Test", user.getName());
-        assertEquals("ORGANIZER", user.getRole());
-    }
-
-    @Test
-    void organizerCreator_ValidateEmail_Gmail_TambienEsValido() {
-        OrganizerCreator creator = new OrganizerCreator();
-        assertTrue(creator.validateEmail("orga@gmail.com"));
-    }
-
-    // ProfessorCreator
-
-    @Test
-    void professorCreator_EmailInstitucional_CreaUsuario() {
-        ProfessorCreator creator = new ProfessorCreator();
-        RegisterRequestDTO request = buildRequest("profe@mail.escuelaing.edu.co");
-
-        User user = creator.createUser(request);
-
-        assertEquals("Juan Test", user.getName());
-        assertEquals("PROFESSOR", user.getRole());
-    }
-
-    @Test
-    void professorCreator_ValidateEmail_Gmail_TambienEsValido() {
-        ProfessorCreator creator = new ProfessorCreator();
-        assertTrue(creator.validateEmail("profe@gmail.com"));
     }
 }

@@ -6,7 +6,7 @@ import edu.dosw.proyect.controllers.dtos.response.RegisterMatchResponseDTO;
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
-import edu.dosw.proyect.core.models.enums.EventType;
+import edu.dosw.proyect.core.models.enums.TipoEvento;
 import edu.dosw.proyect.core.services.MatchRegistrationService;
 import edu.dosw.proyect.persistence.entity.*;
 import edu.dosw.proyect.persistence.repository.*;
@@ -23,18 +23,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MatchRegistrationServiceImpl implements MatchRegistrationService {
 
-    private final MatchRepository matchRepository;
-    private final PlayerRepository playerRepository;
-    private final TeamRepository teamRepository;
-    private final MatchEventRepository eventRepository;
-    private final TeamStatisticsRepository statsRepository;
+    private final PartidoRepository           matchRepository;
+    private final JugadorRepository           playerRepository;
+    private final EquipoRepository            teamRepository;
+    private final EventoPartidoRepository     eventRepository;
+    private final EstadisticaEquipoRepository statsRepository;
 
     @Override
     @Transactional
     public RegisterMatchResponseDTO registerMatch(Long matchId, RegisterMatchRequestDTO request) {
         log.info("Registrando partido completo ID: {}", matchId);
 
-        MatchEntity match = matchRepository.findById(matchId)
+        PartidoEntity match = matchRepository.findById(matchId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Partido con ID : " + matchId+" no encontrado"));
 
@@ -62,20 +62,20 @@ public class MatchRegistrationServiceImpl implements MatchRegistrationService {
         if (request.getEvents() != null) {
             for (MatchEventRequestDTO eventDTO : request.getEvents()) {
 
-                PlayerEntity player = playerRepository.findById(eventDTO.getPlayerId())
+                JugadorEntity player = playerRepository.findById(eventDTO.getPlayerId())
                         .orElseThrow(() -> new ResourceNotFoundException(
                                 "Jugador con ID: " + eventDTO.getPlayerId()+ " no encontrado "));
 
-                TeamEntity team = teamRepository.findById(eventDTO.getTeamId())
+                EquipoEntity team = teamRepository.findById(eventDTO.getTeamId())
                         .orElseThrow(() -> new ResourceNotFoundException(
                                 "Equipo con ID : " + eventDTO.getTeamId()+ " no encontrado "));
 
                 validateTeamParticipates(match, team);
 
-                MatchEventEntity event = MatchEventEntity.builder()
+                EventoPartidoEntity event = EventoPartidoEntity.builder()
                         .partido(match)
                         .jugador(player)
-                        .eventType(eventDTO.getEventType())
+                        .tipoEvento(eventDTO.getEventType())
                         .minuto(eventDTO.getMinute())
                         .descripcion(eventDTO.getDescription())
                         .build();
@@ -87,12 +87,12 @@ public class MatchRegistrationServiceImpl implements MatchRegistrationService {
                 String entry = playerName + " (" + team.getNombre()
                         + ", min. " + eventDTO.getMinute() + ")";
 
-                if (eventDTO.getEventType() == EventType.GOL) {
+                if (eventDTO.getEventType() == TipoEvento.GOL) {
                     scorers.add(entry);
-                } else if (eventDTO.getEventType() == EventType.TARJETA_AMARILLA) {
+                } else if (eventDTO.getEventType() == TipoEvento.TARJETA_AMARILLA) {
                     yellowCards.add(entry);
                     totalYellow++;
-                } else if (eventDTO.getEventType() == EventType.TARJETA_ROJA) {
+                } else if (eventDTO.getEventType() == TipoEvento.TARJETA_ROJA) {
                     redCards.add(entry);
                     totalRed++;
                 }
@@ -138,7 +138,7 @@ public class MatchRegistrationServiceImpl implements MatchRegistrationService {
     }
 
 
-    private void validateTeamParticipates(MatchEntity match, TeamEntity team) {
+    private void validateTeamParticipates(PartidoEntity match, EquipoEntity team) {
         boolean participates =
                 (match.getEquipoLocal() != null &&
                         team.getId().equals(match.getEquipoLocal().getId())) ||
@@ -151,14 +151,14 @@ public class MatchRegistrationServiceImpl implements MatchRegistrationService {
         }
     }
 
-    private void updateTeamStats(TeamEntity team, TournamentEntity tournament,
+    private void updateTeamStats(EquipoEntity team, TournamentEntity tournament,
                                  int goalsFor, int goalsAgainst) {
         if (team == null) return;
 
-        TeamStatisticsEntity stats = statsRepository
+        EstadisticasEquipoEntity stats = statsRepository
                 .findByEquipoIdAndTorneoId(team.getId(), tournament.getId())
                 .orElseGet(() -> {
-                    TeamStatisticsEntity s = new TeamStatisticsEntity();
+                    EstadisticasEquipoEntity s = new EstadisticasEquipoEntity();
                     s.setEquipo(team);
                     s.setTorneo(tournament);
                     return s;

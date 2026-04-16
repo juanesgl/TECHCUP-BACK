@@ -41,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 String email  = jwtProvider.getEmailFromToken(token);
                 String role   = jwtProvider.getRoleFromToken(token);
-
+                Long   userId = jwtProvider.getUserIdFromToken(token);
 
                 log.debug("JWT válido — usuario: {}, rol: {}", email, role);
 

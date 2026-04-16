@@ -14,8 +14,8 @@
 ### Historias incluidas
 
 - Gestion de disponibilidad
-- Recibir y responder invitaciones de team
-- crear y gestionar team
+- Recibir y responder invitaciones de equipo
+- crear y gestionar equipo
 - Subir comprobante de pago
 - Busqueda de jugadores por filtro
 - Cambiar estado de pago
@@ -115,9 +115,9 @@ y no se detectan duplicaciones en las 1.2k líneas analizadas.
 
 ## Controlador Equipo
 * El actor invoca el servicio a través del EquipoController, que delega en EquipoServiceImpl. Se verifica que el 
-usuario capitán exista en UserRepository, se valida que no haya un team con el mismo nombre en EquipoRepository,
-y se comienza a construir el team con el patrón Builder asignando nombre, escudo, colores de uniforme y capitán.
-  Se persiste el team y la invitación en sus repositorios, luego se mapea la respuesta con EquipoMapper construyendo 
+usuario capitán exista en UserRepository, se valida que no haya un equipo con el mismo nombre en EquipoRepository,
+y se comienza a construir el equipo con el patrón Builder asignando nombre, escudo, colores de uniforme y capitán.
+  Se persiste el equipo y la invitación en sus repositorios, luego se mapea la respuesta con EquipoMapper construyendo 
 un CrearEquipoResponseDTO con el mensaje de confirmación y la lista de notificaciones enviadas a los jugadores invitados.
 
 ![EquipoController1.png](../../docs/uml/diagrama_secuencia/EquipoController1.png)

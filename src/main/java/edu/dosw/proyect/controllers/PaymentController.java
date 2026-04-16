@@ -7,7 +7,6 @@ import edu.dosw.proyect.core.services.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +26,7 @@ public class PaymentController {
     })
     @PostMapping("/upload")
     public ResponseEntity<PaymentResponse> uploadFile(
-            @Valid @RequestBody PaymentUploadRequest request) {
+            @RequestBody PaymentUploadRequest request) {
         return ResponseEntity.ok(paymentService.uploadPayment(request));
     }
 
@@ -39,7 +38,7 @@ public class PaymentController {
     })
     @PutMapping("/status")
     public ResponseEntity<PaymentResponse> updateStatus(
-            @Valid @RequestBody PaymentStatusRequest request) {
+            @RequestBody PaymentStatusRequest request) {
         return ResponseEntity.ok(paymentService.updatePaymentStatus(request));
     }
 }

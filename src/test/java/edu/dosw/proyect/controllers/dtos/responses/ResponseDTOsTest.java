@@ -1,5 +1,5 @@
 package edu.dosw.proyect.controllers.dtos.responses;
-import edu.dosw.proyect.controllers.dtos.request.SoccerFieldDTO;
+import edu.dosw.proyect.controllers.dtos.request.CanchaDTO;
 import edu.dosw.proyect.controllers.dtos.response.*;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ class ResponseDTOsTest {
 
     @Test
     void partidoResponseDTO_Builder_ConstruyeCorrectamente() {
-        MatchResponseDTO dto = MatchResponseDTO.builder()
+        PartidoResponseDTO dto = PartidoResponseDTO.builder()
                 .id(1L)
                 .equipoLocal("Alpha")
                 .equipoVisitante("Beta")
@@ -40,7 +40,7 @@ class ResponseDTOsTest {
 
     @Test
     void partidoResponseDTO_NoArgsConstructor_CreaVacio() {
-        MatchResponseDTO dto = new MatchResponseDTO();
+        PartidoResponseDTO dto = new PartidoResponseDTO();
         assertNull(dto.getId());
         assertNull(dto.getEquipoLocal());
         assertNull(dto.getEstado());
@@ -48,7 +48,7 @@ class ResponseDTOsTest {
 
     @Test
     void partidoResponseDTO_Setters_FuncionanCorrectamente() {
-        MatchResponseDTO dto = new MatchResponseDTO();
+        PartidoResponseDTO dto = new PartidoResponseDTO();
         dto.setId(5L);
         dto.setEquipoLocal("Gamma");
         dto.setEstado("FINALIZADO");
@@ -61,7 +61,7 @@ class ResponseDTOsTest {
 
     @Test
     void alineacionRivalResponseDTO_Builder_ConstruyeCorrectamente() {
-        OpponentLineupResponseDTO dto = OpponentLineupResponseDTO.builder()
+        AlineacionRivalResponseDTO dto = AlineacionRivalResponseDTO.builder()
                 .partidoId(1L)
                 .nombreEquipoRival("Equipo Beta")
                 .formacion(TacticalFormation.F_1_2_3_1)
@@ -80,7 +80,7 @@ class ResponseDTOsTest {
 
     @Test
     void alineacionRivalResponseDTO_NoArgsConstructor_CreaVacio() {
-        OpponentLineupResponseDTO dto = new OpponentLineupResponseDTO();
+        AlineacionRivalResponseDTO dto = new AlineacionRivalResponseDTO();
         assertNull(dto.getPartidoId());
         assertNull(dto.getNombreEquipoRival());
         assertNull(dto.getTitulares());
@@ -88,7 +88,7 @@ class ResponseDTOsTest {
 
     @Test
     void alineacionRivalResponseDTO_Setters_FuncionanCorrectamente() {
-        OpponentLineupResponseDTO dto = new OpponentLineupResponseDTO();
+        AlineacionRivalResponseDTO dto = new AlineacionRivalResponseDTO();
         dto.setPartidoId(2L);
         dto.setNombreEquipoRival("Gamma");
         dto.setTitulares(List.of("J1", "J2"));
@@ -101,10 +101,10 @@ class ResponseDTOsTest {
 
     @Test
     void configuracionTorneoResponseDTO_Builder_ConstruyeCorrectamente() {
-        SoccerFieldDTO cancha = new SoccerFieldDTO();
+        CanchaDTO cancha = new CanchaDTO();
         cancha.setNombre("Cancha Norte");
 
-        TournamentConfigurationResponseDTO dto = TournamentConfigurationResponseDTO.builder()
+        ConfiguracionTorneoResponseDTO dto = ConfiguracionTorneoResponseDTO.builder()
                 .message("Configuracion exitosa")
                 .tournId("TOURN-1")
                 .registrationCloseDate(LocalDate.now().plusMonths(1))
@@ -119,7 +119,7 @@ class ResponseDTOsTest {
 
     @Test
     void configuracionTorneoResponseDTO_NoArgsConstructor_CreaVacio() {
-        TournamentConfigurationResponseDTO dto = new TournamentConfigurationResponseDTO();
+        ConfiguracionTorneoResponseDTO dto = new ConfiguracionTorneoResponseDTO();
         assertNull(dto.getMessage());
         assertNull(dto.getTournId());
         assertNull(dto.getCanchas());
@@ -128,7 +128,7 @@ class ResponseDTOsTest {
 
     @Test
     void estadisticasEquipoDTO_Builder_ConstruyeCorrectamente() {
-        TeamStatisticsDTO dto = TeamStatisticsDTO.builder()
+        EstadisticasEquipoDTO dto = EstadisticasEquipoDTO.builder()
                 .equipoId(1L)
                 .nombreEquipo("Alpha FC")
                 .partidosJugados(10)
@@ -155,7 +155,7 @@ class ResponseDTOsTest {
 
     @Test
     void estadisticasEquipoDTO_Setters_FuncionanCorrectamente() {
-        TeamStatisticsDTO dto = new TeamStatisticsDTO();
+        EstadisticasEquipoDTO dto = new EstadisticasEquipoDTO();
         dto.setEquipoId(2L);
         dto.setNombreEquipo("Beta FC");
         dto.setPartidosJugados(5);
@@ -177,7 +177,7 @@ class ResponseDTOsTest {
 
     @Test
     void invitacionResponseDTO_Builder_ConstruyeCorrectamente() {
-        InvitationResponseDTO dto = InvitationResponseDTO.builder()
+        InvitacionResponseDTO dto = InvitacionResponseDTO.builder()
                 .invitacionId(1L)
                 .mensajeCapitan("Bienvenido al equipo")
                 .estadoActualizado("ACEPTADA")
@@ -190,7 +190,7 @@ class ResponseDTOsTest {
 
     @Test
     void invitacionResponseDTO_Setters_FuncionanCorrectamente() {
-        InvitationResponseDTO dto = InvitationResponseDTO.builder()
+        InvitacionResponseDTO dto = InvitacionResponseDTO.builder()
                 .invitacionId(1L)
                 .mensajeCapitan("Test")
                 .estadoActualizado("PENDIENTE")

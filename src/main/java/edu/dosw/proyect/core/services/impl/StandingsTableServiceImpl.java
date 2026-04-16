@@ -9,13 +9,12 @@ import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
 import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
-import edu.dosw.proyect.persistence.entity.TeamStatisticsEntity;
-import edu.dosw.proyect.persistence.entity.MatchEntity;
-import edu.dosw.proyect.persistence.entity.TeamEntity;
+import edu.dosw.proyect.persistence.entity.EstadisticasEquipoEntity;
+import edu.dosw.proyect.persistence.entity.PartidoEntity;
 import edu.dosw.proyect.persistence.entity.TournamentEntity;
-import edu.dosw.proyect.persistence.mapper.MatchPersistenceMapper;
-import edu.dosw.proyect.persistence.repository.TeamStatisticsRepository;
-import edu.dosw.proyect.persistence.repository.MatchRepository;
+import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
+import edu.dosw.proyect.persistence.repository.EstadisticaEquipoRepository;
+import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import edu.dosw.proyect.persistence.repository.TournamentRepository;
 import edu.dosw.proyect.core.services.StandingsTableService;
 import lombok.RequiredArgsConstructor;
@@ -30,18 +29,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StandingsTableServiceImpl implements StandingsTableService {
 
-    private final MatchRepository matchRepository;
-    private final TeamStatisticsRepository statsRepository;
+    private final PartidoRepository matchRepository;
+    private final EstadisticaEquipoRepository statsRepository;
     private final TournamentRepository tournamentRepository;
     private final StandingsTableMapper standingsMapper;
-    private final MatchPersistenceMapper partidoMapper;
+    private final PartidoPersistenceMapper partidoMapper;
 
     @Override
     public RegisterMatchResultResponseDTO registerResult(Long matchId,
                                                          RegisterMatchResultRequestDTO request) {
         log.info("Registrando resultado partido ID: {}", matchId);
 
-        MatchEntity entity = matchRepository.findById(matchId)
+        PartidoEntity entity = matchRepository.findById(matchId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Match not found with ID: " + matchId));
 
@@ -59,7 +58,7 @@ public class StandingsTableServiceImpl implements StandingsTableService {
         return standingsMapper.toRegisterMatchResultResponseDTO(updated);
     }
 
-    private void updateTeamStats(MatchEntity match) {
+    private void updateTeamStats(PartidoEntity match) {
         if (match.getTorneo() == null) return;
 
         updateSingleTeamStats(match.getEquipoLocal(), match.getTorneo(),
@@ -69,14 +68,14 @@ public class StandingsTableServiceImpl implements StandingsTableService {
     }
 
     private void updateSingleTeamStats(
-            TeamEntity team,
+            edu.dosw.proyect.persistence.entity.EquipoEntity team,
             TournamentEntity tournament, int goalsFor, int goalsAgainst) {
         if (team == null) return;
 
-        TeamStatisticsEntity stats = statsRepository
+        EstadisticasEquipoEntity stats = statsRepository
                 .findByEquipoIdAndTorneoId(team.getId(), tournament.getId())
                 .orElseGet(() -> {
-                    TeamStatisticsEntity s = new TeamStatisticsEntity();
+                    EstadisticasEquipoEntity s = new EstadisticasEquipoEntity();
                     s.setEquipo(team);
                     s.setTorneo(tournament);
                     return s;
@@ -106,14 +105,14 @@ public class StandingsTableServiceImpl implements StandingsTableService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Tournament not found: " + tournamentId));
 
-        List<TeamStatisticsEntity> allStats =
+        List<EstadisticasEquipoEntity> allStats =
                 statsRepository.findByTorneoIdOrderByPuntosDesc(tournament.getId());
 
         List<TeamStandingDTO> standings = new ArrayList<>();
         int position = 1;
         int totalMatchesPlayed = 0;
 
-        for (TeamStatisticsEntity stat : allStats) {
+        for (EstadisticasEquipoEntity stat : allStats) {
             standings.add(TeamStandingDTO.builder()
                     .position(position++)
                     .teamId(stat.getEquipo().getId())

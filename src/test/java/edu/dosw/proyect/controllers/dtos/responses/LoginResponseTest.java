@@ -9,14 +9,11 @@ class LoginResponseTest {
 
     @Test
     void loginResponseDTO_AllArgsConstructor_ConstruyeCorrectamente() {
-        LoginResponseDTO dto = new LoginResponseDTO("Login exitoso", true, "token123", 1L, "Juan", "PLAYER");
+        LoginResponseDTO dto = new LoginResponseDTO("Login exitoso", true, "token123");
 
         assertEquals("Login exitoso", dto.getMessage());
         assertTrue(dto.isSuccess());
         assertEquals("token123", dto.getToken());
-        assertEquals(1L, dto.getUserId());
-        assertEquals("Juan", dto.getName());
-        assertEquals("PLAYER", dto.getRole());
     }
 
     @Test
@@ -25,9 +22,6 @@ class LoginResponseTest {
         assertNull(dto.getMessage());
         assertFalse(dto.isSuccess());
         assertNull(dto.getToken());
-        assertNull(dto.getUserId());
-        assertNull(dto.getName());
-        assertNull(dto.getRole());
     }
 
     @Test
@@ -36,16 +30,25 @@ class LoginResponseTest {
         dto.setMessage("Credenciales invalidas");
         dto.setSuccess(false);
         dto.setToken(null);
-        dto.setUserId(2L);
-        dto.setName("Pedro");
-        dto.setRole("ADMIN");
 
         assertEquals("Credenciales invalidas", dto.getMessage());
         assertFalse(dto.isSuccess());
+    }
+
+    @Test
+    void loginResponseDTO_AllArgs_ConstruyeCorrectamente() {
+        LoginResponseDTO dto = new LoginResponseDTO("Login exitoso", true, "token123");
+        assertEquals("Login exitoso", dto.getMessage());
+        assertTrue(dto.isSuccess());
+        assertEquals("token123", dto.getToken());
+    }
+
+    @Test
+    void loginResponseDTO_NoArgs_CreaVacio() {
+        LoginResponseDTO dto = new LoginResponseDTO();
+        assertNull(dto.getMessage());
+        assertFalse(dto.isSuccess());
         assertNull(dto.getToken());
-        assertEquals(2L, dto.getUserId());
-        assertEquals("Pedro", dto.getName());
-        assertEquals("ADMIN", dto.getRole());
     }
 
 }

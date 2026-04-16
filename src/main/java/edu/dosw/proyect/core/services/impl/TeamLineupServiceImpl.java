@@ -6,22 +6,22 @@ import edu.dosw.proyect.controllers.dtos.response.TeamLineupResponseDTO;
 import edu.dosw.proyect.controllers.mappers.TeamLineupMapper;
 import edu.dosw.proyect.core.exceptions.BusinessRuleException;
 import edu.dosw.proyect.core.exceptions.ResourceNotFoundException;
-import edu.dosw.proyect.core.models.Team;
+import edu.dosw.proyect.core.models.Equipo;
 import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.TeamLineup;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.enums.LineupStatus;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
-import edu.dosw.proyect.persistence.entity.TeamEntity;
-import edu.dosw.proyect.persistence.entity.MatchEntity;
+import edu.dosw.proyect.persistence.entity.EquipoEntity;
+import edu.dosw.proyect.persistence.entity.PartidoEntity;
 import edu.dosw.proyect.persistence.entity.TeamLineupEntity;
 import edu.dosw.proyect.persistence.entity.UserEntity;
-import edu.dosw.proyect.persistence.mapper.TeamPersistenceMapper;
-import edu.dosw.proyect.persistence.mapper.MatchPersistenceMapper;
+import edu.dosw.proyect.persistence.mapper.EquipoPersistenceMapper;
+import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
 import edu.dosw.proyect.persistence.mapper.TeamLineupPersistenceMapper;
 import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
-import edu.dosw.proyect.persistence.repository.TeamRepository;
-import edu.dosw.proyect.persistence.repository.MatchRepository;
+import edu.dosw.proyect.persistence.repository.EquipoRepository;
+import edu.dosw.proyect.persistence.repository.PartidoRepository;
 import edu.dosw.proyect.persistence.repository.TeamLineupJpaRepository;
 import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.TeamLineupService;
@@ -44,14 +44,14 @@ public class TeamLineupServiceImpl implements TeamLineupService {
     private static final int REQUIRED_STARTERS = 7;
 
     private final TeamLineupJpaRepository      lineupRepository;
-    private final TeamRepository teamRepository;
-    private final MatchRepository matchRepository;
+    private final EquipoRepository             equipoRepository;
+    private final PartidoRepository            matchRepository;
     private final UserRepository               userRepository;
     private final TeamLineupMapper             lineupMapper;
     private final TeamLineupPersistenceMapper  lineupPersistenceMapper;
     private final AuthorizationValidator       authorizationValidator;
-    private final MatchPersistenceMapper partidoMapper;
-    private final TeamPersistenceMapper equipoMapper;
+    private final PartidoPersistenceMapper     partidoMapper;
+    private final EquipoPersistenceMapper      equipoMapper;
     private final UserPersistenceMapper        userMapper;
 
     @Override
@@ -62,7 +62,7 @@ public class TeamLineupServiceImpl implements TeamLineupService {
         User captain = userMapper.toDomain(captainEntity);
         authorizationValidator.validatePermission(captain, "MANAGE_LINEUP");
 
-        Team team = resolveTeam(request.getTeamId());
+        Equipo team = resolveTeam(request.getTeamId());
         resolveScheduledMatch(request.getMatchId(), request.getTeamId());
 
         validateCaptainOwnership(captainId, team);
@@ -147,22 +147,22 @@ public class TeamLineupServiceImpl implements TeamLineupService {
 
     // ------------------------------------------------------------------ helpers
 
-    private Team resolveTeam(Long teamId) {
-        TeamEntity entity = teamRepository.findById(teamId)
+    private Equipo resolveTeam(Long teamId) {
+        EquipoEntity entity = equipoRepository.findById(teamId)
                 .orElseThrow(() -> new ResourceNotFoundException("Equipo no encontrado"));
         return equipoMapper.toDomain(entity);
     }
 
     private void resolveScheduledMatch(Long matchId, Long teamId) {
-        MatchEntity entity = matchRepository.findById(matchId)
+        PartidoEntity entity = matchRepository.findById(matchId)
                 .orElseThrow(() -> new ResourceNotFoundException("Partido no encontrado"));
         Partido match = partidoMapper.toDomain(entity);
 
         boolean teamInvolved =
-                (match.getTeamLocal() != null &&
-                        teamId.equals(match.getTeamLocal().getId())) ||
-                        (match.getTeamVisitante() != null &&
-                                teamId.equals(match.getTeamVisitante().getId()));
+                (match.getEquipoLocal() != null &&
+                        teamId.equals(match.getEquipoLocal().getId())) ||
+                        (match.getEquipoVisitante() != null &&
+                                teamId.equals(match.getEquipoVisitante().getId()));
 
         if (!teamInvolved)
             throw new BusinessRuleException("El equipo no participa en este partido.");
@@ -171,7 +171,7 @@ public class TeamLineupServiceImpl implements TeamLineupService {
                     "Solo se pueden gestionar alineaciones en partidos programados.");
     }
 
-    private void validateCaptainOwnership(Long captainId, Team team) {
+    private void validateCaptainOwnership(Long captainId, Equipo team) {
         if (team.getCapitan() == null || !captainId.equals(team.getCapitan().getId()))
             throw new BusinessRuleException("Solo el capitán puede gestionar la alineación.");
     }

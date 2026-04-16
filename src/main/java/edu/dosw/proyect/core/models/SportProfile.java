@@ -20,7 +20,7 @@ public class SportProfile {
     private boolean available;
     private String preferredPosition;
     private int skillLevel;
-    private Team teamActual;    public SportProfile(int dorsal, List<String> positions, File photo, int age, Gender gender, boolean available) {
+    private Equipo equipoActual;    public SportProfile(int dorsal, List<String> positions, File photo, int age, Gender gender, boolean available) {
         this.dorsal = dorsal;
         this.positions = positions;
         this.photo = photo;

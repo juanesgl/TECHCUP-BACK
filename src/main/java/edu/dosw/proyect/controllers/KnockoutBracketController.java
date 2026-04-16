@@ -27,11 +27,11 @@ public class KnockoutBracketController {
     @Operation(
             summary = "Generar bracket eliminatorio del torneo",
             description = """
-                    Genera el bracket de forma aleatoria con los teams inscritos y aprobados.
+                    Genera el bracket de forma aleatoria con los equipos inscritos y aprobados.
                     Requisitos:
-                    - Mínimo 4 teams con estado de inscripción APROBADO.
-                    - Con 8 teams se generan cuartos, semifinales y final.
-                    - Con 4-7 teams se generan directamente semifinales y final.
+                    - Mínimo 4 equipos con estado de inscripción APROBADO.
+                    - Con 8 equipos se generan cuartos, semifinales y final.
+                    - Con 4-7 equipos se generan directamente semifinales y final.
                     Solo puede generarse una vez por torneo.
                     """
     )
@@ -41,7 +41,7 @@ public class KnockoutBracketController {
             @ApiResponse(responseCode = "404",
                     description = "Torneo no encontrado"),
             @ApiResponse(responseCode = "409",
-                    description = "bracket ya generado o teams insuficientes")
+                    description = "bracket ya generado o equipos insuficientes")
     })
     @PostMapping("/generate")
     public ResponseEntity<TournamentBracketResponseDTO> generateBracket(

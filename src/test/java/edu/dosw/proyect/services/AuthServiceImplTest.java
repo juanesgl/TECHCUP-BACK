@@ -55,7 +55,7 @@ class AuthServiceImplTest {
 
         assertNotNull(result);
         assertTrue(result.isSuccess());
-        assertEquals("Inicio de sesion exitoso", result.getMessage());
+        assertEquals("Bienvenido Admin", result.getMessage());
         assertEquals("jwt-token", result.getToken());
     }
 
@@ -72,7 +72,7 @@ class AuthServiceImplTest {
         LoginResponseDTO result = authService.loginUser(request);
 
         assertFalse(result.isSuccess());
-        assertEquals("Credenciales invalidas", result.getMessage());
+        assertEquals("Correo o contraseña incorrectos", result.getMessage());
         assertNull(result.getToken());
     }
 
@@ -86,6 +86,6 @@ class AuthServiceImplTest {
         LoginResponseDTO result = authService.loginUser(request);
 
         assertFalse(result.isSuccess());
-        assertEquals("Credenciales invalidas", result.getMessage());
+        assertEquals("Correo o contraseña incorrectos", result.getMessage());
     }
 }

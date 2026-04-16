@@ -3,7 +3,6 @@ package edu.dosw.proyect.core.exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -63,15 +62,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Map<String, Object>> handleUnreadableMessage(HttpMessageNotReadableException ex) {
-        log.warn("Error de parseo en request: {}", ex.getMostSpecificCause().getMessage());
-        return buildResponse(
-                HttpStatus.BAD_REQUEST,
-                "Solicitud malformada",
-                "Formato inválido en el cuerpo de la solicitud (JSON o valor de enum no válido).");
-    }
-
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
         log.warn("Argumento inválido: {}", ex.getMessage());
@@ -99,6 +89,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(buildBody(status, error, message));
     }
 
+    private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String error) {
+        return ResponseEntity.status(status).body(buildBody(status, error));
+    }
 
     private Map<String, Object> buildBody(HttpStatus status, String error, String message) {
         Map<String, Object> body = buildBody(status, error);

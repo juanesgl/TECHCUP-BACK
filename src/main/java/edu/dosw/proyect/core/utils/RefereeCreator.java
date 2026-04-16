@@ -11,11 +11,7 @@ public class RefereeCreator extends UserCreator {
 
     @Override
     public User createUser(RegisterRequestDTO request) {
-        Referee referee = new Referee();
-        referee.setName(request.getName());
-        referee.setEmail(request.getEmail());
-        referee.setPassword(request.getPassword());
-        referee.setRole("REFEREE");
-        return referee;
+        return new Referee(request.getName(), request.getEmail(), request.getPassword());
     }
 }
+

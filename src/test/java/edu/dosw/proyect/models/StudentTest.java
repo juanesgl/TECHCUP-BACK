@@ -9,11 +9,8 @@ class StudentTest {
 
     @Test
     void student_Constructor_ConstruyeCorrectamente() {
-        Student s = new Student();
-        s.setName("Juan");
-        s.setEmail("juan@mail.com");
-        s.setPassword("pass123");
-        s.setRole("PLAYER");
+        Student s = new Student(
+                "Juan", "juan@mail.com", "pass123", null);
 
         assertEquals("Juan", s.getName());
         assertEquals("juan@mail.com", s.getEmail());

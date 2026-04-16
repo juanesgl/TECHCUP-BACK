@@ -11,21 +11,21 @@ class EnumsTest {
 
     @Test
     void estadoInvitacion_ValoresExisten() {
-        assertNotNull(InvitationStatus.PENDIENTE);
-        assertNotNull(InvitationStatus.ACEPTADA);
-        assertNotNull(InvitationStatus.RECHAZADA);
-        assertEquals(3, InvitationStatus.values().length);
+        assertNotNull(EstadoInvitacion.PENDIENTE);
+        assertNotNull(EstadoInvitacion.ACEPTADA);
+        assertNotNull(EstadoInvitacion.RECHAZADA);
+        assertEquals(3, EstadoInvitacion.values().length);
     }
 
-    // ─── MatchStatus ──────────────────────────────────────
+    // ─── EstadoPartido ────────────────────────────────────
 
     @Test
     void estadoPartido_ValoresExisten() {
-        assertNotNull(MatchStatus.PROGRAMADO);
-        assertNotNull(MatchStatus.EN_JUEGO);
-        assertNotNull(MatchStatus.FINALIZADO);
-        assertNotNull(MatchStatus.CANCELADO);
-        assertEquals(4, MatchStatus.values().length);
+        assertNotNull(EstadoPartido.PROGRAMADO);
+        assertNotNull(EstadoPartido.EN_CURSO);
+        assertNotNull(EstadoPartido.FINALIZADO);
+        assertNotNull(EstadoPartido.CANCELADO);
+        assertEquals(4, EstadoPartido.values().length);
     }
 
     // ─── FieldPosition ────────────────────────────────────
@@ -64,19 +64,19 @@ class EnumsTest {
 
     @Test
     void respuestaInvitacion_ValoresExisten() {
-        assertNotNull(InvitationResponse.ACEPTAR);
-        assertNotNull(InvitationResponse.RECHAZAR);
-        assertEquals(2, InvitationResponse.values().length);
+        assertNotNull(RespuestaInvitacion.ACEPTAR);
+        assertNotNull(RespuestaInvitacion.RECHAZAR);
+        assertEquals(2, RespuestaInvitacion.values().length);
     }
 
     // ─── TipoEvento ───────────────────────────────────────
 
     @Test
     void tipoEvento_ValoresExisten() {
-        assertNotNull(EventType.GOL);
-        assertNotNull(EventType.TARJETA_AMARILLA);
-        assertNotNull(EventType.TARJETA_ROJA);
-        assertEquals(3, EventType.values().length);
+        assertNotNull(TipoEvento.GOL);
+        assertNotNull(TipoEvento.TARJETA_AMARILLA);
+        assertNotNull(TipoEvento.TARJETA_ROJA);
+        assertEquals(3, TipoEvento.values().length);
     }
 
     // ─── UserRole ─────────────────────────────────────────

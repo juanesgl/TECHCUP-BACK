@@ -1,43 +1,41 @@
 package edu.dosw.proyect.controllers.mappers;
 
-import edu.dosw.proyect.controllers.dtos.response.MatchResponseDTO;
+import edu.dosw.proyect.controllers.dtos.response.PartidoResponseDTO;
 import edu.dosw.proyect.core.models.*;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PartidoMapperTest {
 
-    private final PartidoMapper mapper = Mappers.getMapper(PartidoMapper.class);
+    private final PartidoMapper mapper = new PartidoMapper();
 
     private Partido buildPartido() {
         Tournament torneo = new Tournament();
         torneo.setTournId("TOURN-1");
 
-        Team teamLocal = new Team();
-        teamLocal.setNombre("Alpha");
+        Equipo equipoLocal = new Equipo();
+        equipoLocal.setNombre("Alpha");
 
-        Team teamVisitante = new Team();
-        teamVisitante.setNombre("Beta");
+        Equipo equipoVisitante = new Equipo();
+        equipoVisitante.setNombre("Beta");
 
-        SoccerField soccerField = new SoccerField();
-        soccerField.setNombre("Cancha Principal");
+        Cancha cancha = new Cancha();
+        cancha.setNombre("Cancha Principal");
 
         Student arbitro = new Student();
         arbitro.setName("Carlos Medina");
 
         Partido p = new Partido();
         p.setId(1L);
-        p.setTeamLocal(teamLocal);
-        p.setTeamVisitante(teamVisitante);
+        p.setEquipoLocal(equipoLocal);
+        p.setEquipoVisitante(equipoVisitante);
         p.setFechaHora(LocalDateTime.now());
-        p.setSoccerField(soccerField);
+        p.setCancha(cancha);
         p.setArbitro(arbitro);
         p.setEstado(MatchStatus.PROGRAMADO);
         p.setTorneo(torneo);
@@ -48,7 +46,7 @@ class PartidoMapperTest {
     void toResponseDTO_HappyPath_Mapea_Correctamente() {
         Partido partido = buildPartido();
 
-        MatchResponseDTO dto = mapper.toResponseDTO(partido);
+        PartidoResponseDTO dto = mapper.toResponseDTO(partido);
 
         assertNotNull(dto);
         assertEquals(1L, dto.getId());
@@ -68,7 +66,7 @@ class PartidoMapperTest {
         partido.setId(1L);
         partido.setEstado(MatchStatus.PROGRAMADO);
 
-        MatchResponseDTO dto = mapper.toResponseDTO(partido);
+        PartidoResponseDTO dto = mapper.toResponseDTO(partido);
 
         assertNotNull(dto);
         assertEquals("TBD", dto.getEquipoLocal());
@@ -84,7 +82,7 @@ class PartidoMapperTest {
     void toResponseDTOList_HappyPath_MapeaLista() {
         List<Partido> partidos = List.of(buildPartido(), buildPartido());
 
-        List<MatchResponseDTO> dtos = mapper.toResponseDTOList(partidos);
+        List<PartidoResponseDTO> dtos = mapper.toResponseDTOList(partidos);
 
         assertNotNull(dtos);
         assertEquals(2, dtos.size());
@@ -92,23 +90,9 @@ class PartidoMapperTest {
 
     @Test
     void toResponseDTOList_ListaVacia_RetornaListaVacia() {
-        List<MatchResponseDTO> dtos = mapper.toResponseDTOList(List.of());
+        List<PartidoResponseDTO> dtos = mapper.toResponseDTOList(List.of());
 
         assertNotNull(dtos);
         assertTrue(dtos.isEmpty());
-    }
-
-    @Test
-    void toLocalDate_AndToLocalTime_Null_RetornaNull() {
-        assertNull(mapper.toLocalDate(null));
-        assertNull(mapper.toLocalTime(null));
-    }
-
-    @Test
-    void toLocalDate_AndToLocalTime_ConFechaHora_RetornaValores() {
-        LocalDateTime fechaHora = LocalDateTime.of(2026, 4, 15, 21, 30, 0);
-
-        assertEquals(2026, mapper.toLocalDate(fechaHora).getYear());
-        assertEquals(LocalTime.of(21, 30), mapper.toLocalTime(fechaHora).withSecond(0));
     }
 }

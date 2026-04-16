@@ -3,7 +3,7 @@ package edu.dosw.proyect.core.services.impl;
 import edu.dosw.proyect.controllers.dtos.request.LoginRequestDTO;
 import edu.dosw.proyect.controllers.dtos.response.LoginResponseDTO;
 import edu.dosw.proyect.persistence.entity.UserEntity;
-
+import edu.dosw.proyect.persistence.mapper.UserPersistenceMapper;
 import edu.dosw.proyect.persistence.repository.UserRepository;
 import edu.dosw.proyect.core.services.AuthService;
 import edu.dosw.proyect.core.security.JwtProvider;
@@ -20,7 +20,9 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+    private final UserPersistenceMapper userMapper;
 
+    private static final String FAIL_MESSAGE = "Correo o contraseña incorrectos";
 
     @Override
     public LoginResponseDTO loginUser(LoginRequestDTO request) {
@@ -28,14 +30,14 @@ public class AuthServiceImpl implements AuthService {
 
         if (entity == null || !passwordEncoder.matches(request.getPassword(), entity.getPassword())) {
             log.warn("Intento fallido de login para: {}", request.getEmail());
-            return new LoginResponseDTO("Credenciales invalidas", false, null, null, null, null);
+            return new LoginResponseDTO(FAIL_MESSAGE, false, null);
         }
 
         String jwtToken = jwtProvider.generateToken(
                 entity.getEmail(), entity.getRole(), entity.getId());
 
+        String welcome = "Bienvenido " + entity.getName();
         log.info("Login exitoso para usuario: {} con rol: {}", entity.getEmail(), entity.getRole());
-        return new LoginResponseDTO("Inicio de sesion exitoso", true, jwtToken,
-                entity.getId(), entity.getName(), entity.getRole());
+        return new LoginResponseDTO(welcome, true, jwtToken);
     }
 }

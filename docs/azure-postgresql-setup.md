@@ -47,12 +47,12 @@ Una vez creada la instancia, se deben configurar las reglas de red para permitir
 - Clic en **"+ Agregar dirección IP del cliente actual"**
   - Esto añade automáticamente tu IP pública actual
 
-### Regla 3 (Opcional): Permitir rango de IPs del team
+### Regla 3 (Opcional): Permitir rango de IPs del equipo
 - Clic en **"+ Agregar regla de firewall"**
 
 | Campo | Valor |
 |---|---|
-| Nombre de la regla | `team-desarrollo` |
+| Nombre de la regla | `equipo-desarrollo` |
 | IP inicial | `X.X.X.0` |
 | IP final | `X.X.X.255` |
 

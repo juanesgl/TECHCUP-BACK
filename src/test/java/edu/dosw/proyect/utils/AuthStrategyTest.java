@@ -16,9 +16,9 @@ class AuthStrategyTest {
     }
 
     @Test
-    void institutionalMail_EmailGmail_RetornaTrue() {
+    void institutionalMail_EmailGmail_RetornaFalse() {
         InstitutionalMailStrategy strategy = new InstitutionalMailStrategy();
-        assertTrue(strategy.validate("juan@gmail.com"));
+        assertFalse(strategy.validate("juan@gmail.com"));
     }
 
     @Test

@@ -1,6 +1,6 @@
 package edu.dosw.proyect.controllers.mappers;
 
-import edu.dosw.proyect.controllers.dtos.response.MatchResponseDTO;
+import edu.dosw.proyect.controllers.dtos.response.PartidoResponseDTO;
 import edu.dosw.proyect.core.models.Partido;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,27 +11,31 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-
+/**
+ * MapStruct mapper.
+ * Objeto origen: Partido (dominio) → PartidoResponseDTO.
+ * Convierte LocalDateTime a LocalDate (fecha) y LocalTime (hora) usando métodos named.
+ */
 @Mapper(componentModel = "spring")
 public interface PartidoMapper {
 
-    @Mapping(target = "equipoLocal",     source = "teamLocal.nombre",
+    @Mapping(target = "equipoLocal",     source = "equipoLocal.nombre",
             defaultValue = "TBD")
-    @Mapping(target = "equipoVisitante", source = "teamVisitante.nombre",
+    @Mapping(target = "equipoVisitante", source = "equipoVisitante.nombre",
             defaultValue = "TBD")
     @Mapping(target = "fecha",           source = "fechaHora",
             qualifiedByName = "toLocalDate")
     @Mapping(target = "hora",            source = "fechaHora",
             qualifiedByName = "toLocalTime")
-    @Mapping(target = "cancha",          source = "soccerField.nombre",
+    @Mapping(target = "cancha",          source = "cancha.nombre",
             defaultValue = "TBD")
     @Mapping(target = "arbitro",         source = "arbitro.name",
             defaultValue = "TBD")
     @Mapping(target = "estado",          source = "estado")
     @Mapping(target = "tournamentId",    source = "torneo.tournId")
-    MatchResponseDTO toResponseDTO(Partido partido);
+    PartidoResponseDTO toResponseDTO(Partido partido);
 
-    List<MatchResponseDTO> toResponseDTOList(List<Partido> partidos);
+    List<PartidoResponseDTO> toResponseDTOList(List<Partido> partidos);
 
     @Named("toLocalDate")
     default LocalDate toLocalDate(LocalDateTime dateTime) {
