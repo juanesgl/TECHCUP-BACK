@@ -185,4 +185,42 @@ class CreatorsTest {
         GraduateCreator creator = new GraduateCreator();
         assertFalse(creator.validateEmail("graduado@hotmail.com"));
     }
+
+    // OrganizerCreator
+
+    @Test
+    void organizerCreator_EmailInstitucional_CreaUsuario() {
+        OrganizerCreator creator = new OrganizerCreator();
+        RegisterRequestDTO request = buildRequest("orga@mail.escuelaing.edu.co");
+
+        User user = creator.createUser(request);
+
+        assertEquals("Juan Test", user.getName());
+        assertEquals("ORGANIZER", user.getRole());
+    }
+
+    @Test
+    void organizerCreator_ValidateEmail_Gmail_TambienEsValido() {
+        OrganizerCreator creator = new OrganizerCreator();
+        assertTrue(creator.validateEmail("orga@gmail.com"));
+    }
+
+    // ProfessorCreator
+
+    @Test
+    void professorCreator_EmailInstitucional_CreaUsuario() {
+        ProfessorCreator creator = new ProfessorCreator();
+        RegisterRequestDTO request = buildRequest("profe@mail.escuelaing.edu.co");
+
+        User user = creator.createUser(request);
+
+        assertEquals("Juan Test", user.getName());
+        assertEquals("PROFESSOR", user.getRole());
+    }
+
+    @Test
+    void professorCreator_ValidateEmail_Gmail_TambienEsValido() {
+        ProfessorCreator creator = new ProfessorCreator();
+        assertTrue(creator.validateEmail("profe@gmail.com"));
+    }
 }

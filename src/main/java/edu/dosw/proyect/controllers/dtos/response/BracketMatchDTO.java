@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Representa una llave individual dentro del bracket eliminatorio.
- */
+
 @Data
 @Builder
 @NoArgsConstructor

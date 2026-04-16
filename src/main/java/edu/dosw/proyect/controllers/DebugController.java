@@ -9,12 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Debug endpoints — only available when app.debug.enabled=true.
- * Never enable this in production.
- * Add to your .env for local development:
- *   app.debug.enabled=true
- */
+
 @Hidden
 @RestController
 @RequestMapping("/api/debug")

@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Respuesta tras registrar un partido completo con eventos.
- */
+
 @Data
 @Builder
 @NoArgsConstructor

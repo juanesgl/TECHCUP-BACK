@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Respuesta con la información completa de un equipo.
- */
+
 @Data
 @Builder
 @NoArgsConstructor
