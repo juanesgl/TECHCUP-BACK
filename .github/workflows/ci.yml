@@ -125,11 +125,15 @@ jobs:
             ${{ secrets.AZURE_REGISTRY_URL }}/techcup-back:latest
             ${{ secrets.AZURE_REGISTRY_URL }}/techcup-back:${{ github.sha }}
 
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           images: ${{ secrets.AZURE_REGISTRY_URL }}/techcup-back:${{ github.sha }}
 
       - name: Configure App Settings
@@ -146,5 +150,3 @@ jobs:
               { "name": "JWT_REFRESH_EXPIRATION",      "value": "604800000",                                  "slotSetting": false },
               { "name": "WEBSITES_PORT",               "value": "8085",                                       "slotSetting": false }
             ]
-        env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
