@@ -14,7 +14,4 @@ public class LoginResponseDTO {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String token;
-    private Long userId;
-    private String name;
-    private String role;
 }

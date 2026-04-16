@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * Bracket eliminatorio completo de un torneo.
- */
+
 @Data
 @Builder
 @NoArgsConstructor

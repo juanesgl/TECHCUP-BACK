@@ -16,7 +16,7 @@ public enum UserRole {
         "FINALIZE_TOURNAMENT"
     }),
     
-    CAPTAIN("Capitan", new String[]{
+    CAPTAIN("CapitÃ¡n", new String[]{
         "CREATE_TEAM",
         "MANAGE_TEAM",
         "SEARCH_PLAYERS",
@@ -36,7 +36,7 @@ public enum UserRole {
         "VIEW_MATCH_INFO"
     }),
     
-    REFEREE("Arbitro", new String[]{
+    REFEREE("Ãrbitro", new String[]{
         "VIEW_TOURNAMENT_INFO",
         "VIEW_ASSIGNED_MATCHES",
         "VIEW_STANDINGS",
