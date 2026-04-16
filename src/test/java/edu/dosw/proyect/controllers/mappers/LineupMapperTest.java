@@ -107,4 +107,14 @@ class LineupMapperTest {
         assertEquals(7, dto.getTitulares().size());
         assertTrue(dto.getReservas().isEmpty());
     }
+
+    @Test
+    void toRivalResponseDTO_SobrescribePartidoIdExplicito() {
+        Lineup lineup = buildAlineacion();
+        lineup.setId(999L);
+
+        OpponentLineupResponseDTO dto = mapper.toRivalResponseDTO(lineup, 55L);
+
+        assertEquals(55L, dto.getPartidoId());
+    }
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,5 +96,19 @@ class PartidoMapperTest {
 
         assertNotNull(dtos);
         assertTrue(dtos.isEmpty());
+    }
+
+    @Test
+    void toLocalDate_AndToLocalTime_Null_RetornaNull() {
+        assertNull(mapper.toLocalDate(null));
+        assertNull(mapper.toLocalTime(null));
+    }
+
+    @Test
+    void toLocalDate_AndToLocalTime_ConFechaHora_RetornaValores() {
+        LocalDateTime fechaHora = LocalDateTime.of(2026, 4, 15, 21, 30, 0);
+
+        assertEquals(2026, mapper.toLocalDate(fechaHora).getYear());
+        assertEquals(LocalTime.of(21, 30), mapper.toLocalTime(fechaHora).withSecond(0));
     }
 }

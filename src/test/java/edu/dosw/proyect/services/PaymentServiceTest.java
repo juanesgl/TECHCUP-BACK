@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -131,6 +132,88 @@ class PaymentServiceTest {
 
         when(paymentRepository.findById(99L)).thenReturn(Optional.empty());
         assertThrows(RuntimeException.class,
+                () -> paymentService.updatePaymentStatus(request));
+    }
+
+    @Test
+    void uploadPayment_MetodoInvalido_LanzaBusinessRuleException() {
+        PaymentUploadRequest request = new PaymentUploadRequest();
+        request.setUserId(1);
+        request.setTournamentId(1);
+        request.setFileUrl("http://url.com/file.pdf");
+        request.setMetodoPago("EFECTIVO");
+        request.setMonto(new BigDecimal("130000"));
+
+        assertThrows(edu.dosw.proyect.core.exceptions.BusinessRuleException.class,
+                () -> paymentService.uploadPayment(request));
+    }
+
+    @Test
+    void uploadPayment_MontoInvalido_LanzaBusinessRuleException() {
+        PaymentUploadRequest request = new PaymentUploadRequest();
+        request.setUserId(1);
+        request.setTournamentId(1);
+        request.setFileUrl("http://url.com/file.pdf");
+        request.setMetodoPago("NEQUI");
+        request.setMonto(new BigDecimal("120000"));
+
+        assertThrows(edu.dosw.proyect.core.exceptions.BusinessRuleException.class,
+                () -> paymentService.uploadPayment(request));
+    }
+
+    @Test
+    void uploadPayment_ConPagoAprobadoPrevio_LanzaBusinessRuleException() {
+        PaymentUploadRequest request = new PaymentUploadRequest();
+        request.setUserId(1);
+        request.setTournamentId(1);
+        request.setFileUrl("http://url.com/file.pdf");
+        request.setMetodoPago("NEQUI");
+        request.setMonto(new BigDecimal("130000"));
+
+        TournamentEntity tournament = new TournamentEntity();
+        tournament.setId(1L);
+        PaymentEntity approved = new PaymentEntity();
+        approved.setTournamentId(1L);
+        approved.setStatus(PaymentStatus.APPROVED);
+
+        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
+        when(paymentRepository.findByUserId(1L)).thenReturn(java.util.List.of(approved));
+
+        assertThrows(edu.dosw.proyect.core.exceptions.BusinessRuleException.class,
+                () -> paymentService.uploadPayment(request));
+    }
+
+    @Test
+    void uploadPayment_FechaCierreVencida_LanzaBusinessRuleException() {
+        PaymentUploadRequest request = new PaymentUploadRequest();
+        request.setUserId(1);
+        request.setTournamentId(1);
+        request.setFileUrl("http://url.com/file.pdf");
+        request.setMetodoPago("NEQUI");
+        request.setMonto(new BigDecimal("130000"));
+
+        TournamentEntity tournament = new TournamentEntity();
+        tournament.setId(1L);
+        tournament.setRegistrationCloseDate(LocalDate.now().minusDays(1));
+
+        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(tournament));
+
+        assertThrows(edu.dosw.proyect.core.exceptions.BusinessRuleException.class,
+                () -> paymentService.uploadPayment(request));
+    }
+
+    @Test
+    void updatePaymentStatus_PagoYaAprobado_LanzaBusinessRuleException() {
+        PaymentStatusRequest request = new PaymentStatusRequest();
+        request.setPaymentId(1L);
+        request.setStatus(PaymentStatus.REJECTED);
+
+        PaymentEntity entity = new PaymentEntity();
+        entity.setId(1L);
+        entity.setStatus(PaymentStatus.APPROVED);
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(entity));
+
+        assertThrows(edu.dosw.proyect.core.exceptions.BusinessRuleException.class,
                 () -> paymentService.updatePaymentStatus(request));
     }
 }

@@ -50,4 +50,18 @@ class InvitationMapperTest {
         assertEquals(2L, dto.getInvitacionId());
         assertEquals("RECHAZADA", dto.getEstadoActualizado());
     }
+
+    @Test
+    void toResponseDTO_SinMensajeExplicito_MensajeNulo() {
+        Invitation invitation = Invitation.builder()
+                .id(3L)
+                .estado("PENDIENTE")
+                .build();
+
+        InvitationResponseDTO dto = mapper.toResponseDTO(invitation);
+
+        assertEquals(3L, dto.getInvitacionId());
+        assertEquals("PENDIENTE", dto.getEstadoActualizado());
+        assertNull(dto.getMensajeCapitan());
+    }
 }

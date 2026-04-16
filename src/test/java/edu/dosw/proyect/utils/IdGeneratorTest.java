@@ -29,5 +29,14 @@ class IdGeneratorTest {
         
         assertEquals(idVal1 + 1, idVal2);
     }
+
+    @Test
+    void shouldGenerateNumericSuffixAfterPrefix() {
+        String id = IdGenerator.generateTournamentId();
+        String suffix = id.replace("TOURN-", "");
+
+        assertFalse(suffix.isBlank());
+        assertTrue(suffix.chars().allMatch(Character::isDigit));
+    }
 }
 
