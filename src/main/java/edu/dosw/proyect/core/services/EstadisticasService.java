@@ -1,18 +1,18 @@
 package edu.dosw.proyect.core.services;
 
 import edu.dosw.proyect.controllers.dtos.response.*;
-import edu.dosw.proyect.core.models.Equipo;
-import edu.dosw.proyect.core.models.Jugador;
+import edu.dosw.proyect.core.models.Team;
+import edu.dosw.proyect.core.models.Player;
 import edu.dosw.proyect.core.models.Partido;
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
-import edu.dosw.proyect.core.models.enums.TipoEvento;
-import edu.dosw.proyect.persistence.entity.EventoPartidoEntity;
-import edu.dosw.proyect.persistence.entity.PartidoEntity;
-import edu.dosw.proyect.persistence.mapper.JugadorPersistenceMapper;
-import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
-import edu.dosw.proyect.persistence.repository.EventoPartidoRepository;
-import edu.dosw.proyect.persistence.repository.PartidoRepository;
+import edu.dosw.proyect.core.models.enums.EventType;
+import edu.dosw.proyect.persistence.entity.MatchEntity;
+import edu.dosw.proyect.persistence.entity.MatchEventEntity;
+import edu.dosw.proyect.persistence.mapper.PlayerPersistenceMapper;
+import edu.dosw.proyect.persistence.mapper.MatchPersistenceMapper;
+import edu.dosw.proyect.persistence.repository.MatchEventRepository;
+import edu.dosw.proyect.persistence.repository.MatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,20 +22,20 @@ import java.util.*;
 @RequiredArgsConstructor
 public class EstadisticasService {
 
-    private final PartidoRepository partidoRepository;
-    private final EventoPartidoRepository eventoPartidoRepository;
-    private final PartidoPersistenceMapper partidoMapper;
-    private final JugadorPersistenceMapper jugadorMapper;
+    private final MatchRepository matchRepository;
+    private final MatchEventRepository matchEventRepository;
+    private final MatchPersistenceMapper partidoMapper;
+    private final PlayerPersistenceMapper jugadorMapper;
 
-    public EstadisticasTorneoDTO obtenerEstadisticasTorneo(String tournId) {
-        List<PartidoEntity> entities = partidoRepository.findByTorneo_TournId(tournId);
+    public TournamentStatisticsDTO obtenerEstadisticasTorneo(String tournId) {
+        List<MatchEntity> entities = matchRepository.findByTorneo_TournId(tournId);
         List<Partido> partidos = entities.stream()
                 .map(partidoMapper::toDomain).toList();
 
-        List<EventoPartidoEntity> eventoEntities =
-                eventoPartidoRepository.findByPartido_Torneo_TournId(tournId);
+        List<MatchEventEntity> eventoEntities =
+                matchEventRepository.findByPartido_Torneo_TournId(tournId);
 
-        Map<Long, EstadisticasEquipoDTO> mapEquipos = new HashMap<>();
+        Map<Long, TeamStatisticsDTO> mapEquipos = new HashMap<>();
         int totalGolesAnotados = 0;
         int partidosJugados = 0;
 
@@ -44,8 +44,8 @@ public class EstadisticasService {
                 partidosJugados++;
                 totalGolesAnotados += (p.getGolesLocal() + p.getGolesVisitante());
 
-                EstadisticasEquipoDTO local = getOrCreateEquipoStats(mapEquipos, p.getEquipoLocal());
-                EstadisticasEquipoDTO visitante = getOrCreateEquipoStats(mapEquipos, p.getEquipoVisitante());
+                TeamStatisticsDTO local = getOrCreateEquipoStats(mapEquipos, p.getTeamLocal());
+                TeamStatisticsDTO visitante = getOrCreateEquipoStats(mapEquipos, p.getTeamVisitante());
 
                 local.setPartidosJugados(local.getPartidosJugados() + 1);
                 visitante.setPartidosJugados(visitante.getPartidosJugados() + 1);
@@ -74,47 +74,47 @@ public class EstadisticasService {
             }
         }
 
-        List<EstadisticasEquipoDTO> tablaPosiciones = new ArrayList<>(mapEquipos.values());
+        List<TeamStatisticsDTO> tablaPosiciones = new ArrayList<>(mapEquipos.values());
         tablaPosiciones.sort((e1, e2) -> e1.getPuntos() != e2.getPuntos()
                 ? Integer.compare(e2.getPuntos(), e1.getPuntos())
                 : Integer.compare(e2.getDiferenciaGol(), e1.getDiferenciaGol()));
 
-        Map<Long, EstadisticasJugadorDTO> mapJugadores = new HashMap<>();
+        Map<Long, PlayerStatisticsDTO> mapJugadores = new HashMap<>();
 
-        for (EventoPartidoEntity ep : eventoEntities) {
+        for (MatchEventEntity ep : eventoEntities) {
             if (ep.getJugador() == null) continue;
-            Jugador jugador = jugadorMapper.toDomain(ep.getJugador());
+            Player jugador = jugadorMapper.toDomain(ep.getJugador());
             User usuario = jugador.getUsuario();
             if (usuario == null || usuario.getId() == null) continue;
 
-            EstadisticasJugadorDTO stats = mapJugadores.computeIfAbsent(usuario.getId(),
-                    id -> EstadisticasJugadorDTO.builder()
+            PlayerStatisticsDTO stats = mapJugadores.computeIfAbsent(usuario.getId(),
+                    id -> PlayerStatisticsDTO.builder()
                             .jugadorId(id)
                             .nombreJugador(usuario.getName())
                             .nombreEquipo("Sin equipo")
                             .goles(0).tarjetasAmarillas(0).tarjetasRojas(0)
                             .build());
 
-            if (ep.getTipoEvento() == TipoEvento.GOL) {
+            if (ep.getEventType() == EventType.GOL) {
                 stats.setGoles(stats.getGoles() + 1);
-            } else if (ep.getTipoEvento() == TipoEvento.TARJETA_AMARILLA) {
+            } else if (ep.getEventType() == EventType.TARJETA_AMARILLA) {
                 stats.setTarjetasAmarillas(stats.getTarjetasAmarillas() + 1);
-            } else if (ep.getTipoEvento() == TipoEvento.TARJETA_ROJA) {
+            } else if (ep.getEventType() == EventType.TARJETA_ROJA) {
                 stats.setTarjetasRojas(stats.getTarjetasRojas() + 1);
             }
         }
 
-        List<EstadisticasJugadorDTO> goleadores = new ArrayList<>(mapJugadores.values());
+        List<PlayerStatisticsDTO> goleadores = new ArrayList<>(mapJugadores.values());
         goleadores.removeIf(j -> j.getGoles() == 0);
         goleadores.sort((j1, j2) -> Integer.compare(j2.getGoles(), j1.getGoles()));
 
-        List<EstadisticasJugadorDTO> sancionados = new ArrayList<>(mapJugadores.values());
+        List<PlayerStatisticsDTO> sancionados = new ArrayList<>(mapJugadores.values());
         sancionados.removeIf(j -> j.getTarjetasAmarillas() == 0 && j.getTarjetasRojas() == 0);
         sancionados.sort((j1, j2) -> j1.getTarjetasRojas() != j2.getTarjetasRojas()
                 ? Integer.compare(j2.getTarjetasRojas(), j1.getTarjetasRojas())
                 : Integer.compare(j2.getTarjetasAmarillas(), j1.getTarjetasAmarillas()));
 
-        return EstadisticasTorneoDTO.builder()
+        return TournamentStatisticsDTO.builder()
                 .torneoId(tournId)
                 .totalPartidosJugados(partidosJugados)
                 .totalGolesAnotados(totalGolesAnotados)
@@ -124,13 +124,13 @@ public class EstadisticasService {
                 .build();
     }
 
-    private EstadisticasEquipoDTO getOrCreateEquipoStats(
-            Map<Long, EstadisticasEquipoDTO> map, Equipo equipo) {
-        if (equipo == null || equipo.getId() == null) {
-            return EstadisticasEquipoDTO.builder().nombreEquipo("Desconocido").build();
+    private TeamStatisticsDTO getOrCreateEquipoStats(
+            Map<Long, TeamStatisticsDTO> map, Team team) {
+        if (team == null || team.getId() == null) {
+            return TeamStatisticsDTO.builder().nombreEquipo("Desconocido").build();
         }
-        return map.computeIfAbsent(equipo.getId(), id -> EstadisticasEquipoDTO.builder()
-                .equipoId(id).nombreEquipo(equipo.getNombre())
+        return map.computeIfAbsent(team.getId(), id -> TeamStatisticsDTO.builder()
+                .equipoId(id).nombreEquipo(team.getNombre())
                 .partidosJugados(0).victorias(0).empates(0).derrotas(0)
                 .golesFavor(0).golesContra(0).diferenciaGol(0).puntos(0)
                 .build());
