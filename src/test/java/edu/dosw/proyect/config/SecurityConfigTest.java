@@ -1,9 +1,9 @@
 package edu.dosw.proyect.config;
 
 import edu.dosw.proyect.core.security.JwtAuthFilter;
-import edu.dosw.proyect.core.security.OAuth2SuccessHandler;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class SecurityConfigTest {
 
     private final SecurityConfig securityConfig = new SecurityConfig(
-            Mockito.mock(OAuth2SuccessHandler.class),
+            Mockito.mock(ObjectProvider.class),
+            Mockito.mock(ObjectProvider.class),
             Mockito.mock(JwtAuthFilter.class)
     );
 

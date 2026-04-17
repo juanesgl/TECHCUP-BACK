@@ -4,8 +4,10 @@ import edu.dosw.proyect.core.security.JwtAuthFilter;
 import edu.dosw.proyect.core.security.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,7 +26,8 @@ public class SecurityConfig {
     @Value("${app.security.permit-all:false}")
     private boolean permitAll;
 
-    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final ObjectProvider<OAuth2SuccessHandler> oAuth2SuccessHandlerProvider;
+    private final ObjectProvider<ClientRegistrationRepository> clientRegistrationRepositoryProvider;
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
@@ -54,11 +57,17 @@ public class SecurityConfig {
             return http.build();
         }
 
+        boolean oauth2Enabled = clientRegistrationRepositoryProvider.getIfAvailable() != null
+                && oAuth2SuccessHandlerProvider.getIfAvailable() != null;
+
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
                         .requestMatchers("/api/users/login").permitAll()
                         .requestMatchers("/api/users/register").permitAll()
                         .requestMatchers("/api/debug/**").permitAll()
@@ -69,10 +78,14 @@ public class SecurityConfig {
                         .requestMatchers("/oauth2/**").permitAll()
                         .requestMatchers("/login/oauth2/**").permitAll()
                         .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oAuth2SuccessHandler)
-                )
+                );
+
+        if (oauth2Enabled) {
+            http.oauth2Login(oauth2 -> oauth2
+                    .successHandler(oAuth2SuccessHandlerProvider.getObject()));
+        }
+
+        http
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.disable()));
