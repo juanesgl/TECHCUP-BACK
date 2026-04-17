@@ -31,7 +31,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Solicitud malformada")
     })
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<Object> loginUser(@RequestBody LoginRequestDTO request) {
         try {
             LoginResponseDTO response = authService.loginUser(request);
             if (response.isSuccess()) {
