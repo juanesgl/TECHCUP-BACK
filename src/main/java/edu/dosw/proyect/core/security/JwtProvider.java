@@ -19,7 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:change-me-in-production}")
     private String jwtSecret;
 
     @Value("${jwt.expiration:86400000}")
