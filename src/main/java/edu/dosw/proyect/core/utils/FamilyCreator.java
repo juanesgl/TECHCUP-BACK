@@ -2,7 +2,6 @@ package edu.dosw.proyect.core.utils;
 
 import edu.dosw.proyect.core.models.User;
 import edu.dosw.proyect.core.models.FamilyMember;
-import edu.dosw.proyect.core.models.SportProfile;
 import edu.dosw.proyect.controllers.dtos.request.RegisterRequestDTO;
 
 public class FamilyCreator extends UserCreator {
@@ -12,8 +11,11 @@ public class FamilyCreator extends UserCreator {
 
     @Override
     public User createUser(RegisterRequestDTO request) {
-        SportProfile profile = new SportProfile(request.getPreferredPosition(), request.getSkillLevel());
-        return new FamilyMember(request.getName(), request.getEmail(), request.getPassword(), profile);
+        FamilyMember familyMember = new FamilyMember();
+        familyMember.setName(request.getName());
+        familyMember.setEmail(request.getEmail());
+        familyMember.setPassword(request.getPassword());
+        familyMember.setRole("FAMILY_MEMBER");
+        return familyMember;
     }
 }
-

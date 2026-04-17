@@ -85,8 +85,8 @@ public class JwtProvider {
     public Long getUserIdFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
         Object userId = claims.get("userId");
-        if (userId instanceof Integer) {
-            return ((Integer) userId).longValue();
+        if (userId instanceof Integer integer) {
+            return integer.longValue();
         }
         return (Long) userId;
     }
@@ -119,7 +119,6 @@ public class JwtProvider {
     
     public String getTokenInfo(String token) {
         try {
-            Claims claims = getAllClaimsFromToken(token);
             return String.format(
                     "Email: %s | Role: %s | UserId: %s | Expira: %s",
                     getEmailFromToken(token),

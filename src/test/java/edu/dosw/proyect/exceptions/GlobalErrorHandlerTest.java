@@ -11,36 +11,35 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GlobalErrorHandlerTest {
 
-    private final GlobalErrorHandler handler = new GlobalErrorHandler();
+    private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
 
     @Test
     void handleBusinessRuleException_RetornaConflict() {
         BusinessRuleException ex = new BusinessRuleException("Regla violada");
 
-        ResponseEntity<Map<String, String>> response =
-                handler.handleBusinessRuleException(ex);
+        ResponseEntity<Map<String, Object>> response = handler.handleBusinessRule(ex);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertEquals("Regla violada", response.getBody().get("error"));
+        assertEquals("Conflicto de regla de negocio", response.getBody().get("error"));
+        assertEquals("Regla violada", response.getBody().get("message"));
     }
 
     @Test
     void handleResourceNotFoundException_RetornaNotFound() {
         ResourceNotFoundException ex = new ResourceNotFoundException("No encontrado");
 
-        ResponseEntity<Map<String, String>> response =
-                handler.handleResourceNotFoundException(ex);
+        ResponseEntity<Map<String, Object>> response = handler.handleNotFound(ex);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("No encontrado", response.getBody().get("error"));
+        assertEquals("Recurso no encontrado", response.getBody().get("error"));
+        assertEquals("No encontrado", response.getBody().get("message"));
     }
 
     @Test
     void handleDisponibilidadException_RetornaConflict() {
         DisponibilidadException ex = new DisponibilidadException("Conflicto disponibilidad");
 
-        ResponseEntity<Object> response =
-                handler.handleDisponibilidadException(ex);
+        ResponseEntity<Map<String, Object>> response = handler.handleDisponibilidad(ex);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -50,10 +49,9 @@ class GlobalErrorHandlerTest {
     void handleGeneralException_RetornaInternalServerError() {
         Exception ex = new Exception("Error generico");
 
-        ResponseEntity<Map<String, String>> response =
-                handler.handleGeneralException(ex);
+        ResponseEntity<Map<String, Object>> response = handler.handleGeneral(ex);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertTrue(response.getBody().get("error").contains("Error interno"));
+        assertTrue(String.valueOf(response.getBody().get("error")).contains("Error interno"));
     }
 }
