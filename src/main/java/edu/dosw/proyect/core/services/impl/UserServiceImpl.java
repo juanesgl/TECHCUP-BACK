@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,10 +27,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository      userRepository;
-    private final PasswordEncoder     passwordEncoder;
-    private final UserPersistenceMapper userMapper;
+    private static final String ROLE_ADMINISTRATOR = "ADMINISTRATOR";
 
+    // Roles que no son jugadores — no necesitan perfil deportivo
+    private static final Set<String> ROLES_NO_JUGADOR = Set.of(
+            "ORGANIZER", "REFEREE", ROLE_ADMINISTRATOR,
+            "PROFESSOR", "FAMILY_MEMBER"
+    );
+
+    private final UserRepository        userRepository;
+    private final PasswordEncoder       passwordEncoder;
+    private final UserPersistenceMapper userMapper;
 
     @Override
     public RegisterResponseDTO registerUser(RegisterRequestDTO request) {
@@ -47,13 +55,24 @@ public class UserServiceImpl implements UserService {
                     "El correo ya está registrado: " + request.getEmail());
         }
 
+        boolean esNoJugador = ROLES_NO_JUGADOR.contains(
+                request.getRole() != null ? request.getRole().toUpperCase() : ""
+        );
+        String preferredPosition = request.getPreferredPosition();
+        if (preferredPosition == null || preferredPosition.isBlank()) {
+            preferredPosition = esNoJugador ? "N/A" : "DELANTERO";
+        }
+        Integer skillLevel = (request.getSkillLevel() != null && request.getSkillLevel() >= 1)
+                ? request.getSkillLevel()
+                : 1;
+
         RegisterRequestDTO hashedRequest = new RegisterRequestDTO(
                 request.getName(),
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
                 request.getRole(),
-                request.getPreferredPosition(),
-                request.getSkillLevel()
+                preferredPosition,
+                skillLevel
         );
 
         User newUser = creator.createUser(hashedRequest);
@@ -70,71 +89,57 @@ public class UserServiceImpl implements UserService {
         return new RegisterResponseDTO("Usuario registrado exitosamente", saved.getId());
     }
 
-
     @Override
     public List<UserResponseDTO> getAllUsers(Long requesterId) {
         UserEntity requester = findRequester(requesterId);
         validateIsAdmin(requester);
-
         return userRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public UserResponseDTO getUserById(Long userId, Long requesterId) {
         UserEntity requester = findRequester(requesterId);
         validateAdminOrOwner(requester, userId);
-
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Usuario con ID " + userId + " no encontrado"));
-
         return toResponseDTO(user);
     }
-
 
     @Override
     public UserResponseDTO updateUser(Long userId, Long requesterId,
                                       UpdateUserRequestDTO request) {
         UserEntity requester = findRequester(requesterId);
         validateAdminOrOwner(requester, userId);
-
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Usuario con ID " + userId + " no encontrado"));
-
         if (request.getName() != null && !request.getName().isBlank()) {
             user.setName(request.getName());
         }
         if (request.getLastName() != null && !request.getLastName().isBlank()) {
             user.setLastName(request.getLastName());
         }
-
         if (request.getAcademicProgram() != null && !request.getAcademicProgram().isBlank()) {
             user.setAcademicProgram(request.getAcademicProgram());
         }
-
         UserEntity updated = userRepository.save(user);
         log.info("Usuario ID {} actualizado por requester ID {}", userId, requesterId);
         return toResponseDTO(updated);
     }
 
-
     @Override
     public void deleteUser(Long userId, Long requesterId) {
         UserEntity requester = findRequester(requesterId);
         validateIsAdmin(requester);
-
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Usuario con ID " + userId + " no encontrado"));
-
         userRepository.delete(user);
         log.info("Usuario ID {} eliminado por admin ID {}", userId, requesterId);
     }
-
 
     private UserEntity findRequester(Long requesterId) {
         return userRepository.findById(requesterId)
@@ -143,17 +148,15 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateIsAdmin(UserEntity user) {
-        if (!"ADMIN".equals(user.getRole()) && !"ADMINISTRATOR".equals(user.getRole())) {
+        if (!ROLE_ADMINISTRATOR.equals(user.getRole())) {
             throw new BusinessRuleException(
                     "Solo el administrador puede realizar esta acción");
         }
     }
 
     private void validateAdminOrOwner(UserEntity requester, Long targetUserId) {
-        boolean isAdmin = "ADMIN".equals(requester.getRole())
-                || "ADMINISTRATOR".equals(requester.getRole());
+        boolean isAdmin = ROLE_ADMINISTRATOR.equals(requester.getRole());
         boolean isOwner = requester.getId().equals(targetUserId);
-
         if (!isAdmin && !isOwner) {
             throw new BusinessRuleException(
                     "No tiene permisos para acceder a la información de este usuario");
@@ -179,13 +182,12 @@ public class UserServiceImpl implements UserService {
             case "STUDENT"       -> new StudentCreator();
             case "GRADUATE"      -> new GraduateCreator();
             case "PROFESSOR"     -> new ProfessorCreator();
-            case "ADMIN"         -> new AdminCreator();
+            case ROLE_ADMINISTRATOR -> new AdminCreator();
             case "FAMILY_MEMBER" -> new FamilyCreator();
             case "ORGANIZER"     -> new OrganizerCreator();
             case "REFEREE"       -> new RefereeCreator();
             case "CAPTAIN"       -> new CaptainCreator();
             case "PLAYER"        -> new PlayerCreator();
-            case "ADMINISTRATOR" -> new AdminCreator();
             default              -> null;
         };
     }

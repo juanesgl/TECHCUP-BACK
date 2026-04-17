@@ -46,7 +46,7 @@ class UserServiceImplTest {
     private UserEntity adminEntity(Long id) {
         UserEntity e = new UserEntity();
         e.setId(id);
-        e.setRole("ADMIN");
+        e.setRole("ADMINISTRATOR");
         e.setName("Admin");
         e.setEmail("admin@mail.com");
         e.setActive(true);
@@ -140,6 +140,58 @@ class UserServiceImplTest {
         RegisterResponseDTO response = userService.registerUser(request);
 
         assertEquals(7L, response.getUserId());
+    }
+
+    @Test
+    void registerUser_PreferredPositionNull_YSkillLevelNull_EnNoJugador_NoFalla() {
+        RegisterRequestDTO request = new RegisterRequestDTO(
+                "Admin User",
+                "admin@mail.escuelaing.edu.co",
+                "pass12345",
+                "ADMINISTRATOR",
+                null,
+                null
+        );
+
+        UserEntity saved = new UserEntity();
+        saved.setId(10L);
+
+        when(passwordEncoder.encode(any())).thenReturn("hashedPass");
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
+        when(userMapper.toEntity(any())).thenReturn(saved);
+        when(userRepository.save(any())).thenReturn(saved);
+
+        RegisterResponseDTO response = userService.registerUser(request);
+
+        assertNotNull(response);
+        assertEquals(10L, response.getUserId());
+        verify(userRepository).save(any());
+    }
+
+    @Test
+    void registerUser_PreferredPositionBlank_YSkillLevelCero_EnJugador_NoFalla() {
+        RegisterRequestDTO request = new RegisterRequestDTO(
+                "Player User",
+                "player@random.com",
+                "pass12345",
+                "PLAYER",
+                "   ",
+                0
+        );
+
+        UserEntity saved = new UserEntity();
+        saved.setId(11L);
+
+        when(passwordEncoder.encode(any())).thenReturn("hashedPass");
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
+        when(userMapper.toEntity(any())).thenReturn(saved);
+        when(userRepository.save(any())).thenReturn(saved);
+
+        RegisterResponseDTO response = userService.registerUser(request);
+
+        assertNotNull(response);
+        assertEquals(11L, response.getUserId());
+        verify(userRepository).save(any());
     }
 
     // ─── getAllUsers ──────────────────────────────────────────────────────────
