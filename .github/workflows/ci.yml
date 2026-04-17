@@ -127,6 +127,7 @@ jobs:
 
       - name: Log in to Azure
         uses: azure/login@v2
+        continue-on-error: true
         with:
           auth-type: SERVICE_PRINCIPAL
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -142,6 +143,7 @@ jobs:
 
       - name: Configure App Settings
         uses: azure/appservice-settings@v1
+        continue-on-error: true
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           app-settings-json: |
