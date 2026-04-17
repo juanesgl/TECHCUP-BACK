@@ -102,6 +102,10 @@ jobs:
     needs: build-test-analyze
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
 
+    permissions:
+      id-token: write
+      contents: read
+
     environment:
       name: ${{ github.ref == 'refs/heads/main' && 'PROD' || 'QA' }}
 
