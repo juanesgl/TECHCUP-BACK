@@ -251,4 +251,43 @@ class EstadisticasServiceTest {
         result.getTablaPosiciones().forEach(e ->
                 assertEquals(1, e.getPuntos()));
     }
+
+    @Test
+    void obtenerEstadisticasTorneo_EventosTarjetas_ConstruyeTablaTarjetas() {
+        MatchEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
+        edu.dosw.proyect.core.models.Partido domain = new edu.dosw.proyect.core.models.Partido();
+        domain.setEstado(MatchStatus.FINALIZADO);
+        domain.setGolesLocal(0);
+        domain.setGolesVisitante(0);
+        Team local = new Team(); local.setId(1L); local.setNombre("Alpha");
+        Team visitante = new Team(); visitante.setId(2L); visitante.setNombre("Beta");
+        domain.setTeamLocal(local);
+        domain.setTeamVisitante(visitante);
+
+        UserEntity userEntity = UserEntity.builder().id(20L).name("Pedro").build();
+        PlayerEntity playerEntity = new PlayerEntity();
+        playerEntity.setId(20L);
+        playerEntity.setUsuario(userEntity);
+        Player jugadorDomain = new Player();
+        edu.dosw.proyect.core.models.User user = edu.dosw.proyect.core.models.User.builder().id(20L).name("Pedro").build();
+        jugadorDomain.setUsuario(user);
+
+        MatchEventEntity amarilla = new MatchEventEntity();
+        amarilla.setJugador(playerEntity);
+        amarilla.setEventType(EventType.TARJETA_AMARILLA);
+        MatchEventEntity roja = new MatchEventEntity();
+        roja.setJugador(playerEntity);
+        roja.setEventType(EventType.TARJETA_ROJA);
+
+        when(matchRepository.findByTorneo_TournId("TOURN-1")).thenReturn(List.of(entity));
+        when(matchEventRepository.findByPartido_Torneo_TournId("TOURN-1")).thenReturn(List.of(amarilla, roja));
+        when(partidoMapper.toDomain(entity)).thenReturn(domain);
+        when(jugadorMapper.toDomain(playerEntity)).thenReturn(jugadorDomain);
+
+        TournamentStatisticsDTO result = estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
+
+        assertEquals(1, result.getTablaTarjetas().size());
+        assertEquals(1, result.getTablaTarjetas().get(0).getTarjetasAmarillas());
+        assertEquals(1, result.getTablaTarjetas().get(0).getTarjetasRojas());
+    }
 }

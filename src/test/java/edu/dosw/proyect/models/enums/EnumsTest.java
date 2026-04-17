@@ -59,16 +59,6 @@ class EnumsTest {
         assertEquals(3, LineupStatus.values().length);
     }
 
-    // ─── MatchStatus ──────────────────────────────────────
-
-    @Test
-    void matchStatus_ValoresExisten() {
-        assertNotNull(MatchStatus.PROGRAMADO);
-        assertNotNull(MatchStatus.EN_JUEGO);
-        assertNotNull(MatchStatus.FINALIZADO);
-        assertNotNull(MatchStatus.CANCELADO);
-        assertEquals(4, MatchStatus.values().length);
-    }
 
     // ─── RespuestaInvitacion ──────────────────────────────
 

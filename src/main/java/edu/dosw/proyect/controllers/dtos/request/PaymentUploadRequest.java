@@ -8,11 +8,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
-/**
- * Request para subir comprobante de pago.
- * Solo se acepta pago por Nequi según las reglas del torneo.
- * Monto único: $130.000 COP.
- */
+
 @Data
 public class PaymentUploadRequest {
 
