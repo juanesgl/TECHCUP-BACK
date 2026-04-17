@@ -7,11 +7,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "01 Autenticacion")
@@ -30,7 +31,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Solicitud malformada")
     })
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequestDTO request) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequestDTO request) {
         try {
             LoginResponseDTO response = authService.loginUser(request);
             if (response.isSuccess()) {
@@ -41,9 +42,8 @@ public class AuthController {
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Error interno: " + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Error interno en el servidor", e);
+            return new ResponseEntity<>("Error interno en el servidor", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
