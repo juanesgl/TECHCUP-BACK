@@ -56,4 +56,32 @@ class AuthControllerTest {
         assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
         assertEquals("Correo o contraseña incorrectos", result.getBody());
     }
+
+    @Test
+    void loginUser_RequestInvalido_RetornaBadRequest() {
+        LoginRequestDTO request = new LoginRequestDTO(
+                "mal@mail.escuelaing.edu.co", "password1");
+
+        when(authService.loginUser(request))
+                .thenThrow(new IllegalArgumentException("Solicitud malformada"));
+
+        ResponseEntity<?> result = authController.loginUser(request);
+
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        assertEquals("Solicitud malformada", result.getBody());
+    }
+
+    @Test
+    void loginUser_ErrorInesperado_RetornaInternalServerError() {
+        LoginRequestDTO request = new LoginRequestDTO(
+                "user@mail.escuelaing.edu.co", "password1");
+
+        when(authService.loginUser(request))
+                .thenThrow(new RuntimeException("boom"));
+
+        ResponseEntity<?> result = authController.loginUser(request);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
+        assertEquals("Error interno en el servidor", result.getBody());
+    }
 }
