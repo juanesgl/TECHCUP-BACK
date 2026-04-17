@@ -10,10 +10,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Full match registration request:
- * final score + goals + yellow cards + red cards.
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

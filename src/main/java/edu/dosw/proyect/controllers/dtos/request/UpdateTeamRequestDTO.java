@@ -5,11 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-/**
- * Request para actualizar datos del equipo.
- * Solo el capitán puede actualizar su propio equipo.
- * Todos los campos son opcionales — solo se actualizan los que vienen.
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

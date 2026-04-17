@@ -237,4 +237,45 @@ class KnockoutBracketServiceImplTest {
         assertEquals(1, phaseMatches.size());
         assertEquals("FINAL", phaseMatches.get(0).getPhase());
     }
+
+    @Test
+    void advanceBracket_MatchFinalizadoSinTorneo_NoConsultaLlaves() {
+        MatchEntity match = new MatchEntity();
+        match.setId(44L);
+        match.setEstado(MatchStatus.FINALIZADO);
+        match.setTorneo(null);
+        when(matchRepository.findById(44L)).thenReturn(Optional.of(match));
+
+        knockoutBracketService.advanceBracket(44L);
+
+        verify(bracketRepository, never()).findByTorneoId(anyLong());
+    }
+
+    @Test
+    void advanceBracket_PartidoNoPerteneceALlave_NoGuardaCambios() {
+        MatchEntity match = new MatchEntity();
+        match.setId(55L);
+        match.setEstado(MatchStatus.FINALIZADO);
+        match.setGolesLocal(1);
+        match.setGolesVisitante(0);
+        TeamEntity home = new TeamEntity(); home.setId(10L); home.setNombre("A");
+        TeamEntity away = new TeamEntity(); away.setId(20L); away.setNombre("B");
+        match.setEquipoLocal(home);
+        match.setEquipoVisitante(away);
+        TournamentEntity tournament = new TournamentEntity();
+        tournament.setId(100L);
+        match.setTorneo(tournament);
+
+        KnockoutBracketEntity other = new KnockoutBracketEntity();
+        MatchEntity unrelatedMatch = new MatchEntity();
+        unrelatedMatch.setId(999L);
+        other.setPartido(unrelatedMatch);
+
+        when(matchRepository.findById(55L)).thenReturn(Optional.of(match));
+        when(bracketRepository.findByTorneoId(100L)).thenReturn(List.of(other));
+
+        knockoutBracketService.advanceBracket(55L);
+
+        verify(bracketRepository, never()).save(any(KnockoutBracketEntity.class));
+    }
 }

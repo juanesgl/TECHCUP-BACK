@@ -7,10 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Representa un evento puntual dentro de un partido:
- * un gol, una tarjeta amarilla o una tarjeta roja.
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

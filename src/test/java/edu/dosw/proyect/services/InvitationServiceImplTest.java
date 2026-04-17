@@ -181,4 +181,21 @@ class InvitationServiceImplTest {
         assertThrows(BusinessRuleException.class,
                 () -> invitacionService.responderInvitacion(1L, 1L, request));
     }
+
+    @Test
+    void responderInvitacion_EquipoLleno_LanzaBusinessRuleException() {
+        PlayerEntity jugador = buildJugador(1L, false);
+        InvitationEntity invitacion = buildInvitacion(1L, jugador, "PENDIENTE");
+        invitacion.getEquipo().setId(10L);
+        AnswerInvitationRequestDTO request = new AnswerInvitationRequestDTO();
+        request.setRespuesta(InvitationResponse.ACEPTAR);
+
+        when(playerRepository.findById(1L)).thenReturn(Optional.of(jugador));
+        when(invitationRepository.findById(1L)).thenReturn(Optional.of(invitacion));
+        when(teamPlayerRepository.findByEquipoId(10L))
+                .thenReturn(java.util.Collections.nCopies(12, mock(edu.dosw.proyect.persistence.entity.TeamPlayerEntity.class)));
+
+        assertThrows(BusinessRuleException.class,
+                () -> invitacionService.responderInvitacion(1L, 1L, request));
+    }
 }
