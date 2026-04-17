@@ -70,7 +70,7 @@ public class SwaggerConfig {
                         new Tag().name("05 Organizador Pagos")
                                 .description("""
                                         Aprobar o rechazar comprobantes de pago Nequi.
-                                        Monto único: $130.000 COP por equipo.
+                                        Monto único: $130.000 COP por team.
                                         """),
                         new Tag().name("06 Organizador Estadisticas")
                                 .description("""
@@ -80,7 +80,7 @@ public class SwaggerConfig {
                         new Tag().name("07 Arbitro Partidos")
                                 .description("""
                                         Consultar partidos asignados: fecha, hora,
-                                        cancha y equipos participantes.
+                                        soccerField y teams participantes.
                                         """),
                         new Tag().name("08 Arbitro Resultados")
                                 .description("""
@@ -90,14 +90,14 @@ public class SwaggerConfig {
                                         """),
                         new Tag().name("09 Capitan Equipos")
                                 .description("""
-                                        Crear y gestionar el equipo.
+                                        Crear y gestionar el team.
                                         Reglas: mínimo 8, máximo 12 integrantes.
                                         Más de la mitad deben ser del programa de Sistemas.
                                         """),
                         new Tag().name("10 Capitan Invitaciones")
                                 .description("""
                                         Las invitaciones se envían automáticamente
-                                        al crear el equipo.
+                                        al crear el team.
                                         """),
                         new Tag().name("11 Capitan Alineaciones")
                                 .description("""
@@ -112,22 +112,22 @@ public class SwaggerConfig {
                         new Tag().name("13 Jugador Disponibilidad")
                                 .description("""
                                         Activar o desactivar disponibilidad para
-                                        recibir invitaciones de equipos.
+                                        recibir invitaciones de teams.
                                         """),
                         new Tag().name("14 Jugador Invitaciones")
                                 .description("""
-                                        Aceptar o rechazar invitaciones de equipos.
+                                        Aceptar o rechazar invitaciones de teams.
                                         Al aceptar, las demás invitaciones se rechazan
                                         automáticamente.
                                         """),
                         new Tag().name("15 Jugador Partidos")
                                 .description("""
                                         Consultar partidos programados con filtros
-                                        por fecha, cancha, equipo o torneo (TC-18).
+                                        por fecha, soccerField, team o torneo (TC-18).
                                         """),
                         new Tag().name("16 Jugador Alineacion Rival")
                                 .description("""
-                                        Consultar la alineación del equipo rival
+                                        Consultar la alineación del team rival
                                         para un partido programado (TC-16).
                                         """),
                         new Tag().name("17 Jugador Busqueda")

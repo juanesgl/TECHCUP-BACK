@@ -25,7 +25,7 @@ public class SecurityConfig {
     private boolean permitAll;
 
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-    private final JwtAuthFilter        jwtAuthFilter;
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -47,7 +47,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         if (permitAll) {
             http
                     .csrf(AbstractHttpConfigurer::disable)
@@ -75,7 +74,8 @@ public class SecurityConfig {
                         .successHandler(oAuth2SuccessHandler)
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable()));
 
         return http.build();
     }

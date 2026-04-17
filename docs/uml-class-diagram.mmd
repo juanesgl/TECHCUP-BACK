@@ -254,33 +254,33 @@ classDiagram
   EquipoEntity "n" --> "0..1" JugadorEntity : capitan
   EquipoEntity "n" --> "1" TournamentEntity : torneo
   EquipoEntity "1" *-- "0..*" EquipoJugadorEntity : equipoJugadores
-  EquipoJugadorEntity "n" --> "1" EquipoEntity : equipo
+  EquipoJugadorEntity "n" --> "1" EquipoEntity : team
   EquipoJugadorEntity "n" --> "1" JugadorEntity : jugador
   TournamentEntity "n" --> "0..1" UserEntity : organizador
   ConfiguracionTorneoEntity "1" --> "1" TournamentEntity : torneo
   CanchaEntity "n" --> "1" TournamentEntity : torneo
   PartidoEntity "n" --> "1" TournamentEntity : torneo
-  PartidoEntity "n" --> "1" EquipoEntity : equipoLocal
-  PartidoEntity "n" --> "1" EquipoEntity : equipoVisitante
-  PartidoEntity "n" --> "0..1" CanchaEntity : cancha
+  PartidoEntity "n" --> "1" EquipoEntity : teamLocal
+  PartidoEntity "n" --> "1" EquipoEntity : teamVisitante
+  PartidoEntity "n" --> "0..1" CanchaEntity : soccerField
   PartidoEntity "n" --> "0..1" UserEntity : arbitro
   AlineacionEntity "n" --> "1" PartidoEntity : partido
-  AlineacionEntity "n" --> "1" EquipoEntity : equipo
+  AlineacionEntity "n" --> "1" EquipoEntity : team
   AlineacionEntity "1" *-- "0..*" AlineacionJugadorEntity : jugadores
-  AlineacionJugadorEntity "n" --> "1" AlineacionEntity : alineacion
+  AlineacionJugadorEntity "n" --> "1" AlineacionEntity : lineup
   AlineacionJugadorEntity "n" --> "1" JugadorEntity : jugador
-  InvitacionEntity "n" --> "1" EquipoEntity : equipo
+  InvitacionEntity "n" --> "1" EquipoEntity : team
   InvitacionEntity "n" --> "1" JugadorEntity : jugador
   EventoPartidoEntity "n" --> "1" PartidoEntity : partido
   EventoPartidoEntity "n" --> "1" JugadorEntity : jugador
   LlaveEliminatoriaEntity "n" --> "1" TournamentEntity : torneo
-  LlaveEliminatoriaEntity "n" --> "0..1" EquipoEntity : equipo1
-  LlaveEliminatoriaEntity "n" --> "0..1" EquipoEntity : equipo2
+  LlaveEliminatoriaEntity "n" --> "0..1" EquipoEntity : team1
+  LlaveEliminatoriaEntity "n" --> "0..1" EquipoEntity : team2
   LlaveEliminatoriaEntity "0..1" --> "0..1" PartidoEntity : partido
   LlaveEliminatoriaEntity "n" --> "0..1" EquipoEntity : ganador
-  EstadisticasEquipoEntity "n" --> "1" EquipoEntity : equipo
+  EstadisticasEquipoEntity "n" --> "1" EquipoEntity : team
   EstadisticasEquipoEntity "n" --> "1" TournamentEntity : torneo
-  PagoEntity "n" --> "1" EquipoEntity : equipo
+  PagoEntity "n" --> "1" EquipoEntity : team
   PagoEntity "n" --> "1" TournamentEntity : torneo
   PagoEntity "n" --> "0..1" UserEntity : revisadoPor
   TeamLineupEntity "1" *-- "0..*" StarterEntryEntity : starters
@@ -313,8 +313,8 @@ classDiagram
   Cancha --> Tournament : torneo
   Tournament o-- Cancha : canchas
   Partido --> Tournament
-  Partido --> Equipo : equipoLocal
-  Partido --> Equipo : equipoVisitante
+  Partido --> Equipo : teamLocal
+  Partido --> Equipo : teamVisitante
   Partido --> Cancha
   Partido --> User : arbitro
   Partido ..> MatchStatus
@@ -331,8 +331,8 @@ classDiagram
   EventoPartido --> Equipo
   EventoPartido ..> TipoEvento
   LlaveEliminatoria --> Tournament
-  LlaveEliminatoria --> Equipo : equipo1
-  LlaveEliminatoria --> Equipo : equipo2
+  LlaveEliminatoria --> Equipo : team1
+  LlaveEliminatoria --> Equipo : team2
   LlaveEliminatoria --> Partido
   LlaveEliminatoria --> Equipo : ganador
   EstadisticaEquipo --> Equipo

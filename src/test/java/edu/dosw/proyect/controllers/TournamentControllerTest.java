@@ -35,7 +35,7 @@ class TournamentControllerTest {
                 LocalDate.now(),
                 LocalDate.now().plusMonths(2),
                 8,
-                50000,
+                50000.0,
                 "Reglamento general"
         );
     }

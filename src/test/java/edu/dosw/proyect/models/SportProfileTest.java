@@ -62,7 +62,7 @@ class SportProfileTest {
     @Test
     void testSaveProfile() {
         SportProfile profile = new SportProfile();
-        assertDoesNotThrow(() -> profile.saveProfile());
+        assertDoesNotThrow(profile::saveProfile);
     }
 
     @Test

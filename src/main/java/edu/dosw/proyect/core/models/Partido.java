@@ -18,9 +18,9 @@ public class Partido {
 
     private Long id;
     private Tournament torneo;
-    private Equipo equipoLocal;
-    private Equipo equipoVisitante;
-    private Cancha cancha;
+    private Team teamLocal;
+    private Team teamVisitante;
+    private SoccerField soccerField;
     private User arbitro;
     private LocalDateTime fechaHora;
     private int golesLocal;

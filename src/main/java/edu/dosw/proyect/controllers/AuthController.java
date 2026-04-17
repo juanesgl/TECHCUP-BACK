@@ -10,14 +10,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "01 Autenticacion", description = "Login con email y contraseña. Retorna JWT.")
+@Tag(name = "01 Autenticacion")
 public class AuthController {
 
     private final AuthService authService;
@@ -26,21 +23,27 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @Operation(summary = "Iniciar Sesion",
-            description = "Correo institucional y contraseña (mín. 8 caracteres). "
-                    + "Éxito: mensaje de bienvenida y JWT; fallo: mensaje de error sin token.")
+    @Operation(summary = "Iniciar sesion")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Login exitoso (mensaje + token)."),
-            @ApiResponse(responseCode = "401", description = "Correo o contraseña incorrectos."),
-            @ApiResponse(responseCode = "400", description = "Validación de entrada fallida.")
+            @ApiResponse(responseCode = "200", description = "Login exitoso"),
+            @ApiResponse(responseCode = "401", description = "Credenciales incorrectas"),
+            @ApiResponse(responseCode = "400", description = "Solicitud malformada")
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> loginUser(@Valid @RequestBody LoginRequestDTO request) {
-        LoginResponseDTO response = authService.loginUser(request);
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequestDTO request) {
+        try {
+            LoginResponseDTO response = authService.loginUser(request);
+            if (response.isSuccess()) {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response.getMessage(), HttpStatus.UNAUTHORIZED);
+            }
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Error interno: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 }
-

@@ -1,14 +1,16 @@
 package edu.dosw.proyect.services;
 
-import edu.dosw.proyect.controllers.dtos.response.EstadisticasTorneoDTO;
+import edu.dosw.proyect.controllers.dtos.response.TournamentStatisticsDTO;
+import edu.dosw.proyect.core.models.Player;
+import edu.dosw.proyect.core.models.Team;
 import edu.dosw.proyect.core.models.enums.MatchStatus;
-import edu.dosw.proyect.core.models.enums.TipoEvento;
+import edu.dosw.proyect.core.models.enums.EventType;
 import edu.dosw.proyect.core.services.EstadisticasService;
 import edu.dosw.proyect.persistence.entity.*;
-import edu.dosw.proyect.persistence.mapper.JugadorPersistenceMapper;
-import edu.dosw.proyect.persistence.mapper.PartidoPersistenceMapper;
-import edu.dosw.proyect.persistence.repository.EventoPartidoRepository;
-import edu.dosw.proyect.persistence.repository.PartidoRepository;
+import edu.dosw.proyect.persistence.mapper.PlayerPersistenceMapper;
+import edu.dosw.proyect.persistence.mapper.MatchPersistenceMapper;
+import edu.dosw.proyect.persistence.repository.MatchEventRepository;
+import edu.dosw.proyect.persistence.repository.MatchRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,23 +25,23 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class EstadisticasServiceTest {
 
-    @Mock private PartidoRepository partidoRepository;
-    @Mock private EventoPartidoRepository eventoPartidoRepository;
-    @Mock private PartidoPersistenceMapper partidoMapper;
-    @Mock private JugadorPersistenceMapper jugadorMapper;
+    @Mock private MatchRepository matchRepository;
+    @Mock private MatchEventRepository matchEventRepository;
+    @Mock private MatchPersistenceMapper partidoMapper;
+    @Mock private PlayerPersistenceMapper jugadorMapper;
 
     @InjectMocks
     private EstadisticasService estadisticasService;
 
-    private EquipoEntity buildEquipoEntity(Long id, String nombre) {
-        EquipoEntity e = new EquipoEntity();
+    private TeamEntity buildEquipoEntity(Long id, String nombre) {
+        TeamEntity e = new TeamEntity();
         e.setId(id);
         e.setNombre(nombre);
         return e;
     }
 
-    private PartidoEntity buildPartidoEntity(MatchStatus estado) {
-        PartidoEntity p = new PartidoEntity();
+    private MatchEntity buildPartidoEntity(MatchStatus estado) {
+        MatchEntity p = new MatchEntity();
         p.setId(1L);
         p.setEstado(estado);
         p.setGolesLocal(2);
@@ -51,12 +53,12 @@ class EstadisticasServiceTest {
 
     @Test
     void obtenerEstadisticasTorneo_SinPartidos_RetornaVacio() {
-        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+        when(matchRepository.findByTorneo_TournId("TOURN-1"))
                 .thenReturn(List.of());
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+        when(matchEventRepository.findByPartido_Torneo_TournId("TOURN-1"))
                 .thenReturn(List.of());
 
-        EstadisticasTorneoDTO result =
+        TournamentStatisticsDTO result =
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
         assertNotNull(result);
@@ -66,15 +68,15 @@ class EstadisticasServiceTest {
 
     @Test
     void obtenerEstadisticasTorneo_PartidoFinalizado_ContabilizaCorrectamente() {
-        PartidoEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
+        MatchEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
 
-        edu.dosw.proyect.core.models.Equipo local =
-                new edu.dosw.proyect.core.models.Equipo();
+        Team local =
+                new Team();
         local.setId(1L);
         local.setNombre("Alpha");
 
-        edu.dosw.proyect.core.models.Equipo visitante =
-                new edu.dosw.proyect.core.models.Equipo();
+        Team visitante =
+                new Team();
         visitante.setId(2L);
         visitante.setNombre("Beta");
 
@@ -84,16 +86,16 @@ class EstadisticasServiceTest {
         domain.setEstado(MatchStatus.FINALIZADO);
         domain.setGolesLocal(2);
         domain.setGolesVisitante(1);
-        domain.setEquipoLocal(local);
-        domain.setEquipoVisitante(visitante);
+        domain.setTeamLocal(local);
+        domain.setTeamVisitante(visitante);
 
-        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+        when(matchRepository.findByTorneo_TournId("TOURN-1"))
                 .thenReturn(List.of(entity));
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+        when(matchEventRepository.findByPartido_Torneo_TournId("TOURN-1"))
                 .thenReturn(List.of());
         when(partidoMapper.toDomain(entity)).thenReturn(domain);
 
-        EstadisticasTorneoDTO result =
+        TournamentStatisticsDTO result =
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
         assertEquals(1, result.getTotalPartidosJugados());
@@ -102,19 +104,19 @@ class EstadisticasServiceTest {
 
     @Test
     void obtenerEstadisticasTorneo_PartidoProgramado_NoSeCuenta() {
-        PartidoEntity entity = buildPartidoEntity(MatchStatus.PROGRAMADO);
+        MatchEntity entity = buildPartidoEntity(MatchStatus.PROGRAMADO);
 
         edu.dosw.proyect.core.models.Partido domain =
                 new edu.dosw.proyect.core.models.Partido();
         domain.setEstado(MatchStatus.PROGRAMADO);
 
-        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+        when(matchRepository.findByTorneo_TournId("TOURN-1"))
                 .thenReturn(List.of(entity));
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+        when(matchEventRepository.findByPartido_Torneo_TournId("TOURN-1"))
                 .thenReturn(List.of());
         when(partidoMapper.toDomain(entity)).thenReturn(domain);
 
-        EstadisticasTorneoDTO result =
+        TournamentStatisticsDTO result =
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
         assertEquals(0, result.getTotalPartidosJugados());
@@ -122,14 +124,14 @@ class EstadisticasServiceTest {
 
     @Test
     void obtenerEstadisticasTorneo_ConEventoGol_ApareceEnGoleadores() {
-        PartidoEntity partidoEntity = buildPartidoEntity(MatchStatus.FINALIZADO);
+        MatchEntity matchEntity = buildPartidoEntity(MatchStatus.FINALIZADO);
 
-        edu.dosw.proyect.core.models.Equipo local =
-                new edu.dosw.proyect.core.models.Equipo();
+        Team local =
+                new Team();
         local.setId(1L);
         local.setNombre("Alpha");
-        edu.dosw.proyect.core.models.Equipo visitante =
-                new edu.dosw.proyect.core.models.Equipo();
+        Team visitante =
+                new Team();
         visitante.setId(2L);
         visitante.setNombre("Beta");
 
@@ -138,37 +140,37 @@ class EstadisticasServiceTest {
         domain.setEstado(MatchStatus.FINALIZADO);
         domain.setGolesLocal(1);
         domain.setGolesVisitante(0);
-        domain.setEquipoLocal(local);
-        domain.setEquipoVisitante(visitante);
+        domain.setTeamLocal(local);
+        domain.setTeamVisitante(visitante);
 
         UserEntity userEntity = UserEntity.builder()
                 .id(10L).name("Juan").email("j@mail.com")
                 .password("p").role("PLAYER").build();
-        JugadorEntity jugadorEntity = new JugadorEntity();
-        jugadorEntity.setId(10L);
-        jugadorEntity.setUsuario(userEntity);
+        PlayerEntity playerEntity = new PlayerEntity();
+        playerEntity.setId(10L);
+        playerEntity.setUsuario(userEntity);
 
         edu.dosw.proyect.core.models.User usuario =
                 edu.dosw.proyect.core.models.User.builder()
                         .id(10L).name("Juan").email("j@mail.com")
                         .password("p").role("PLAYER").build();
-        edu.dosw.proyect.core.models.Jugador jugadorDomain =
-                new edu.dosw.proyect.core.models.Jugador();
+        Player jugadorDomain =
+                new Player();
         jugadorDomain.setId(10L);
         jugadorDomain.setUsuario(usuario);
 
-        EventoPartidoEntity evento = new EventoPartidoEntity();
-        evento.setJugador(jugadorEntity);
-        evento.setTipoEvento(TipoEvento.GOL);
+        MatchEventEntity evento = new MatchEventEntity();
+        evento.setJugador(playerEntity);
+        evento.setEventType(EventType.GOL);
 
-        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
-                .thenReturn(List.of(partidoEntity));
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+        when(matchRepository.findByTorneo_TournId("TOURN-1"))
+                .thenReturn(List.of(matchEntity));
+        when(matchEventRepository.findByPartido_Torneo_TournId("TOURN-1"))
                 .thenReturn(List.of(evento));
-        when(partidoMapper.toDomain(partidoEntity)).thenReturn(domain);
-        when(jugadorMapper.toDomain(jugadorEntity)).thenReturn(jugadorDomain);
+        when(partidoMapper.toDomain(matchEntity)).thenReturn(domain);
+        when(jugadorMapper.toDomain(playerEntity)).thenReturn(jugadorDomain);
 
-        EstadisticasTorneoDTO result =
+        TournamentStatisticsDTO result =
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
         assertEquals(1, result.getTablaGoleadores().size());
@@ -177,16 +179,16 @@ class EstadisticasServiceTest {
 
     @Test
     void obtenerEstadisticasTorneo_PartidoFinalizado_VisitanteGana() {
-        PartidoEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
+        MatchEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
         entity.setGolesLocal(0);
         entity.setGolesVisitante(2);
 
-        edu.dosw.proyect.core.models.Equipo local =
-                new edu.dosw.proyect.core.models.Equipo();
+        Team local =
+                new Team();
         local.setId(1L);
         local.setNombre("Alpha");
-        edu.dosw.proyect.core.models.Equipo visitante =
-                new edu.dosw.proyect.core.models.Equipo();
+        Team visitante =
+                new Team();
         visitante.setId(2L);
         visitante.setNombre("Beta");
 
@@ -195,16 +197,16 @@ class EstadisticasServiceTest {
         domain.setEstado(MatchStatus.FINALIZADO);
         domain.setGolesLocal(0);
         domain.setGolesVisitante(2);
-        domain.setEquipoLocal(local);
-        domain.setEquipoVisitante(visitante);
+        domain.setTeamLocal(local);
+        domain.setTeamVisitante(visitante);
 
-        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+        when(matchRepository.findByTorneo_TournId("TOURN-1"))
                 .thenReturn(List.of(entity));
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+        when(matchEventRepository.findByPartido_Torneo_TournId("TOURN-1"))
                 .thenReturn(List.of());
         when(partidoMapper.toDomain(entity)).thenReturn(domain);
 
-        EstadisticasTorneoDTO result =
+        TournamentStatisticsDTO result =
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
         assertEquals(1, result.getTotalPartidosJugados());
@@ -215,16 +217,16 @@ class EstadisticasServiceTest {
 
     @Test
     void obtenerEstadisticasTorneo_PartidoFinalizado_Empate() {
-        PartidoEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
+        MatchEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
         entity.setGolesLocal(1);
         entity.setGolesVisitante(1);
 
-        edu.dosw.proyect.core.models.Equipo local =
-                new edu.dosw.proyect.core.models.Equipo();
+        Team local =
+                new Team();
         local.setId(1L);
         local.setNombre("Alpha");
-        edu.dosw.proyect.core.models.Equipo visitante =
-                new edu.dosw.proyect.core.models.Equipo();
+        Team visitante =
+                new Team();
         visitante.setId(2L);
         visitante.setNombre("Beta");
 
@@ -233,20 +235,59 @@ class EstadisticasServiceTest {
         domain.setEstado(MatchStatus.FINALIZADO);
         domain.setGolesLocal(1);
         domain.setGolesVisitante(1);
-        domain.setEquipoLocal(local);
-        domain.setEquipoVisitante(visitante);
+        domain.setTeamLocal(local);
+        domain.setTeamVisitante(visitante);
 
-        when(partidoRepository.findByTorneo_TournId("TOURN-1"))
+        when(matchRepository.findByTorneo_TournId("TOURN-1"))
                 .thenReturn(List.of(entity));
-        when(eventoPartidoRepository.findByPartido_Torneo_TournId("TOURN-1"))
+        when(matchEventRepository.findByPartido_Torneo_TournId("TOURN-1"))
                 .thenReturn(List.of());
         when(partidoMapper.toDomain(entity)).thenReturn(domain);
 
-        EstadisticasTorneoDTO result =
+        TournamentStatisticsDTO result =
                 estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
 
         assertEquals(1, result.getTotalPartidosJugados());
         result.getTablaPosiciones().forEach(e ->
                 assertEquals(1, e.getPuntos()));
+    }
+
+    @Test
+    void obtenerEstadisticasTorneo_EventosTarjetas_ConstruyeTablaTarjetas() {
+        MatchEntity entity = buildPartidoEntity(MatchStatus.FINALIZADO);
+        edu.dosw.proyect.core.models.Partido domain = new edu.dosw.proyect.core.models.Partido();
+        domain.setEstado(MatchStatus.FINALIZADO);
+        domain.setGolesLocal(0);
+        domain.setGolesVisitante(0);
+        Team local = new Team(); local.setId(1L); local.setNombre("Alpha");
+        Team visitante = new Team(); visitante.setId(2L); visitante.setNombre("Beta");
+        domain.setTeamLocal(local);
+        domain.setTeamVisitante(visitante);
+
+        UserEntity userEntity = UserEntity.builder().id(20L).name("Pedro").build();
+        PlayerEntity playerEntity = new PlayerEntity();
+        playerEntity.setId(20L);
+        playerEntity.setUsuario(userEntity);
+        Player jugadorDomain = new Player();
+        edu.dosw.proyect.core.models.User user = edu.dosw.proyect.core.models.User.builder().id(20L).name("Pedro").build();
+        jugadorDomain.setUsuario(user);
+
+        MatchEventEntity amarilla = new MatchEventEntity();
+        amarilla.setJugador(playerEntity);
+        amarilla.setEventType(EventType.TARJETA_AMARILLA);
+        MatchEventEntity roja = new MatchEventEntity();
+        roja.setJugador(playerEntity);
+        roja.setEventType(EventType.TARJETA_ROJA);
+
+        when(matchRepository.findByTorneo_TournId("TOURN-1")).thenReturn(List.of(entity));
+        when(matchEventRepository.findByPartido_Torneo_TournId("TOURN-1")).thenReturn(List.of(amarilla, roja));
+        when(partidoMapper.toDomain(entity)).thenReturn(domain);
+        when(jugadorMapper.toDomain(playerEntity)).thenReturn(jugadorDomain);
+
+        TournamentStatisticsDTO result = estadisticasService.obtenerEstadisticasTorneo("TOURN-1");
+
+        assertEquals(1, result.getTablaTarjetas().size());
+        assertEquals(1, result.getTablaTarjetas().get(0).getTarjetasAmarillas());
+        assertEquals(1, result.getTablaTarjetas().get(0).getTarjetasRojas());
     }
 }

@@ -14,16 +14,16 @@ class PartidoTest {
 
     @Test
     void partido_Builder_ConstruyeCorrectamente() {
-        Equipo local = new Equipo();
+        Team local = new Team();
         local.setNombre("Alpha");
 
-        Equipo visitante = new Equipo();
+        Team visitante = new Team();
         visitante.setNombre("Beta");
 
         Partido p = Partido.builder()
                 .id(1L)
-                .equipoLocal(local)
-                .equipoVisitante(visitante)
+                .teamLocal(local)
+                .teamVisitante(visitante)
                 .fechaHora(LocalDateTime.now())
                 .golesLocal(2)
                 .golesVisitante(1)
@@ -32,8 +32,8 @@ class PartidoTest {
                 .build();
 
         assertEquals(1L, p.getId());
-        assertEquals("Alpha", p.getEquipoLocal().getNombre());
-        assertEquals("Beta", p.getEquipoVisitante().getNombre());
+        assertEquals("Alpha", p.getTeamLocal().getNombre());
+        assertEquals("Beta", p.getTeamVisitante().getNombre());
         assertEquals(2, p.getGolesLocal());
         assertEquals(1, p.getGolesVisitante());
         assertEquals(MatchStatus.FINALIZADO, p.getEstado());

@@ -1,6 +1,6 @@
 package edu.dosw.proyect.models;
 
-import edu.dosw.proyect.core.models.Cancha;
+import edu.dosw.proyect.core.models.SoccerField;
 import edu.dosw.proyect.core.models.Tournament;
 import edu.dosw.proyect.core.models.enums.TournamentsStatus;
 import org.junit.jupiter.api.Test;
@@ -67,11 +67,11 @@ class TournamentTest {
         t.setOrganizerId(5L);
         t.setRegistrationCloseDate(LocalDate.now().plusDays(30));
         t.setSanctions("Sancion por falta");
-        t.setCanchas(List.of(new Cancha()));
+        t.setSoccerFields(List.of(new SoccerField()));
 
         assertEquals("Reglamento nuevo", t.getRegulation());
         assertEquals(5L, t.getOrganizerId());
         assertNotNull(t.getRegistrationCloseDate());
-        assertEquals(1, t.getCanchas().size());
+        assertEquals(1, t.getSoccerFields().size());
     }
 }

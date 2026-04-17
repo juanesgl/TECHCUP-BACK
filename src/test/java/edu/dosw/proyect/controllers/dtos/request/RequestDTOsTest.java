@@ -2,7 +2,7 @@ package edu.dosw.proyect.controllers.dtos.request;
 
 import edu.dosw.proyect.core.models.enums.PaymentStatus;
 import edu.dosw.proyect.core.models.enums.FieldPosition;
-import edu.dosw.proyect.core.models.enums.RespuestaInvitacion;
+import edu.dosw.proyect.core.models.enums.InvitationResponse;
 import edu.dosw.proyect.core.models.enums.TacticalFormation;
 import org.junit.jupiter.api.Test;
 
@@ -13,11 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RequestDTOsTest {
 
-    // ─── CanchaDTO ────────────────────────────────────────
-
     @Test
     void canchaDTO_AllArgsConstructor_ConstruyeCorrectamente() {
-        CanchaDTO dto = new CanchaDTO("Cancha Principal", "Calle 100");
+        SoccerFieldDTO dto = new SoccerFieldDTO("Cancha Principal", "Calle 100");
 
         assertEquals("Cancha Principal", dto.getNombre());
         assertEquals("Calle 100", dto.getUbicacion());
@@ -25,14 +23,14 @@ class RequestDTOsTest {
 
     @Test
     void canchaDTO_NoArgsConstructor_CreaVacio() {
-        CanchaDTO dto = new CanchaDTO();
+        SoccerFieldDTO dto = new SoccerFieldDTO();
         assertNull(dto.getNombre());
         assertNull(dto.getUbicacion());
     }
 
     @Test
     void canchaDTO_Setters_FuncionanCorrectamente() {
-        CanchaDTO dto = new CanchaDTO();
+        SoccerFieldDTO dto = new SoccerFieldDTO();
         dto.setNombre("Cancha Norte");
         dto.setUbicacion("Calle 200");
 
@@ -40,11 +38,9 @@ class RequestDTOsTest {
         assertEquals("Calle 200", dto.getUbicacion());
     }
 
-    // ─── PartidoFiltroRequestDTO ──────────────────────────
-
     @Test
     void partidoFiltroRequestDTO_AllArgsConstructor_ConstruyeCorrectamente() {
-        PartidoFiltroRequestDTO dto = new PartidoFiltroRequestDTO(
+        MatchFilterRequestDTO dto = new MatchFilterRequestDTO(
                 LocalDate.now(), "Cancha Principal",
                 "Alpha FC", "TOURN-1");
 
@@ -56,7 +52,7 @@ class RequestDTOsTest {
 
     @Test
     void partidoFiltroRequestDTO_NoArgsConstructor_CreaVacio() {
-        PartidoFiltroRequestDTO dto = new PartidoFiltroRequestDTO();
+        MatchFilterRequestDTO dto = new MatchFilterRequestDTO();
         assertNull(dto.getFecha());
         assertNull(dto.getCancha());
         assertNull(dto.getNombreEquipo());
@@ -64,7 +60,7 @@ class RequestDTOsTest {
 
     @Test
     void partidoFiltroRequestDTO_Setters_FuncionanCorrectamente() {
-        PartidoFiltroRequestDTO dto = new PartidoFiltroRequestDTO();
+        MatchFilterRequestDTO dto = new MatchFilterRequestDTO();
         dto.setCancha("Cancha Sur");
         dto.setNombreEquipo("Beta FC");
         dto.setTournamentId("TOURN-2");
@@ -76,25 +72,21 @@ class RequestDTOsTest {
         assertNotNull(dto.getFecha());
     }
 
-    // ─── RespuestaInvitacionRequestDTO ───────────────────
-
     @Test
     void respuestaInvitacionRequestDTO_Setters_FuncionanCorrectamente() {
-        RespuestaInvitacionRequestDTO dto = new RespuestaInvitacionRequestDTO();
-        dto.setRespuesta(RespuestaInvitacion.ACEPTAR);
+        AnswerInvitationRequestDTO dto = new AnswerInvitationRequestDTO();
+        dto.setRespuesta(InvitationResponse.ACEPTAR);
 
-        assertEquals(RespuestaInvitacion.ACEPTAR, dto.getRespuesta());
+        assertEquals(InvitationResponse.ACEPTAR, dto.getRespuesta());
     }
 
     @Test
     void respuestaInvitacionRequestDTO_Rechazar_FuncionaCorrectamente() {
-        RespuestaInvitacionRequestDTO dto = new RespuestaInvitacionRequestDTO();
-        dto.setRespuesta(RespuestaInvitacion.RECHAZAR);
+        AnswerInvitationRequestDTO dto = new AnswerInvitationRequestDTO();
+        dto.setRespuesta(InvitationResponse.RECHAZAR);
 
-        assertEquals(RespuestaInvitacion.RECHAZAR, dto.getRespuesta());
+        assertEquals(InvitationResponse.RECHAZAR, dto.getRespuesta());
     }
-
-    // ─── StarterEntryRequestDTO ───────────────────────────
 
     @Test
     void starterEntryRequestDTO_AllArgsConstructor_ConstruyeCorrectamente() {
@@ -122,8 +114,6 @@ class RequestDTOsTest {
         assertEquals(FieldPosition.GOALKEEPER, dto.getFieldPosition());
     }
 
-    // ─── SaveLineupRequestDTO ─────────────────────────────
-
     @Test
     void saveLineupRequestDTO_AllArgsConstructor_ConstruyeCorrectamente() {
         StarterEntryRequestDTO starter = new StarterEntryRequestDTO(
@@ -134,8 +124,7 @@ class RequestDTOsTest {
                 TacticalFormation.F_1_2_3_1,
                 List.of(starter, starter, starter,
                         starter, starter, starter, starter),
-                List.of(8L, 9L)
-        );
+                List.of(8L, 9L));
 
         assertEquals(10L, dto.getTeamId());
         assertEquals(5L, dto.getMatchId());
@@ -152,11 +141,9 @@ class RequestDTOsTest {
         assertNull(dto.getFormation());
     }
 
-    // ─── CrearEquipoRequestDTO ────────────────────────────
-
     @Test
     void crearEquipoRequestDTO_Setters_FuncionanCorrectamente() {
-        CrearEquipoRequestDTO dto = new CrearEquipoRequestDTO();
+        CreateTeamRequestDTO dto = new CreateTeamRequestDTO();
         dto.setNombreEquipo("Alpha FC");
         dto.setEscudo("alpha.png");
         dto.setColoresUniforme("Rojo y Blanco");
@@ -168,13 +155,11 @@ class RequestDTOsTest {
         assertEquals(6, dto.getJugadoresInvitadosIds().size());
     }
 
-    // ─── ConfiguracionTorneoRequestDTO ───────────────────
-
     @Test
     void configuracionTorneoRequestDTO_Builder_ConstruyeCorrectamente() {
-        CanchaDTO cancha = new CanchaDTO("Cancha Principal", "Calle 100");
+        SoccerFieldDTO cancha = new SoccerFieldDTO("Cancha Principal", "Calle 100");
 
-        ConfiguracionTorneoRequestDTO dto = ConfiguracionTorneoRequestDTO.builder()
+        TournamentConfigurationRequestDTO dto = TournamentConfigurationRequestDTO.builder()
                 .registrationCloseDate(LocalDate.now().plusMonths(1))
                 .canchas(List.of(cancha))
                 .importantDates("Fecha final: Dic 2026")
@@ -191,13 +176,11 @@ class RequestDTOsTest {
 
     @Test
     void configuracionTorneoRequestDTO_NoArgsConstructor_CreaVacio() {
-        ConfiguracionTorneoRequestDTO dto = new ConfiguracionTorneoRequestDTO();
+        TournamentConfigurationRequestDTO dto = new TournamentConfigurationRequestDTO();
         assertNull(dto.getRegistrationCloseDate());
         assertNull(dto.getCanchas());
         assertNull(dto.getOrganizerId());
     }
-
-    // ─── TournamentRequest (record) ───────────────────────
 
     @Test
     void tournamentRequest_Record_ConstruyeCorrectamente() {
@@ -206,9 +189,8 @@ class RequestDTOsTest {
                 LocalDate.now(),
                 LocalDate.now().plusMonths(2),
                 8,
-                50000,
-                "Reglamento general"
-        );
+                50000.0,
+                "Reglamento general");
 
         assertEquals("TechCup 2026", request.name());
         assertNotNull(request.startDate());
@@ -218,28 +200,24 @@ class RequestDTOsTest {
         assertEquals("Reglamento general", request.regulation());
     }
 
-    // ─── DisponibilidadRequestDTO ─────────────────────────
-
     @Test
     void disponibilidadRequestDTO_AllArgsConstructor_ConstruyeCorrectamente() {
-        DisponibilidadRequestDTO dto = new DisponibilidadRequestDTO(true);
+        AvailabilityRequestDTO dto = new AvailabilityRequestDTO(true);
         assertTrue(dto.getEstadoDisponibilidad());
     }
 
     @Test
     void disponibilidadRequestDTO_NoArgsConstructor_CreaVacio() {
-        DisponibilidadRequestDTO dto = new DisponibilidadRequestDTO();
+        AvailabilityRequestDTO dto = new AvailabilityRequestDTO();
         assertNull(dto.getEstadoDisponibilidad());
     }
 
     @Test
     void disponibilidadRequestDTO_Setters_FuncionanCorrectamente() {
-        DisponibilidadRequestDTO dto = new DisponibilidadRequestDTO();
+        AvailabilityRequestDTO dto = new AvailabilityRequestDTO();
         dto.setEstadoDisponibilidad(false);
         assertFalse(dto.getEstadoDisponibilidad());
     }
-
-    // ─── LoginRequestDTO ──────────────────────────────────
 
     @Test
     void loginRequestDTO_AllArgsConstructor_ConstruyeCorrectamente() {
@@ -267,8 +245,6 @@ class RequestDTOsTest {
         assertEquals("newpass", dto.getPassword());
     }
 
-    // ─── PaymentStatusRequest ─────────────────────────────
-
     @Test
     void paymentStatusRequest_Setters_FuncionanCorrectamente() {
         PaymentStatusRequest dto = new PaymentStatusRequest();
@@ -287,8 +263,6 @@ class RequestDTOsTest {
 
         assertEquals(PaymentStatus.APPROVED, dto.getStatus());
     }
-
-    // ─── PlayerFilterRequest ──────────────────────────────
 
     @Test
     void playerFilterRequest_Setters_FuncionanCorrectamente() {
@@ -315,12 +289,9 @@ class RequestDTOsTest {
         assertNull(dto.getAvailable());
     }
 
-    // ─── RegisterMatchResultRequestDTO ───────────────────
-
     @Test
     void registerMatchResultRequestDTO_AllArgsConstructor_ConstruyeCorrectamente() {
-        RegisterMatchResultRequestDTO dto =
-                new RegisterMatchResultRequestDTO(3, 1);
+        RegisterMatchResultRequestDTO dto = new RegisterMatchResultRequestDTO(3, 1);
 
         assertEquals(3, dto.getHomeGoals());
         assertEquals(1, dto.getAwayGoals());
@@ -343,15 +314,12 @@ class RequestDTOsTest {
         assertEquals(0, dto.getAwayGoals());
     }
 
-    // ─── RegisterRequestDTO ───────────────────────────────
-
     @Test
     void registerRequestDTO_AllArgsConstructor_ConstruyeCorrectamente() {
         RegisterRequestDTO dto = new RegisterRequestDTO(
                 "Juan", "juan@mail.escuelaing.edu.co",
                 "pass123", "STUDENT",
-                "Delantero", 8
-        );
+                "Delantero", 8);
 
         assertEquals("Juan", dto.getName());
         assertEquals("juan@mail.escuelaing.edu.co", dto.getEmail());
@@ -367,7 +335,7 @@ class RequestDTOsTest {
         assertNull(dto.getName());
         assertNull(dto.getEmail());
         assertNull(dto.getRole());
-        assertEquals(0, dto.getSkillLevel());
+        assertNull(dto.getSkillLevel());
     }
 
     @Test
@@ -382,8 +350,6 @@ class RequestDTOsTest {
         assertEquals("ADMIN", dto.getRole());
         assertEquals(9, dto.getSkillLevel());
     }
-
-    // ─── PaymentUploadRequest ─────────────────────────────
 
     @Test
     void paymentUploadRequest_Setters_FuncionanCorrectamente() {
