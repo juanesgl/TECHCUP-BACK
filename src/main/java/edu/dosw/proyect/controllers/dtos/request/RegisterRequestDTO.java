@@ -29,12 +29,8 @@ public class RegisterRequestDTO {
     @NotBlank(message = "El rol es obligatorio")
     private String role;
 
-    @NotBlank(message = "La posición preferida es obligatoria")
     private String preferredPosition;
 
-    @NotNull(message = "El nivel de habilidad es obligatorio")
-    @Min(value = 1, message = "El nivel de habilidad mínimo es 1")
-    @Max(value = 5, message = "El nivel de habilidad máximo es 5")
     private Integer skillLevel;
 }
 
