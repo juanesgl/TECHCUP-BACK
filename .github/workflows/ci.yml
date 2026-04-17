@@ -127,7 +127,6 @@ jobs:
 
       - name: Log in to Azure
         uses: azure/login@v2
-        continue-on-error: true
         with:
           auth-type: SERVICE_PRINCIPAL
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -139,6 +138,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          slot-name: production
           images: ${{ secrets.AZURE_REGISTRY_URL }}/techcup-back:${{ github.sha }}
 
       - name: Configure App Settings
